@@ -13,7 +13,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "config.h"
+#include "mp_msg.h"
+#include "help_mp.h"
+
+#include "audio_out.h"
+#include "audio_out_internal.h"
+#include "afmt.h"
 #include <SDL.h>
+#include "osdep/timer.h"
+
+#include "libvo/fastmemcpy.h"
 
 static ao_info_t info =
 {
@@ -22,7 +33,19 @@ static ao_info_t info =
         "Felix Buenemann <atmosfear@users.sourceforge.net>",
         ""
 };
+
+LIBAO_EXTERN(sdl)
+
+// turn this on if you want to use the slower SDL_MixAudio
+#undef USE_SDL_INTERNAL_MIXER
+
+// Samplesize used by the SDLlib AudioSpec struct
+#ifdef WIN32
+#define SAMPLESIZE 2048
+#else
 #define SAMPLESIZE 1024
+#endif
+
 #define CHUNK_SIZE 4096
 #define NUM_CHUNKS 8
 // This type of ring buffer may never fill up completely, at least
@@ -37,6 +60,9 @@ static unsigned char *buffer;
 static volatile int read_pos;
 // may only be modified by mplayer's thread
 static volatile int write_pos;
+#ifdef USE_SDL_INTERNAL_MIXER
+static unsigned char volume=SDL_MIX_MAXVOLUME;
+#endif
 
 // may only be called by mplayer's thread
 // return value may change between immediately following two calls,
@@ -77,14 +103,23 @@ static int read_buffer(unsigned char* data,int len){
   if (len > buffered) len = buffered;
   if (first_len > len) first_len = len;
   // till end of buffer
+#ifdef USE_SDL_INTERNAL_MIXER
+  SDL_MixAudio (data, &buffer[read_pos], first_len, volume);
+#else
   memcpy (data, &buffer[read_pos], first_len);
+#endif
   if (len > first_len) { // we have to wrap around
     // remaining part from beginning of buffer
+#ifdef USE_SDL_INTERNAL_MIXER
+    SDL_MixAudio (&data[first_len], buffer, len - first_len, volume);
+#else
     memcpy (&data[first_len], buffer, len - first_len);
+#endif
   }
   read_pos = (read_pos + len) % BUFFSIZE;
   return len;
 }
+
 // end ring buffer stuff
 
 #if defined(__MINGW32__) || defined(HPUX) || defined(sgi) || (defined(sun) && defined(__svr4__))
@@ -103,6 +138,29 @@ static void setenv(const char *name, const char *val, int _xx)
 }
 #endif
 
+
+// to set/get/query special features/parameters
+static int control(int cmd,void *arg){
+#ifdef USE_SDL_INTERNAL_MIXER
+        switch (cmd) {
+                case AOCONTROL_GET_VOLUME:
+                {
+                        ao_control_vol_t* vol = (ao_control_vol_t*)arg;
+                        vol->left = vol->right = volume * 100 / SDL_MIX_MAXVOLUME;
+                        return CONTROL_OK;
+                }
+                case AOCONTROL_SET_VOLUME:
+                {
+                        int diff;
+                        ao_control_vol_t* vol = (ao_control_vol_t*)arg;
+                        diff = (vol->left+vol->right) / 2;
+                        volume = diff * SDL_MIX_MAXVOLUME / 100;
+                        return CONTROL_OK;
+                }
+        }
+#endif
+        return CONTROL_UNKNOWN;
+}
 
 // SDL Callback function
 void outputaudio(void *unused, Uint8 *stream, int len) {
@@ -123,8 +181,11 @@ static int init(int rate,int channels,int format,int flags){
         /* Allocate ring-buffer memory */
         buffer = (unsigned char *) malloc(BUFFSIZE);
 
+        mp_msg(MSGT_AO,MSGL_INFO,MSGTR_AO_SDL_INFO, rate, (channels > 1) ? "Stereo" : "Mono", audio_out_format_name(format));
+
         if(ao_subdevice) {
                 setenv("SDL_AUDIODRIVER", ao_subdevice, 1);
+                mp_msg(MSGT_AO,MSGL_INFO,MSGTR_AO_SDL_DriverInfo, ao_subdevice);
         }
 
         ao_data.channels=channels;
