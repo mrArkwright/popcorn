@@ -1,16 +1,19 @@
 der synthi - popcorn!
 
-todo
+done
 =====
+-
+
+working on
+===========
 - sdl audio output
 - 
-- 
 
 
-features
+todo
 =========
 - multiple oscilators
 - mixing
 - multiple effects
--
--
+- parsing static arrangements
+- midi input
