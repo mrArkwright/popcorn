@@ -1,6 +1,8 @@
 /*
  * Simple 2 frequency sin beep in SDL
  * Dirty hacked from sdl wiki
+ * 
+ * gcc $(pkg-config --cflags --libs sdl) sdl_audio.c
  */
 #include <stdio.h>
 #include <math.h>
