@@ -12,30 +12,59 @@ unsigned int sampleFrequency = 0;
 unsigned int audioBufferSize = 0;
 unsigned int outputAudioBufferSize = 0;
 
-unsigned int freq1 = 1000;
-unsigned int fase1 = 0;
-unsigned int freq2 = 5000;
-unsigned int fase2 = 0;
+unsigned int freq1 = 440;
+unsigned int phase1 = 0;
+
+float lFreq1 = 1;
+unsigned int lPhase1 = 0;
+float lVal1 = 0;
+
+int range = 127;
+
+float dreieck(float mod, int phase) {
+	float out;
+
+	// das ur-dreieck
+	//out = 2 * (float) phase / sampleFrequency * freq1) - 1; 
+
+	if (phase < (float)sampleFrequency / freq1 * mod) {
+		out = 2 * (float)phase / sampleFrequency * freq1 / mod - 1;
+	} else {
+		out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq1) / sampleFrequency * freq1 / (1-mod);
+	}
+	//out = 2 * (float)phase / sampleFrequency * freq1 / mod - 1;
+	//out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq1) / sampleFrequency * freq1 / (1-mod);
+
+	return out;
+}
 
 void example_mixaudio(void *unused, Uint8 *stream, int len) {
-	int i, channel1, channel2, outputValue;
-	unsigned int bytesPerPeriod1 = sampleFrequency / freq1;
-	unsigned int bytesPerPeriod2 = sampleFrequency / freq2;
-	
+	int i;
+	float outputValue;
+
 	for (i=0;i<len;i++) {
-		channel1 = 150*sin(fase1*6.28/bytesPerPeriod1);
-		channel2 = 150*sin(fase2*6.28/bytesPerPeriod2);
+				
+		//outputValue = sin(phase1 * 2 * M_PI * freq1 / sampleFrequency); //sin
 		
-		outputValue = channel1 + channel2;           // just add the channels
+		outputValue = dreieck(lVal1, phase1);
+		//outputValue = dreieck(0.5, phase1);
+		//outputValue = dreieck(1, phase1);
+		//outputValue = (phase1 < (float)sampleFrequency / freq1 / 2) ? 1 : -1; //rechteck
+
+		outputValue *= range;
+		outputValue *= 1;
 		if (outputValue > 127) outputValue = 127;        // and clip the result
 		if (outputValue < -128) outputValue = -128;      // this seems a crude method, but works very well
 		
 		stream[i] = outputValue;
 		
-		fase1++;
-		fase1 %= bytesPerPeriod1;
-		fase2++;
-		fase2 %= bytesPerPeriod2;
+		phase1++;
+		phase1 %= sampleFrequency / freq1;
+
+		lPhase1++;
+		if (lPhase1 > sampleFrequency / lFreq1) lPhase1 = 0;
+
+		//lVal1 = sin(lPhase1 * 2 * M_PI * lFreq1 / sampleFrequency);
 	}
 }
 int main(int argc, char *argv[])
