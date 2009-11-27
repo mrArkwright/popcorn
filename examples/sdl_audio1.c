@@ -19,21 +19,29 @@ float lFreq1 = 1;
 unsigned int lPhase1 = 0;
 float lVal1 = 0;
 
+float lFreq2 = 0.7;
+unsigned int lPhase2 = 0;
+float lVal2 = 0;
+
+float lFreq3 = 0.5;
+unsigned int lPhase3 = 0;
+float lVal3 = 0;
+
 int range = 127;
 
-float dreieck(float mod, int phase) {
+float dreieck(int phase, float freq, float mod) {
 	float out;
+
+	mod = mod / 2 + 0.5;
 
 	// das ur-dreieck
 	//out = 2 * (float) phase / sampleFrequency * freq1) - 1; 
 
-	if (phase < (float)sampleFrequency / freq1 * mod) {
-		out = 2 * (float)phase / sampleFrequency * freq1 / mod - 1;
+	if (phase < (float)sampleFrequency / freq * mod) {
+		out = 2 * (float)phase / sampleFrequency * freq / mod - 1;
 	} else {
-		out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq1) / sampleFrequency * freq1 / (1-mod);
+		out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq) / sampleFrequency * freq / (1-mod);
 	}
-	//out = 2 * (float)phase / sampleFrequency * freq1 / mod - 1;
-	//out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq1) / sampleFrequency * freq1 / (1-mod);
 
 	return out;
 }
@@ -46,7 +54,7 @@ void example_mixaudio(void *unused, Uint8 *stream, int len) {
 				
 		//outputValue = sin(phase1 * 2 * M_PI * freq1 / sampleFrequency); //sin
 		
-		outputValue = dreieck(lVal1, phase1);
+		outputValue = dreieck(phase1, freq1, lVal1);
 		//outputValue = dreieck(0.5, phase1);
 		//outputValue = dreieck(1, phase1);
 		//outputValue = (phase1 < (float)sampleFrequency / freq1 / 2) ? 1 : -1; //rechteck
@@ -63,8 +71,19 @@ void example_mixaudio(void *unused, Uint8 *stream, int len) {
 
 		lPhase1++;
 		if (lPhase1 > sampleFrequency / lFreq1) lPhase1 = 0;
+		lVal1 = sin(lPhase1 * 2 * M_PI * lFreq1 / sampleFrequency);
 
-		//lVal1 = sin(lPhase1 * 2 * M_PI * lFreq1 / sampleFrequency);
+		lPhase2++;
+		if (lPhase2 > sampleFrequency / lFreq2) lPhase2 = 0;
+		lVal2 = 3 + 2 * dreieck(lPhase2, lFreq2, 0);
+		lFreq1 = lVal2;
+
+		lPhase3++;
+		if (lPhase3 > sampleFrequency / lFreq3) lPhase3 = 0;
+		lVal2 = 440 + 100 * dreieck(lPhase3, lFreq3, 0);
+		freq1 = lVal2;
+
+
 	}
 }
 int main(int argc, char *argv[])
