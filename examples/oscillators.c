@@ -10,9 +10,9 @@
 
 #define A 8
 
-float oscSin(float, float, float, float);
-float oscTri(float, float, float, float);
-float oscRec(float, float, float, float);
+float oscSin(float, float, float);
+float oscTri(float, float, float);
+float oscRec(float, float, float);
 void debug(float, int);
 
 unsigned int sampleRate = 0;
@@ -31,7 +31,7 @@ typedef struct {
 	char act;
 	float val;
 	float phase;
-	float (*func)(float, float, float, float);
+	float (*func)(float, float, float);
 	param freq, vol, param1;
 } osc;
 
@@ -47,7 +47,7 @@ int debugCount = 0;
 int debugLastCount = 0;
 float debugOld;
 
-void initOsc(osc *this, float (*func)(float, float, float, float), float freq, float vol, float param1) {
+void initOsc(osc *this, float (*func)(float, float, float), float freq, float vol, float param1) {
 	this->act = 1;
 	this->val = 0;
 	this->phase = 0;
@@ -65,14 +65,18 @@ void initOsc(osc *this, float (*func)(float, float, float, float), float freq, f
 
 void init() {
 	initOsc(&oscs[0], &oscRec, 440, 1, 0);
-	//oscs[0].freq.mod = &(lfos[0].val);
+	oscs[0].freq.mod = &(lfos[0].val);
 	oscs[0].freq.modRange = 10;
 	oscs[0].param1.mod = &(lfos[1].val);
 	oscs[0].param1.modRange = 0.9;
+	oscs[0].vol.mod = &(lfos[2].val);
+	oscs[0].vol.modRange = 0.9;
 
 	initOsc(&lfos[0], &oscTri, 0.5, 1, 0);
 
-	initOsc(&lfos[1], &oscRec, 0.4, 1, 0);
+	initOsc(&lfos[1], &oscSin, 0.4, 1, 0);
+
+	initOsc(&lfos[2], &oscTri, 10, 1, -0.7);
 
 	globalOutput = &(oscs[0].val);
 }
@@ -90,7 +94,7 @@ void debug(float val, int maxCount) {
 	}
 }
 
-float oscSin(float phase, float spp, float vol, float param1) {
+float oscSin(float phase, float spp, float param1) {
 	float out;
 
 	param1 = param1 / 2 + 0.5;
@@ -105,12 +109,10 @@ float oscSin(float phase, float spp, float vol, float param1) {
 		out = sin(phase * m2pi / spp / (2 - 2 * param1));
 	}
 
-	out *= vol;
-
 	return out;
 }
 
-float oscTri(float phase, float spp, float vol, float param1) {
+float oscTri(float phase, float spp, float param1) {
 	float out;
 
 	param1 = param1 / 2 + 0.5;
@@ -124,12 +126,10 @@ float oscTri(float phase, float spp, float vol, float param1) {
 		out = 1 - 2 * (phase - param1 * spp) / spp / (1 - param1);
 	}
 
-	out *= vol;
-
 	return out;
 }
 
-float oscRec(float phase, float spp, float vol, float param1) {
+float oscRec(float phase, float spp, float param1) {
 	float out;
 
 	param1 = param1 / 2 + 0.5;
@@ -138,8 +138,6 @@ float oscRec(float phase, float spp, float vol, float param1) {
 	//out = (phase < spp * 0.5) ? 1 : -1;
 
 	out = (phase < spp * param1) ? 1 : -1;
-
-	out *= vol;
 
 	return out;
 }
@@ -160,7 +158,7 @@ void compOsc(osc* o) {
 	o->phase++;
 	if (o->phase >= spp) o->phase -= spp;
 
-	o->val = o->func(o->phase, spp, vol, param1);	
+	o->val = o->func(o->phase, spp, param1) * vol;	
 }
 
 void example_mixaudio(void *unused, Uint8 *stream, int len) {
