@@ -10,21 +10,14 @@
 
 #define A 8
 
-float oscSin(float, float, float);
-float oscTri(float, float, float);
-float oscRec(float, float, float);
-void debug(float, int);
-
 unsigned int sampleRate = 0;
 unsigned int audioBufferSize = 0;
 unsigned int outputAudioBufferSize = 0;
 
-float m2pi = 2 * M_PI;
-
 typedef struct {
 	float val;
 	float *mod;
-	float modRange;
+	float range;
 } param;
 
 typedef struct {
@@ -39,38 +32,36 @@ osc oscs[A];
 
 osc lfos[A];
 
-int range = 127;
+float m2pi = 2 * M_PI;
 
-float* globalOutput;
+int range = 127;
+float *globalOutput;
 
 int debugCount = 0;
 int debugLastCount = 0;
 float debugOld;
 
-void initOsc(osc *this, float (*func)(float, float, float), float freq, float vol, float param1) {
-	this->act = 1;
-	this->val = 0;
-	this->phase = 0;
-	this->func = func;
+void init();
+void initOsc(osc*, float(*)(float, float, float), float, float, float);
+void initParam(param*, float*, float);
 
-	this->freq.val = freq;
-	this->freq.mod = NULL;
+void example_mixaudio(void*, Uint8*, int);
 
-	this->vol.val = vol;
-	this->vol.mod = NULL;
+void compOsc(osc*);
+float compParam(param*);
 
-	this->param1.val = param1;
-	this->param1.mod = NULL;
-}
+float oscSin(float, float, float);
+float oscTri(float, float, float);
+float oscRec(float, float, float);
 
-void init() {
+int main(int, char**);
+void debug(float, int);
+
+void init() { // configuration (routing and params)
 	initOsc(&oscs[0], &oscRec, 440, 1, 0);
-	oscs[0].freq.mod = &(lfos[0].val);
-	oscs[0].freq.modRange = 10;
-	oscs[0].param1.mod = &(lfos[1].val);
-	oscs[0].param1.modRange = 0.9;
-	oscs[0].vol.mod = &(lfos[2].val);
-	oscs[0].vol.modRange = 0.9;
+	initParam(&(oscs[0].freq), &(lfos[0].val), 10);
+	initParam(&(oscs[0].param1), &(lfos[1].val), 0.9);
+	initParam(&(oscs[0].vol), &(lfos[2].val), 0.9);
 
 	initOsc(&lfos[0], &oscTri, 0.5, 1, 0);
 
@@ -81,17 +72,71 @@ void init() {
 	globalOutput = &(oscs[0].val);
 }
 
-void debug(float val, int maxCount) {
-	if (debugCount < maxCount) {
-		if (val != debugOld) {
-			debugOld = val;
-			printf("%d\t%.50f\n", debugLastCount, val);
-			debugLastCount = 0;
-			debugCount++;
-		} else {
-			debugLastCount++;
-		 }
+void initOsc(osc *o, float (*func)(float, float, float), float freq, float vol, float param1) {
+	o->act = 1;
+	o->val = 0;
+	o->phase = 0;
+	o->func = func;
+
+	o->freq.val = freq;
+	o->freq.mod = NULL;
+
+	o->vol.val = vol;
+	o->vol.mod = NULL;
+
+	o->param1.val = param1;
+	o->param1.mod = NULL;
+}
+
+void initParam(param *p, float *mod, float range) {
+	p->mod = mod;
+	p->range = range;
+}
+
+void example_mixaudio(void *unused, Uint8 *stream, int len) {
+	int i, j;
+	float outputValue;
+
+	for (i=0;i<len;i++) {
+		
+		for (j = 0; j < A; j++) {
+			if (oscs[j].act == 1) {
+				compOsc(&(oscs[j])); // compute all active oscillators
+			}
+		}
+
+		for (j = 0; j < A; j++) {
+			if (lfos[j].act == 1) {
+				compOsc(&(lfos[j])); // compute all active lfo's
+			}
+		}
+
+		outputValue = *globalOutput * range;
+
+		if (outputValue > 127) outputValue = 127;        // and clip the result
+		if (outputValue < -128) outputValue = -128;      // this seems a crude method, but works very well
+
+		stream[i] = outputValue;
 	}
+}
+
+void compOsc(osc *o) {
+	float freq, vol, param1;
+	float spp; // samples per period
+
+	freq = compParam(&(o->freq));
+	vol = compParam(&(o->vol));
+	param1 = compParam(&(o->param1));
+
+	spp = sampleRate / freq;
+	o->phase++;
+	if (o->phase >= spp) o->phase -= spp;
+
+	o->val = o->func(o->phase, spp, param1) * vol;	
+}
+
+float compParam(param *p) {
+	return p->val + ((p->mod != NULL) ? p->range * (*(p->mod)) : 0); // this is where the routing magic happens
 }
 
 float oscSin(float phase, float spp, float param1) {
@@ -142,55 +187,7 @@ float oscRec(float phase, float spp, float param1) {
 	return out;
 }
 
-float compParam(param* p) {
-	return p->val + ((p->mod != NULL) ? p->modRange * (*(p->mod)) : 0); // this is where the routing magic happens
-}
-
-void compOsc(osc* o) {
-	float freq, vol, param1;
-	float spp; // samples per period
-
-	freq = compParam(&(o->freq));
-	vol = compParam(&(o->vol));
-	param1 = compParam(&(o->param1));
-
-	spp = sampleRate / freq;
-	o->phase++;
-	if (o->phase >= spp) o->phase -= spp;
-
-	o->val = o->func(o->phase, spp, param1) * vol;	
-}
-
-void example_mixaudio(void *unused, Uint8 *stream, int len) {
-	int i, j;
-	float outputValue;
-	float freq, vol, param1, *phase;
-
-	for (i=0;i<len;i++) {
-		
-		for (j = 0; j < A; j++) {
-			if (oscs[j].act == 1) {
-				compOsc(&(oscs[j])); // compute all active oscillators
-			}
-		}
-
-		for (j = 0; j < A; j++) {
-			if (lfos[j].act == 1) {
-				compOsc(&(lfos[j])); // compute all active lfo's
-			}
-		}
-
-		outputValue = *globalOutput * range;
-
-		if (outputValue > 127) outputValue = 127;        // and clip the result
-		if (outputValue < -128) outputValue = -128;      // this seems a crude method, but works very well
-
-		stream[i] = outputValue;
-	}
-}
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	init();
 
 	if( SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO ) <0 ) {
@@ -278,4 +275,17 @@ int main(int argc, char *argv[])
 	}
 	SDL_Quit();
 	return EXIT_SUCCESS;
+}
+
+void debug(float val, int maxCount) {
+	if (debugCount < maxCount) {
+		if (val != debugOld) {
+			debugOld = val;
+			printf("%d\t%.50f\n", debugLastCount, val);
+			debugLastCount = 0;
+			debugCount++;
+		} else {
+			debugLastCount++;
+		 }
+	}
 }
