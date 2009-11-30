@@ -2,46 +2,124 @@
  * Simple 2 frequency sin beep in SDL
  * Dirty hacked from sdl wiki
  * 
- * gcc $(pkg-config --cflags --libs sdl) sdl_audio.c
+ * gcc $(pkg-config --cflags --libs sdl) sdl_audio1.c
  */
 #include <stdio.h>
 #include <math.h>
 #include <SDL.h>
 
-unsigned int sampleFrequency = 0;
+unsigned int sampleRate = 0;
 unsigned int audioBufferSize = 0;
 unsigned int outputAudioBufferSize = 0;
 
-unsigned int freq1 = 440;
-unsigned int phase1 = 0;
+float m2pi = 2 * M_PI;
 
-float lFreq1 = 1;
-unsigned int lPhase1 = 0;
+float freq1 = 440;
+float phase1 = 0;
+float val1 = 0;
+float vol1 = 1;
+
+float freq2 = 880;
+float phase2 = 0;
+float val2 = 0;
+float vol2 = 0;
+
+float lFreq1 = 0.8;
+float lPhase1 = 0;
 float lVal1 = 0;
 
-float lFreq2 = 0.7;
-unsigned int lPhase2 = 0;
+float lFreq2 = 0.5;
+float lPhase2 = 0;
 float lVal2 = 0;
 
-float lFreq3 = 0.5;
-unsigned int lPhase3 = 0;
+float lFreq3 = 5.1;
+float lPhase3 = 0;
 float lVal3 = 0;
 
 int range = 127;
 
-float dreieck(int phase, float freq, float mod) {
+int debugCount = 0;
+int debugLastCount = 0;
+float debugOld;
+
+void debug(float val, int maxCount) {
+	if (debugCount < maxCount) {
+		if (val != debugOld) {
+			debugOld = val;
+			printf("%d\t%.50f\n", debugLastCount, val);
+			debugLastCount = 0;
+			debugCount++;
+		} else {
+			debugLastCount++;
+		}
+	}
+}
+
+float oscSin(float *pPhase, float freq, float vol, float mod) {
 	float out;
+	float spp = sampleRate / freq; //samples per period
+	float phase = *pPhase;
+
+	*pPhase += 1;
+	if (phase >= spp) *pPhase -= spp;
+
+	mod = mod / 2 + 0.5;
+
+	// der ur-sinus
+    //out = sin(phase * 2 * M_PI * / spp);
+
+	if (phase < spp * mod) {
+		out = sin(phase * m2pi / spp / (2 * mod));
+	} else {
+		phase += spp * (1 - 2 * mod);
+		out = sin(phase * m2pi / spp / (2 - 2 * mod));
+	}
+
+	out *= vol;
+
+	return out;
+}
+
+float oscTri(float *pPhase, float freq, float vol, float mod) {
+	float out;
+	float spp = sampleRate / freq; //samples per period
+	float phase = *pPhase;
+
+	*pPhase += 1;
+	if (phase >= spp) *pPhase -= spp;
 
 	mod = mod / 2 + 0.5;
 
 	// das ur-dreieck
-	//out = 2 * (float) phase / sampleFrequency * freq1) - 1; 
+	//out = 2 * (float)phase / spp - 1;
 
-	if (phase < (float)sampleFrequency / freq * mod) {
-		out = 2 * (float)phase / sampleFrequency * freq / mod - 1;
+	if (phase < spp * mod) {
+		out = 2 * phase / spp / mod - 1;
 	} else {
-		out = 1 - 2 * (float)(phase - mod * sampleFrequency / freq) / sampleFrequency * freq / (1-mod);
+		out = 1 - 2 * (phase - mod * spp) / spp / (1 - mod);
 	}
+
+	out *= vol;
+
+	return out;
+}
+
+float oscRec(float *pPhase, float freq, float vol, float mod) {
+	float out;
+	float spp = sampleRate / freq; //samples per period
+	float phase = *pPhase;
+
+	*pPhase += 1;
+	if (phase >= spp) *pPhase -= spp;
+
+	mod = mod / 2 + 0.5;
+
+	// das ur-rechteck
+	//out = (phase < spp * 0.5) ? 1 : -1;
+
+	out = (phase < spp * mod) ? 1 : -1;
+
+	out *= vol;
 
 	return out;
 }
@@ -50,45 +128,32 @@ void example_mixaudio(void *unused, Uint8 *stream, int len) {
 	int i;
 	float outputValue;
 
-	for (i=0;i<len;i++) {
-				
-		//outputValue = sin(phase1 * 2 * M_PI * freq1 / sampleFrequency); //sin
+	for (i=0;i<len;i++) {	
 		
-		outputValue = dreieck(phase1, freq1, lVal1);
-		//outputValue = dreieck(0.5, phase1);
-		//outputValue = dreieck(1, phase1);
-		//outputValue = (phase1 < (float)sampleFrequency / freq1 / 2) ? 1 : -1; //rechteck
+		val1 = oscSin(&phase1, freq1, vol1, 0);
 
-		outputValue *= range;
-		outputValue *= 1;
+		val2 = oscSin(&phase2, freq2, vol2, 0);
+
+		outputValue = (val1 + val2) * range;
 		if (outputValue > 127) outputValue = 127;        // and clip the result
 		if (outputValue < -128) outputValue = -128;      // this seems a crude method, but works very well
-		
+
+		lVal1 = oscTri(&lPhase1, lFreq1, 1, 0);
+
+		lVal2 = oscTri(&lPhase2, lFreq2, 1, 0);
+
+		lVal3 = oscSin(&lPhase3, lFreq3, 1, -0.8);
+
+		//routing
+		vol1 = lVal1;
+
 		stream[i] = outputValue;
-		
-		phase1++;
-		phase1 %= sampleFrequency / freq1;
-
-		lPhase1++;
-		if (lPhase1 > sampleFrequency / lFreq1) lPhase1 = 0;
-		lVal1 = sin(lPhase1 * 2 * M_PI * lFreq1 / sampleFrequency);
-
-		lPhase2++;
-		if (lPhase2 > sampleFrequency / lFreq2) lPhase2 = 0;
-		lVal2 = 3 + 2 * dreieck(lPhase2, lFreq2, 0);
-		lFreq1 = lVal2;
-
-		lPhase3++;
-		if (lPhase3 > sampleFrequency / lFreq3) lPhase3 = 0;
-		lVal2 = 440 + 100 * dreieck(lPhase3, lFreq3, 0);
-		freq1 = lVal2;
-
-
 	}
 }
+
 int main(int argc, char *argv[])
 {
-	
+
 	if( SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO ) <0 ) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return 1;
@@ -115,7 +180,7 @@ int main(int argc, char *argv[])
 	 * buffersize of 11025 bytes, if your sdl.dll is approx. 1 Mb in stead of 220 Kb, download
 	 * v1.2.8 of SDL or better...)
 	 */
-	desired->samples = 4096; 
+	desired->samples = 4096;
 	
 	/* Our callback function */
 	desired->callback=example_mixaudio;
@@ -130,7 +195,7 @@ int main(int argc, char *argv[])
 	}
 	
 	audioBufferSize = obtained->samples;
-	sampleFrequency = obtained->freq;
+	sampleRate = obtained->freq;
 	
 	/* if the format is 16 bit, two bytes are written for every sample */
 	if (obtained->format==AUDIO_U16 || obtained->format==AUDIO_S16) {
@@ -155,6 +220,12 @@ int main(int argc, char *argv[])
 					switch (event.key.keysym.sym) {
 						case SDLK_ESCAPE:
 							running = 0;
+							break;
+						case SDLK_SPACE:
+							vol2 = !vol2;
+							break;
+						case SDLK_RETURN:
+							vol1 = !vol1;
 							break;
 						default:
 							break;
