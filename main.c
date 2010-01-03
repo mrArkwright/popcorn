@@ -12,7 +12,7 @@
 #include "oscillators.h"
 #include "audioout.h"
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	audioInfo aInfo;
 	/* UI Foo */
 	SDL_Surface *screen;
