@@ -9,20 +9,29 @@
 #include <stdio.h>
 #include <SDL.h>
 
+#include "oscillators.h"
 #include "audioout.h"
 
-int main(int argc, char *argv[]) {
+int main(void) {
+	audioInfo aInfo;
+	/* UI Foo */
 	SDL_Surface *screen;
 	SDL_Event event;
 	int running;
-
 	screen = SDL_SetVideoMode(200,200, 16, SDL_SWSURFACE);
 	SDL_WM_SetCaption("Audio Example",0);
+	/* UI Foo End */
 
-	outinit();
 	
-	write_buffer()
-	
+	/* passing callback to sdlInit() */
+	sdlinit(&example_mixaudio, &aInfo);
+
+	sampleRate = aInfo.sampleRate;
+
+	/* seting up routing */
+	oscRoute();
+
+	/* More UI Foo */
 	running = 1;
 	while (running) {
 		while (SDL_PollEvent(&event)) {
@@ -49,3 +58,4 @@ int main(int argc, char *argv[]) {
 	
 	return 0;
 }
+

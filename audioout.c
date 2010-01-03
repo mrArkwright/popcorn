@@ -11,24 +11,12 @@ unsigned int audioBufferSize = 0;
 unsigned int outputAudioBufferSize = 0;
 unsigned int sampleFrequency = 0;
 
-// This type of ring buffer may never fill up completely, at least
-// one byte must always be unused.
-// For performance reasons (alignment etc.) one whole chunk always stays
-// empty, not only one byte.
-
-
-// may only be called by outside threads
-// return value may change between immediately following two calls,
-// and the real number of free bytes might be larger!
 static int buf_free(void) {
 	int free = read_pos - write_pos - CHUNK_SIZE;
 	if (free < 0) free += BUFFSIZE;
 	return free;
 }
 
-// may only be called by SDL's playback thread
-// return value may change between immediately following two calls,
-// and the real number of buffered bytes might be larger!
 static int buf_used(void) {
 	int used = write_pos - read_pos;
 	if (used < 0) used += BUFFSIZE;
@@ -40,10 +28,10 @@ static int write_buffer(unsigned char* data,int len) {
 	int free = buf_free();
 	if (len > free) len = free;
 	if (first_len > len) first_len = len;
-	// till end of buffer
+	/* till end of buffer */
 	memcpy (&buffer[write_pos], data, first_len);
-	if (len > first_len) { // we have to wrap around
-		// remaining part from beginning of buffer
+	if (len > first_len) { /* we have to wrap around */
+		/* remaining part from beginning of buffer */
 		memcpy (buffer, &data[first_len], len - first_len);
 	}
 	write_pos = (write_pos + len) % BUFFSIZE;
@@ -55,25 +43,25 @@ static int read_buffer(unsigned char* data,int len) {
 	int buffered = buf_used();
 	if (len > buffered) len = buffered;
 	if (first_len > len) first_len = len;
-	// till end of buffer
+	/* till end of buffer */
 	memcpy (data, &buffer[read_pos], first_len);
-	if (len > first_len) { // we have to wrap around
-		// remaining part from beginning of buffer
+	if (len > first_len) { /* we have to wrap around */
+		/* remaining part from beginning of buffer */
 		memcpy (&data[first_len], buffer, len - first_len);
 	}
 	read_pos = (read_pos + len) % BUFFSIZE;
 	return len;
 }
 
-// end ring buffer stuff
+/* end ring buffer stuff */
 
 void buffcallback(void *unused, Uint8 *stream, int len) {
 	
 	read_buffer(stream, len);
-	//printf("SDL: Full Buffers: %i\n", full_buffers);
+	/*printf("SDL: Full Buffers: %i\n", full_buffers); */
 }
 
-int outinit() {
+int sdlinit(void (*callback)(void *, Uint8 *, int), audioInfo *ai) {
 	SDL_AudioSpec *desired, *obtained;
 	
 	if( SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO ) <0 ) {
@@ -105,7 +93,7 @@ int outinit() {
 	desired->samples = 4096; 
 	
 	/* Our callback function */
-	desired->callback=buffcallback;
+	desired->callback=callback;
 	desired->userdata=NULL;
 	
 	desired->channels = 1;
@@ -116,8 +104,8 @@ int outinit() {
 		return -1;
 	}
 	
-	audioBufferSize = obtained->samples;
-	sampleFrequency = obtained->freq;
+	ai->bufferSize = obtained->samples;
+	ai->sampleRate = obtained->freq;
 	
 	/* if the format is 16 bit, two bytes are written for every sample */
 	if (obtained->format==AUDIO_U16 || obtained->format==AUDIO_S16) {
@@ -133,3 +121,4 @@ int outinit() {
 
 	return 0;
 }
+
