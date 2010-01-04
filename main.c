@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <SDL.h>
 
-#include "oscillators.h"
+/*#include "oscillators.h"*/
+#include "mixAudio.h"
 #include "audioout.h"
 
 int main(int argc, char *argv[]) {
@@ -22,14 +23,13 @@ int main(int argc, char *argv[]) {
 	SDL_WM_SetCaption("Audio Example",0);
 	/* UI Foo End */
 
-	
+	/* setting up voices */
+	initVoices();
+
 	/* passing callback to sdlInit() */
-	sdlinit(&example_mixaudio, &aInfo);
+	sdlinit(&mixAudio, &aInfo);
 
 	sampleRate = aInfo.sampleRate;
-
-	/* seting up routing */
-	oscRoute();
 
 	/* More UI Foo */
 	running = 1;
@@ -41,6 +41,12 @@ int main(int argc, char *argv[]) {
 					switch (event.key.keysym.sym) {
 						case SDLK_ESCAPE:
 							running = 0;
+							break;
+						case SDLK_SPACE:
+							 playSound(69, 128);
+							break;
+						case SDLK_RETURN:
+							stopSound(69, 128);
 							break;
 						default:
 							break;

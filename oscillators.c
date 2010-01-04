@@ -1,31 +1,6 @@
 #include "oscillators.h"
 
-unsigned int sampleRate;
-
-#define A 8
-osc oscs[A];
-osc lfos[A];
-
 float m2pi = 2 * M_PI;
-
-int range = 127;
-float *globalOutput;
-
-
-void oscRoute() { /* configuration (routing and params) */
-	initOsc(&oscs[0], &oscRec, 440, 1, 0);
-	initParam(&(oscs[0].freq), &(lfos[0].val), 10);
-	initParam(&(oscs[0].param1), &(lfos[1].val), 0.9);
-	initParam(&(oscs[0].vol), &(lfos[2].val), 0.9);
-
-	initOsc(&lfos[0], &oscTri, 0.5, 1, 0);
-
-	initOsc(&lfos[1], &oscSin, 0.4, 1, 0);
-
-	initOsc(&lfos[2], &oscTri, 10, 1, -0.7);
-
-	globalOutput = &(oscs[0].val);
-}
 
 void initOsc(osc *o, float (*func)(float, float, float), float freq, float vol, float param1) {
 	o->act = 1;
@@ -46,33 +21,6 @@ void initOsc(osc *o, float (*func)(float, float, float), float freq, float vol, 
 void initParam(param *p, float *mod, float range) {
 	p->mod = mod;
 	p->range = range;
-}
-
-void example_mixaudio(void *unused, Uint8 *stream, int len) {
-	int i, j;
-	float outputValue;
-
-	for (i=0;i<len;i++) {
-		
-		for (j = 0; j < A; j++) {
-			if (oscs[j].act == 1) {
-				compOsc(&(oscs[j])); /* compute all active oscillators */
-			}
-		}
-
-		for (j = 0; j < A; j++) {
-			if (lfos[j].act == 1) {
-				compOsc(&(lfos[j])); /* compute all active lfo's */
-			}
-		}
-
-		outputValue = *globalOutput * range;
-
-		if (outputValue > 127) outputValue = 127;        /* and clip the result */
-		if (outputValue < -128) outputValue = -128;      /* this seems a crude method, but works very well */
-
-		stream[i] = outputValue;
-	}
 }
 
 void compOsc(osc *o) {

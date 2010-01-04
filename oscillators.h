@@ -4,13 +4,9 @@
  */
 #include <stdio.h>
 #include <math.h>
-#include <SDL.h>
 
 extern unsigned int sampleRate;
-/*
-unsigned int audioBufferSize = 0;
-unsigned int outputAudioBufferSize = 0;
-*/
+unsigned int sampleRate;
 
 typedef struct {
 	float val;
@@ -26,11 +22,8 @@ typedef struct {
 	param freq, vol, param1;
 } osc;
 
-void oscRoute();
 void initOsc(osc*, float(*)(float, float, float), float, float, float);
 void initParam(param*, float*, float);
-
-void example_mixaudio(void*, Uint8*, int);
 
 void compOsc(osc*);
 float compParam(param*);
@@ -38,4 +31,3 @@ float compParam(param*);
 float oscSin(float, float, float);
 float oscTri(float, float, float);
 float oscRec(float, float, float);
-

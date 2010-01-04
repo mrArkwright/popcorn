@@ -6,6 +6,8 @@ CFLAGS+=`pkg-config --cflags sdl`
 LIBS+=`pkg-config --libs sdl`
 
 SRC+=audioout.c
+SRC+=mixAudio.c
+SRC+=voices.c
 SRC+=oscillators.c
 SRC+=main.c
 
