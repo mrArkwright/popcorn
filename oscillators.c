@@ -2,7 +2,7 @@
 
 float m2pi = 2 * M_PI;
 
-void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
+void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1, char restartOnPlay) {
 	o->act = 1;
 	o->val = 0;
 	o->phase = 0;
@@ -16,6 +16,8 @@ void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol
 
 	o->param1.val = param1;
 	o->param1.mod = NULL;
+
+	o->restartOnPlay = restartOnPlay;
 }
 
 void initParam(param *p, float *mod, float *range) {

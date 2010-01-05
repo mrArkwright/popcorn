@@ -20,9 +20,10 @@ typedef struct {
 	float phase;
 	float (*func)(float, float, float);
 	param freq, vol, param1;
+	char restartOnPlay;
 } osc;
 
-void initOsc(osc*, float(*)(float, float, float), float*, float*, float*);
+void initOsc(osc*, float(*)(float, float, float), float*, float*, float*, char);
 void initParam(param*, float*, float*);
 
 void compOsc(osc*);

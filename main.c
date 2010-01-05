@@ -43,25 +43,43 @@ int main(int argc, char *argv[]) {
 							running = 0;
 							break;
 						case SDLK_a:
-							playSound(69, 128);
+							playSound(60, 128);
+							break;
+						case SDLK_w:
+							playSound(61, 128);
 							break;
 						case SDLK_s:
-							playSound(70, 128);
+							playSound(62, 128);
+							break;
+						case SDLK_e:
+							playSound(63, 128);
 							break;
 						case SDLK_d:
-							playSound(71, 128);
+							playSound(64, 128);
 							break;
 						case SDLK_f:
-							playSound(72, 128);
+							playSound(65, 128);
+							break;
+						case SDLK_t:
+							playSound(66, 128);
 							break;
 						case SDLK_g:
-							playSound(73, 128);
+							playSound(67, 128);
+							break;
+						case SDLK_z:
+							playSound(68, 128);
 							break;
 						case SDLK_h:
-							playSound(74, 128);
+							playSound(69, 128);
+							break;
+						case SDLK_u:
+							playSound(70, 128);
 							break;
 						case SDLK_j:
-							playSound(75, 128);
+							playSound(71, 128);
+							break;
+						case SDLK_k:
+							playSound(72, 128);
 							break;
 						default:
 							break;
@@ -70,25 +88,43 @@ int main(int argc, char *argv[]) {
 				case SDL_KEYUP:
 					switch (event.key.keysym.sym) {
 						case SDLK_a:
-							stopSound(69, 128);
+							stopSound(60, 128);
+							break;
+						case SDLK_w:
+							stopSound(61, 128);
 							break;
 						case SDLK_s:
-							stopSound(70, 128);
+							stopSound(62, 128);
+							break;
+						case SDLK_e:
+							stopSound(63, 128);
 							break;
 						case SDLK_d:
-							stopSound(71, 128);
+							stopSound(64, 128);
 							break;
 						case SDLK_f:
-							stopSound(72, 128);
+							stopSound(65, 128);
+							break;
+						case SDLK_t:
+							stopSound(66, 128);
 							break;
 						case SDLK_g:
-							stopSound(73, 128);
+							stopSound(67, 128);
+							break;
+						case SDLK_z:
+							stopSound(68, 128);
 							break;
 						case SDLK_h:
-							stopSound(74, 128);
+							stopSound(69, 128);
+							break;
+						case SDLK_u:
+							stopSound(70, 128);
 							break;
 						case SDLK_j:
-							stopSound(75, 128);
+							stopSound(71, 128);
+							break;
+						case SDLK_k:
+							stopSound(72, 128);
 							break;
 						default:
 							break;

@@ -1,14 +1,12 @@
 #include "mixAudio.h"
 
-int range = 64;
+int range = 32;
 
 void mixAudio(void *unused, Uint8 *stream, int len) {
 	int i;
 	float outputValue;
 
 	for (i=0;i<len;i++) {
-
-		compVoices();
 
 		outputValue = sumVoices() * range;
 
@@ -17,17 +15,4 @@ void mixAudio(void *unused, Uint8 *stream, int len) {
 
 		stream[i] = outputValue;
 	}
-}
-
-float sumVoices() {
-	int i;
-	float out = 0;
-
-	for (i = 0; i < voiceCount; i++) {
-		if (voices[i].act == 1) {
-			out += *(voices[i].output);
-		}
-	}
-
-	return out;
 }
