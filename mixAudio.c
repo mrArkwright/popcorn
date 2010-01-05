@@ -1,7 +1,5 @@
 #include "mixAudio.h"
 
-#define echoLen 10000
-
 int range = 32;
 
 void mixAudio(void *unused, Uint8 *stream, int len) {
@@ -17,17 +15,4 @@ void mixAudio(void *unused, Uint8 *stream, int len) {
 
 		stream[i] = outputValue;
 	}
-}
-
-float fxEcho(float in) {
-	static float preVals[echoLen];
-	static float *prePoint = preVals;
-	float out = 0.7 * in + 0.3 * *prePoint;
-
-	*prePoint = in;
-
-	prePoint++;
-	if (prePoint == preVals + echoLen) prePoint = preVals;
-		
-	return out;
 }
