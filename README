@@ -1,19 +1,25 @@
 der synthi - popcorn!
 
-done
+done (?)
 =====
--
+- multiple oscilators / lfos (not dynamic thou)
+- mixing multiple sounds
 
-working on
+libs
 ===========
-- sdl audio output
-- 
-
+- audio output (using libao)
+- midi input (using ??)
+- gui (dunno. gtk?)
 
 todo
 =========
-- multiple oscilators
-- mixing
-- multiple effects
-- parsing static arrangements
-- midi input
+- arbeitsplan bis naechsten montag!!
+- input from midi source (find a usabel software keyboard along the way ^^)
+- audio output using cross-platform lib
+- using gui to arrange setup / make arrangement dynamic
+- effects (future?)
+
+future
+=========
+- setting up real midi hardware through gui (learn key etc)
+- load/save arrangements from file
