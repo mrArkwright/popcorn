@@ -42,11 +42,53 @@ int main(int argc, char *argv[]) {
 						case SDLK_ESCAPE:
 							running = 0;
 							break;
-						case SDLK_SPACE:
-							 playSound(69, 128);
+						case SDLK_a:
+							playSound(69, 128);
 							break;
-						case SDLK_RETURN:
+						case SDLK_s:
+							playSound(70, 128);
+							break;
+						case SDLK_d:
+							playSound(71, 128);
+							break;
+						case SDLK_f:
+							playSound(72, 128);
+							break;
+						case SDLK_g:
+							playSound(73, 128);
+							break;
+						case SDLK_h:
+							playSound(74, 128);
+							break;
+						case SDLK_j:
+							playSound(75, 128);
+							break;
+						default:
+							break;
+					}
+					break;
+				case SDL_KEYUP:
+					switch (event.key.keysym.sym) {
+						case SDLK_a:
 							stopSound(69, 128);
+							break;
+						case SDLK_s:
+							stopSound(70, 128);
+							break;
+						case SDLK_d:
+							stopSound(71, 128);
+							break;
+						case SDLK_f:
+							stopSound(72, 128);
+							break;
+						case SDLK_g:
+							stopSound(73, 128);
+							break;
+						case SDLK_h:
+							stopSound(74, 128);
+							break;
+						case SDLK_j:
+							stopSound(75, 128);
 							break;
 						default:
 							break;

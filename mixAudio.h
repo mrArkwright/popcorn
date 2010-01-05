@@ -2,3 +2,4 @@
 #include <SDL.h>
 
 void mixAudio(void *unused, Uint8 *stream, int len);
+float sumVoices();

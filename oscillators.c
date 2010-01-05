@@ -2,7 +2,7 @@
 
 float m2pi = 2 * M_PI;
 
-void initOsc(osc *o, float (*func)(float, float, float), float freq, float vol, float param1) {
+void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
 	o->act = 1;
 	o->val = 0;
 	o->phase = 0;
@@ -18,7 +18,7 @@ void initOsc(osc *o, float (*func)(float, float, float), float freq, float vol, 
 	o->param1.mod = NULL;
 }
 
-void initParam(param *p, float *mod, float range) {
+void initParam(param *p, float *mod, float *range) {
 	p->mod = mod;
 	p->range = range;
 }
@@ -40,7 +40,7 @@ void compOsc(osc *o) {
 
 float compParam(param *p) {
 	/* this is where the routing magic happens */
-	return p->val + ((p->mod != NULL) ? p->range * (*(p->mod)) : 0); 
+	return *(p->val) + ((p->mod != NULL) ? *(p->range) * (*(p->mod)) : 0);
 }
 
 float oscSin(float phase, float spp, float param1) {

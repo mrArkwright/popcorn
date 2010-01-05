@@ -9,9 +9,9 @@ extern unsigned int sampleRate;
 unsigned int sampleRate;
 
 typedef struct {
-	float val;
+	float *val;
 	float *mod;
-	float range;
+	float *range;
 } param;
 
 typedef struct {
@@ -22,8 +22,8 @@ typedef struct {
 	param freq, vol, param1;
 } osc;
 
-void initOsc(osc*, float(*)(float, float, float), float, float, float);
-void initParam(param*, float*, float);
+void initOsc(osc*, float(*)(float, float, float), float*, float*, float*);
+void initParam(param*, float*, float*);
 
 void compOsc(osc*);
 float compParam(param*);
