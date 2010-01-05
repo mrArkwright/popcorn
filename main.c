@@ -14,7 +14,8 @@
 #include "audioout.h"
 
 int main(int argc, char *argv[]) {
-	audioInfo aInfo;
+	ao_sample_format aoFormat;
+	ao_device aoDevice;
 	/* UI Foo */
 	SDL_Surface *screen;
 	SDL_Event event;
@@ -26,10 +27,21 @@ int main(int argc, char *argv[]) {
 	/* setting up voices */
 	initVoices();
 
-	/* passing callback to sdlInit() */
-	sdlinit(&mixAudio, &aInfo);
+	/* libao */
+	aoFormat.bits = 16;
+	aoFormat.channels = 2;
+	aoFormat.rate = 44100;
+	aoFormat.byte_format = AO_FMT_LITTLE;
 
+	aoDevice = aoInit(aoFormat); /* error checks inside */
+
+
+
+	/* OLD
+	 * passing callback to sdlInit()
+	sdlinit(&mixAudio, &aInfo);
 	sampleRate = aInfo.sampleRate;
+	*/
 
 	/* More UI Foo */
 	running = 1;
@@ -139,6 +151,8 @@ int main(int argc, char *argv[]) {
 		SDL_Delay(1);
 	}
 	SDL_Quit();
+
+	aoClose(aoDevice);
 	
 	return 0;
 }
