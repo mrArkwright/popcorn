@@ -6,7 +6,6 @@
 #include <math.h>
 
 extern unsigned int sampleRate;
-unsigned int sampleRate;
 
 typedef struct {
 	float *val;

@@ -7,19 +7,27 @@
  */
 
 #include <stdio.h>
+#include <pthread.h>
 #include <SDL.h>
 
 /*#include "oscillators.h"*/
 #include "mixAudio.h"
 #include "audioout.h"
 
+int running = 1;
+unsigned int sampleRate;
+
 int main(int argc, char *argv[]) {
+	extern int running;
 	ao_sample_format aoFormat;
-	ao_device aoDevice;
+	ao_device *aoDevice;
+	aoMixParam aoMixParameters;
+	pthread_t aoThread;
+	int rc;
+
 	/* UI Foo */
 	SDL_Surface *screen;
 	SDL_Event event;
-	int running;
 	screen = SDL_SetVideoMode(200,200, 16, SDL_SWSURFACE);
 	SDL_WM_SetCaption("Audio Example",0);
 	/* UI Foo End */
@@ -30,11 +38,18 @@ int main(int argc, char *argv[]) {
 	/* libao */
 	aoFormat.bits = 16;
 	aoFormat.channels = 2;
-	aoFormat.rate = 44100;
+	sampleRate = aoFormat.rate = 44100;
 	aoFormat.byte_format = AO_FMT_LITTLE;
 
-	aoDevice = aoInit(aoFormat); /* error checks inside */
+	aoDevice = aoInit(&aoFormat); /* error checks inside */
 
+	aoMixParameters.dev = aoDevice;
+	aoMixParameters.fmt = &aoFormat;
+	rc = pthread_create(&aoThread, NULL, aoMix, (void *)&aoMixParameters);
+	if(rc) {
+		fprintf(stderr, "Couldn't start aoMix() thread, returned: %d\n", rc);
+		running = 0;
+	}
 
 
 	/* OLD
@@ -44,7 +59,6 @@ int main(int argc, char *argv[]) {
 	*/
 
 	/* More UI Foo */
-	running = 1;
 	while (running) {
 		while (SDL_PollEvent(&event)) {
 			/* GLOBAL KEYS / EVENTS */

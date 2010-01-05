@@ -1,9 +1,9 @@
 CFLAGS=-Wall -Wextra -pedantic -std=c89
 CFLAGS+=`pkg-config --cflags sdl`
-#CFLAGS+=-ggdb3
+CFLAGS+=-ggdb3
 #CC=clang
 
-LIBS+=`pkg-config --libs sdl`
+LIBS+=`pkg-config --libs sdl` -lao -lm -lpthread
 
 SRC+=audioout.c
 SRC+=mixAudio.c
