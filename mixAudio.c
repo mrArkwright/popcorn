@@ -8,7 +8,7 @@ void mixAudio(void *unused, Uint8 *stream, int len) {
 
 	for (i=0;i<len;i++) {
 
-		outputValue = fxEcho(compVoices()) * range;
+		outputValue = fxEcho(fxIIR(compVoices())) * range;
 
 		if (outputValue > 127) outputValue = 127;        /* and clip the result */
 		if (outputValue < -128) outputValue = -128;      /* this seems a crude method, but works very well */

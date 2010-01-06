@@ -21,6 +21,8 @@ void initVoices() {
 	for (i = 0; i < voiceCount; i++) {
 		initVoice(voices + i, i);
 	}
+
+	initOsc(&lfo1, &oscSin, gParams+12, gParams+9, gParams+1, 0);
 }
 
 void initVoice(voice* v, int note) {
@@ -38,7 +40,7 @@ void routeVoice(voice* v) {
 
 	initOsc(&(v->lfos[0]), &oscTri, gParams+5, gParams+6, gParams+7, 1);
 
-	initOsc(&(v->lfos[1]), &oscSin, gParams+8, gParams+9, gParams+10, 0);
+	initOsc(&(v->lfos[1]), &oscSin, gParams+8, gParams+9, gParams+10, 1);
 
 	initOsc(&(v->lfos[2]), &oscSin, gParams+11, gParams+12, gParams+13, 0);
 
@@ -55,6 +57,10 @@ float compVoices() {
 			out += *(voices[i].output);
 		}
 	}
+
+	compOsc(&lfo1);
+
+	iirCutoff = 3000 + lfo1.val * 2000;
 
 	return out;
 }
@@ -95,5 +101,6 @@ void stopSound(int note, int velocity) {
 }
 
 float getFreq(int note) {
+	note -= 24;
 	return 440 * pow(2, (note - 69) / 12.0);
 }

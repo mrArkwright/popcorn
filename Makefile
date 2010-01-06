@@ -7,6 +7,7 @@ LIBS+=`pkg-config --libs sdl`
 
 SRC+=audioout.c
 SRC+=mixAudio.c
+SRC+=effects.c
 SRC+=voices.c
 SRC+=oscillators.c
 SRC+=main.c

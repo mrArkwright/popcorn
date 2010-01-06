@@ -1,5 +1,6 @@
 #include <math.h>
 #include "oscillators.h"
+#include "effects.h"
 
 #define voiceCount 128
 #define oscCount 4
@@ -30,4 +31,5 @@ float getFreq(int note);
 
 voice voices[voiceCount];
 osc gLfos[globLfoCount];
+osc lfo1;
 float gParams[globParamCount];
