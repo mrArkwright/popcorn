@@ -20,9 +20,7 @@ void initVoices();
 void initVoice(voice*, int);
 void routeVoice(voice*);
 
-float sumVoices();
-
-void compVoices();
+float compVoices();
 void compVoice(voice*);
 
 void playSound(int note, int velocity);
@@ -31,5 +29,5 @@ void stopSound(int note, int velocity);
 float getFreq(int note);
 
 voice voices[voiceCount];
-osc globLfos[globLfoCount];
+osc gLfos[globLfoCount];
 float gParams[globParamCount];

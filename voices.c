@@ -45,30 +45,18 @@ void routeVoice(voice* v) {
 	v->output = &(v->oscs[0].val);
 }
 
-float sumVoices() {
+float compVoices() {
 	int i;
 	float out = 0;
 
-	compVoices();
-
 	for (i = 0; i < voiceCount; i++) {
 		if (voices[i].act == 1) {
+			compVoice(&(voices[i]));
 			out += *(voices[i].output);
 		}
 	}
 
 	return out;
-}
-
-
-void compVoices() {
-	int i;
-
-	for (i = 0; i < voiceCount; i++) {
-		if (voices[i].act == 1) {
-			compVoice(&(voices[i]));
-		}
-	}
 }
 
 void compVoice(voice* v) {
