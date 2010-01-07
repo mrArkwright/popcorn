@@ -47,7 +47,7 @@ void aoMix(void *parameters) {
 	while(running) { /* i hate globals */
 		for (i=0; i<rate; i++) {
 
-			sample = sumVoices() * 256; /* gain */
+			sample = compVoices() * 256; /* gain */
 
 			/* clip the result
 			 * this looks like a crude method, but works very well
