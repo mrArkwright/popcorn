@@ -36,7 +36,7 @@ void aoMix(void *parameters) {
 
 	para = (aoMixParam *) parameters;
 
-	bufLen = para->fmt->bits / 8 * para->fmt->channels * (rate = para->fmt->rate);
+	bufLen = para->fmt->bits / 8 * para->fmt->channels * (rate = para->fmt->rate/250);
 	buf = (char *) calloc(bufLen, sizeof(char));
 	if(buf == NULL) {
 		fprintf(stderr, "Error: Couldn't allocate audio buffer memory.\n");
@@ -47,7 +47,7 @@ void aoMix(void *parameters) {
 	while(running) { /* i hate globals */
 		for (i=0; i<rate; i++) {
 
-			sample = sumVoices() * 64; /* 32 == range */
+			sample = sumVoices() * 256; /* gain */
 
 			/* clip the result
 			 * this looks like a crude method, but works very well
