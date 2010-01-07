@@ -6,7 +6,6 @@ CFLAGS+=-ggdb3
 LIBS+=`pkg-config --libs sdl` -lao -lm -lpthread
 
 SRC+=audioout.c
-SRC+=mixAudio.c
 SRC+=voices.c
 SRC+=oscillators.c
 SRC+=main.c

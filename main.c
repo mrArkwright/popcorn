@@ -11,7 +11,6 @@
 #include <SDL.h>
 
 /*#include "oscillators.h"*/
-#include "mixAudio.h"
 #include "audioout.h"
 
 int running = 1;
@@ -50,13 +49,6 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "Couldn't start aoMix() thread, returned: %d\n", rc);
 		running = 0;
 	}
-
-
-	/* OLD
-	 * passing callback to sdlInit()
-	sdlinit(&mixAudio, &aInfo);
-	sampleRate = aInfo.sampleRate;
-	*/
 
 	/* More UI Foo */
 	while (running) {
