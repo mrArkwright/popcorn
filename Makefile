@@ -7,9 +7,15 @@ LIBS+=`pkg-config --libs sdl`
 
 SRC+=audioout.c
 SRC+=mixAudio.c
-SRC+=effects.c
-SRC+=voices.c
-SRC+=oscillators.c
+
+SRC+=configuration/routing.c
+
+SRC+=processing/misc.c
+SRC+=processing/oscillators.c
+SRC+=processing/tools.c
+SRC+=processing/effects.c
+SRC+=processing/voices.c
+
 SRC+=main.c
 
 OBJS=$(SRC:.c=.o)

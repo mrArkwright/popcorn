@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 	/* UI Foo End */
 
 	/* setting up voices */
-	initVoices();
+	route();
 
 	/* passing callback to sdlInit() */
 	sdlinit(&mixAudio, &aInfo);

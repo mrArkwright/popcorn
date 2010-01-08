@@ -62,3 +62,18 @@ float fxIIR(float in) {
 
 	return lpOut;
 }
+
+float fxIIRTest(float in, float freq) {
+	static float hpOut, lpOut;
+
+	float hpCoeffOmega = 2.0 * M_PI * (freq + 100) / sampleRate;
+	float hpCoeff = 2.0 - cos(hpCoeffOmega) - sqrt(pow(2.0 - cos(hpCoeffOmega), 2.0) - 1.0);
+
+	float lpCoeffOmega = 2.0 * M_PI * (freq - 100) / sampleRate;
+	float lpCoeff = 2.0 - cos(lpCoeffOmega) - sqrt(pow(2.0 - cos(lpCoeffOmega), 2.0) - 1.0);
+	
+	hpOut = (1 - hpCoeff) * in + hpCoeff * hpOut;
+	lpOut = (1 - lpCoeff) * (in - hpOut) + lpCoeff * lpOut;
+
+	return lpOut;
+}

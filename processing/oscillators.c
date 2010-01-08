@@ -1,28 +1,35 @@
 #include "oscillators.h"
 
-float m2pi = 2 * M_PI;
-
-void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1, char restartOnPlay) {
+void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
+	o->init = 1;
 	o->act = 1;
 	o->val = 0;
 	o->phase = 0;
 	o->func = func;
 
 	o->freq.val = freq;
-	o->freq.mod = NULL;
+	initParam(&(o->freq), NULL, NULL);
 
 	o->vol.val = vol;
-	o->vol.mod = NULL;
+	initParam(&(o->vol), NULL, NULL);
 
 	o->param1.val = param1;
-	o->param1.mod = NULL;
-
-	o->restartOnPlay = restartOnPlay;
+	initParam(&(o->param1), NULL, NULL);
 }
 
-void initParam(param *p, float *mod, float *range) {
-	p->mod = mod;
-	p->range = range;
+void startOsc(osc *o) {
+	if (o->init == 1) o->act = 1;
+}
+
+void stopOsc(osc *o) {
+	o->act = 0;
+	o->val = 0;
+	o->phase = 0; /* start-phasenverschiebung!! */
+}
+
+void pauseOsc(osc *o) {
+	o->act = 0;
+	o->val = 0;
 }
 
 void compOsc(osc *o) {
@@ -38,11 +45,6 @@ void compOsc(osc *o) {
 	if (o->phase >= spp) o->phase -= spp;
 
 	o->val = o->func(o->phase, spp, param1) * vol;	
-}
-
-float compParam(param *p) {
-	/* this is where the routing magic happens */
-	return *(p->val) + ((p->mod != NULL) ? *(p->range) * (*(p->mod)) : 0);
 }
 
 float oscSin(float phase, float spp, float param1) {
