@@ -1,15 +1,73 @@
 der synthi - popcorn!
 
-done (?)
-=====
-- multiple oscilators / lfos (not dynamic thou)
-- mixing multiple sounds
+1. Spezifikation
+# Eine ausfŸhrliche Beschreibung der FunktionalitŠt.
+# Stellt dafŸr in eurer Beschreibung mehrere (ca. 10) fŸr euch wesentliche Leistungsmerkmale auf, nach denen euer Programm bewertet werden soll.
+
+Features
+- polyphoner Synthesizer
+- dynamisches [stereo] routing
+ -> oszillatoren / lfos's
+ -> filter
+ -> tools (mixer / scaler etc)
+ -> [ADSR]
+ -> [step pattern generator]
+ -> [dynamische parameter fŸr den user]
+- dynamische polyphonie / unisono
+ -> jeden rechner in die knie zwingen!!
+- midi input von jack
 
 libs
 ===========
 - audio output (using libao)
-- midi input (using ??)
-- gui (dunno. gtk?)
+- midi input (using jack)
+
+2. Design
+#Eine detaillierte Beschreibung der von euch angestrebten technischen Umsetzung der in 1. spezifizierten FunktionalitŠten:
+(a) Programmstruktur/Aufbau des Programms
+main.c
+ -> audioout (Ton ausgabe thread)
+ -> Midi input
+
+voices.c
+oscillators.c
+effects.c
+
+midiin.c
+
+(b) wichtigste Funktionen und ihre Slignatur (Parameter und RŸckgabewert)
+void initOsc(osc*, float(*)(float, float, float), float*, float*, float*, char);
+void initParam(param*, float*, float*);
+
+void compOsc(osc*);
+float compParam(param*);
+
+float oscSin(float, float, float);
+float oscTri(float, float, float);
+float oscRec(float, float, float);
+
+(c) zentrale (strukturierte) Datentypen
+typedef struct {
+        float *val;
+        float *mod;
+        float *range;
+} param;
+
+typedef struct {
+        char act;
+        float val;
+        float phase;
+        float (*func)(float, float, float);
+        param freq, vol, param1;
+        char restartOnPlay;
+} osc;
+
+(d) Festlegung eines gemeinsamen Codestils (Quelltextformat, Wahl der Bezeichner, ...)
+KamelCase
+
+3. Aufgaben/-Zeitplan
+#Eine Aufteilung der Arbeit auf die Mitglieder der Gruppe. Jeder soll etwa ein Drittel des Pogramms implementieren.
+
 
 todo
 =========
