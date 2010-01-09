@@ -1,5 +1,14 @@
 #include "voices.h"
 
+voice voices[voiceCount];
+voice *firstVoice, *lastVoice;
+float actVoices;
+
+float voicesOutput;
+
+
+/* --- Initialization --- */
+
 void initVoices() {
 	int i;
 
@@ -29,8 +38,12 @@ void initVoice(voice* v) {
 	}
 }
 
+
+/* --- Computing --- */
+
 void compVoices() {
 	int i;
+
 	voicesOutput = 0;
 
 	for (i = 0; i < voiceCount; i++) {
@@ -46,16 +59,19 @@ void compVoice(voice* v) {
 
 	for (i = 0; i < globalVoiceSettings.oscCount; i++) {
 		if (v->oscs[i].act == 1) {
-			compOsc(&(v->oscs[i])); /* compute all active oscillators */
+			compOsc(&(v->oscs[i]));
 		}
 	}
 
 	for (i = 0; i < globalVoiceSettings.lfoCount; i++) {
 		if (v->lfos[i].act == 1) {
-			compOsc(&(v->lfos[i])); /* compute all active lfo's */
+			compOsc(&(v->lfos[i]));
 		}
 	}
 }
+
+
+/* Control */
 
 void playSound(int note, int velocity) {
 	int i;
@@ -125,9 +141,4 @@ void stopSound(int note, int velocity) {
 			}
 		}
 	}
-}
-
-float getFreq(int note) {
-	note -= 12;
-	return 440 * pow(2, (note - 69) / 12.0);
 }

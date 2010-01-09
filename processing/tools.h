@@ -15,7 +15,14 @@ typedef struct {
 	bus *busses;
 } mixer;
 
+
+/* --- Initialization --- */
+
 void initMixer(mixer*);
+
+
+/* --- Computing --- */
+
 void compMixer(mixer*);
 
 #endif

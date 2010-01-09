@@ -13,6 +13,10 @@
 #include "mixAudio.h"
 #include "audioout.h"
 
+#include "configuration/routing.h"
+
+unsigned int sampleRate;
+
 int main(int argc, char *argv[]) {
 	audioInfo aInfo;
 	/* UI Foo */

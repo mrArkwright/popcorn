@@ -3,8 +3,6 @@
 
 #include "misc.h"
 
-extern unsigned int sampleRate;
-
 typedef struct {
 	char init;
 	char act;

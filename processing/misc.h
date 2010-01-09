@@ -13,8 +13,19 @@ typedef struct {
 	float *range;
 } param;
 
+
+/* --- Initialization --- */
+
 void initParam(param*, float*, float*);
 
+
+/* --- Computing --- */
+
 float compParam(param*);
+
+
+/* Stuff */
+
+float getFreq(int);
 
 #endif

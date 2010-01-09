@@ -1,5 +1,8 @@
 #include "oscillators.h"
 
+
+/* --- Initialization --- */
+
 void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
 	o->init = 1;
 	o->act = 1;
@@ -17,20 +20,8 @@ void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol
 	initParam(&(o->param1), NULL, NULL);
 }
 
-void startOsc(osc *o) {
-	if (o->init == 1) o->act = 1;
-}
 
-void stopOsc(osc *o) {
-	o->act = 0;
-	o->val = 0;
-	o->phase = 0; /* start-phasenverschiebung!! */
-}
-
-void pauseOsc(osc *o) {
-	o->act = 0;
-	o->val = 0;
-}
+/* --- Computing --- */
 
 void compOsc(osc *o) {
 	float freq, vol, param1;
@@ -86,3 +77,20 @@ float oscRec(float phase, float spp, float param1) {
 	return out;
 }
 
+
+/* Control */
+
+void startOsc(osc *o) {
+	if (o->init == 1) o->act = 1;
+}
+
+void stopOsc(osc *o) {
+	o->act = 0;
+	o->val = 0;
+	o->phase = 0; /* start-phasenverschiebung!! */
+}
+
+void pauseOsc(osc *o) {
+	o->act = 0;
+	o->val = 0;
+}

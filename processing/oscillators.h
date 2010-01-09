@@ -3,8 +3,6 @@
 
 #include "misc.h"
 
-unsigned int sampleRate;
-
 typedef struct {
 	char init;
 	char act;
@@ -14,16 +12,25 @@ typedef struct {
 	param freq, vol, param1;
 } osc;
 
+
+/* --- Initialization --- */
+
 void initOsc(osc*, float(*)(float, float, float), float*, float*, float*);
 
-void startOsc(osc *o);
-void stopOsc(osc *o);
-void pauseOsc(osc *o);
+
+/* --- Computing --- */
 
 void compOsc(osc*);
 
 float oscSin(float, float, float);
 float oscTri(float, float, float);
 float oscRec(float, float, float);
+
+
+/* Control */
+
+void startOsc(osc *o);
+void stopOsc(osc *o);
+void pauseOsc(osc *o);
 
 #endif

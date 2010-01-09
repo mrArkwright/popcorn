@@ -1,7 +1,7 @@
 #ifndef ROUTING_H
 #define ROUTING_H
 
-#include "../processing/voices.h"
+#include "../processing/compute.h"
 
 #define globParamCount 32
 

@@ -1,5 +1,8 @@
 #include "tools.h"
 
+
+/* --- Initialization --- */
+
 void initMixer(mixer *m) {
 	int i;
 
@@ -10,6 +13,9 @@ void initMixer(mixer *m) {
 		initParam(&(m->busses[i].vol), NULL, NULL);
 	}
 }
+
+
+/* --- Computing --- */
 
 void compMixer(mixer *m) {
 	int i;

@@ -22,24 +22,27 @@ typedef struct {
 	int lfoCount;
 } voiceSettings;
 
+extern voice voices[voiceCount];
+extern voice *firstVoice, *lastVoice;
+extern float actVoices;
+
+extern float voicesOutput;
+
+/* --- Initialization --- */
+
 void initVoices();
 void initVoice(voice*);
+
+
+/* --- Computing --- */
 
 void compVoices();
 void compVoice(voice*);
 
+
+/* Control */
+
 void playSound(int note, int velocity);
 void stopSound(int note, int velocity);
-
-float getFreq(int note);
-
-voice voices[voiceCount];
-voiceSettings globalVoiceSettings;
-voice *firstVoice, *lastVoice;
-float actVoices;
-
-osc gLfo;
-
-float voicesOutput;
 
 #endif
