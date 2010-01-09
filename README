@@ -1,83 +1,17 @@
-der synthi - popcorn!
-
-1. Spezifikation
-# Eine ausfŸhrliche Beschreibung der FunktionalitŠt.
-# Stellt dafŸr in eurer Beschreibung mehrere (ca. 10) fŸr euch wesentliche Leistungsmerkmale auf, nach denen euer Programm bewertet werden soll.
-
-Features
-- polyphoner Synthesizer
-- dynamisches [stereo] routing
- -> oszillatoren / lfos's
- -> filter
- -> tools (mixer / scaler etc)
- -> [ADSR]
- -> [step pattern generator]
- -> [dynamische parameter fŸr den user]
-- dynamische polyphonie / unisono
- -> jeden rechner in die knie zwingen!!
-- midi input von jack
-
-libs
-===========
-- audio output (using libao)
-- midi input (using jack)
-
-2. Design
-#Eine detaillierte Beschreibung der von euch angestrebten technischen Umsetzung der in 1. spezifizierten FunktionalitŠten:
-(a) Programmstruktur/Aufbau des Programms
-main.c
- -> audioout (Ton ausgabe thread)
- -> Midi input
-
-voices.c
-oscillators.c
-effects.c
-
-midiin.c
-
-(b) wichtigste Funktionen und ihre Slignatur (Parameter und RŸckgabewert)
-void initOsc(osc*, float(*)(float, float, float), float*, float*, float*, char);
-void initParam(param*, float*, float*);
-
-void compOsc(osc*);
-float compParam(param*);
-
-float oscSin(float, float, float);
-float oscTri(float, float, float);
-float oscRec(float, float, float);
-
-(c) zentrale (strukturierte) Datentypen
-typedef struct {
-        float *val;
-        float *mod;
-        float *range;
-} param;
-
-typedef struct {
-        char act;
-        float val;
-        float phase;
-        float (*func)(float, float, float);
-        param freq, vol, param1;
-        char restartOnPlay;
-} osc;
-
-(d) Festlegung eines gemeinsamen Codestils (Quelltextformat, Wahl der Bezeichner, ...)
-KamelCase
-
-3. Aufgaben/-Zeitplan
-#Eine Aufteilung der Arbeit auf die Mitglieder der Gruppe. Jeder soll etwa ein Drittel des Pogramms implementieren.
-
+Dokumentation moved to Wiki
 
 todo
 =========
-- arbeitsplan bis naechsten montag!!
-- input from midi source (find a usabel software keyboard along the way ^^)
-- audio output using cross-platform lib
-- using gui to arrange setup / make arrangement dynamic
-- effects (future?)
+- Doku (wiki) until monday!!
+- effect routing
+- midi input (jack)
+- audio output using jack as well
+- load/save arrangements from file (JSON or YAML)
+
+
 
 future
 =========
 - setting up real midi hardware through gui (learn key etc)
-- load/save arrangements from file
+- using gui to arrange setup / make arrangement dynamic
+
