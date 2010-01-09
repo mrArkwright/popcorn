@@ -1,15 +1,9 @@
 /*
- *  main program
- *
- *  for now:
- *  - init audio
- *  - fill buffer
+ *  
  */
 
 #include <stdio.h>
-#include <pthread.h>
-#include <SDL.h>
-
+#include <stdlib.h>
 #include <jack/jack.h>
 
 jack_port_t *output_port;

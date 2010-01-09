@@ -54,10 +54,13 @@ int jackProcess(jack_nframes_t nframes, void *arg) {
 
 int jackSRateChanged(jack_nframes_t nframes, void *arg) {
 	extern unsigned int sampleRate;
-	fprintf("the sample rate is now %" PRIu32 "/sec\n", nframes);
+	unsigned int new = 0
 
 	/* reset global sample rate */
-	sampleRate = (jack_default_audio_sample_t) nframes;
+	if((new = (jack_default_audio_sample_t) nframes) != 0);
+		sampleRate = new;
+
+	fprintf(stderr, "the sample rate is now %" PRIu32 "/sec\n", nframes);
 
 	return 0;
 }
