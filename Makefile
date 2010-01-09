@@ -1,11 +1,14 @@
-CFLAGS=-Wall -Wextra -pedantic -std=c89
-CFLAGS+=`pkg-config --cflags sdl`
-CFLAGS+=-ggdb3
-#MacPorts
-CFLAGS+=-I/opt/local/include
 #CC=clang
 
-LIBS+=`pkg-config --libs jack`
+CFLAGS=-Wall -Wextra -pedantic -std=c89
+CFLAGS+=-ggdb3
+#JackOSX
+#CFLAGS+=-I/usr/local/include
+#LIBS+=-framework CoreAudio -framework CoreServices -framework AudioUnit -L/usr/local/lib -ljack
+#*nix
+#CFLAGS+=$(pkg-config --cflags jack)
+#LIBS+=$(pkg-config --libs jack)
+
 
 SRC+=jack.c
 SRC+=voices.c
