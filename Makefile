@@ -5,9 +5,9 @@ CFLAGS+=-ggdb3
 CFLAGS+=-I/opt/local/include
 #CC=clang
 
-LIBS+=`pkg-config --libs sdl` -lao -lm -lpthread
+LIBS+=`pkg-config --libs jack`
 
-SRC+=audioout.c
+SRC+=jack.c
 SRC+=voices.c
 SRC+=oscillators.c
 SRC+=effects.c
