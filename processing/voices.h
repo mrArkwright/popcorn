@@ -28,6 +28,8 @@ extern float actVoices;
 
 extern float voicesOutput;
 
+voiceSettings globalVoiceSettings;
+
 /* --- Initialization --- */
 
 void initVoices();

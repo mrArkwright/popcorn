@@ -40,8 +40,6 @@ void routeVoices() {
 
 void routeMaster() {
 	masterOutput = &voicesOutput;
-
-	initOsc(&gLfo, &oscSin, gParams+9, gParams+14, gParams+1);
 }
 
 void routeVoice(voice* v) {
