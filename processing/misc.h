@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <math.h>
 
+enum unitType {utOSC = 1};
+enum oscType {otSIN = 1, otTRI, otREC};
+
 extern unsigned int sampleRate;
 extern float m2pi;
 

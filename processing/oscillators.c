@@ -4,9 +4,6 @@
 /* --- Initialization --- */
 
 void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
-	o->init = 1;
-	o->act = 1;
-	o->val = 0;
 	o->phase = 0;
 	o->func = func;
 
@@ -35,7 +32,7 @@ void compOsc(osc *o) {
 	o->phase++;
 	if (o->phase >= spp) o->phase -= spp;
 
-	o->val = o->func(o->phase, spp, param1) * vol;	
+	o->val = o->func(o->phase, spp, param1) * vol;
 }
 
 float oscSin(float phase, float spp, float param1) {
@@ -75,22 +72,4 @@ float oscRec(float phase, float spp, float param1) {
 	out = (phase < spp * param1) ? 1 : -1;
 
 	return out;
-}
-
-
-/* Control */
-
-void startOsc(osc *o) {
-	if (o->init == 1) o->act = 1;
-}
-
-void stopOsc(osc *o) {
-	o->act = 0;
-	o->val = 0;
-	o->phase = 0; /* start-phasenverschiebung!! */
-}
-
-void pauseOsc(osc *o) {
-	o->act = 0;
-	o->val = 0;
 }

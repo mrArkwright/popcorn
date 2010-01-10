@@ -4,7 +4,7 @@
 #include "misc.h"
 
 typedef struct {
-	char act;
+	char *act;
 	float *input;
 	param vol;
 } bus;

@@ -22,6 +22,6 @@ float compParam(param *p) {
 /* Stuff */
 
 float getFreq(int note) {
-	note -= 12;
+	note -= 0;
 	return 440 * pow(2, (note - 69) / 12.0);
 }

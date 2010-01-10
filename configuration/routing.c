@@ -1,58 +1,103 @@
 #include "routing.h"
 
-void route() {
-	initGlobalParams();
-	routeVoices();
-	routeMaster();
+float *routeMasterOutput(gUnit *u) {
+	switch(u->type) {
+		case utOSC:
+			masterOutput = &(((osc*)(u->unit))->val);
+			break;
+		default: 
+			masterOutput = NULL;
+			break;
+	}
+
+	return masterOutput;
 }
 
-void initGlobalParams() {
-	gParams[0] = 1;
-	gParams[1] = 0;	
-	gParams[2] = 10;
-	gParams[3] = 0.9;
-	gParams[4] = 0.9;
-	gParams[5] = 0.5;
-	gParams[6] = 1;
-	gParams[7] = 0;
-	gParams[8] = 0.4;
-	gParams[9] = 1;
-	gParams[10] = 0;
-	gParams[11] = 10;
-	gParams[12] = 0.4;
-	gParams[13] = -0.7;
-	gParams[14] = 3000;
-
-}
-
-void routeVoices() {
-	int i;
-
-	globalVoiceSettings.oscCount = 2;
-	globalVoiceSettings.lfoCount = 3;
-
-	initVoices();
-	
-	for (i = 0; i < voiceCount; i++) {
-		routeVoice(voices + i);
+void setGlobalStaticParam(gUnit *u, int param, float val) {
+	switch(u->type) {
+		
 	}
 }
 
-void routeMaster() {
-	masterOutput = &voicesOutput;
+
+void routeParam(gUnit *u, int param, gUnit *in) {
+	
 }
 
-void routeVoice(voice* v) {
-	initOsc(&(v->oscs[0]), &oscRec, &(v->freq), gParams, gParams+1);
-	/*initParam(&(v->oscs[0].freq), &(v->lfos[0].val), gParams+2);*/
-	initParam(&(v->oscs[0].param1), &(v->lfos[1].val), gParams+3);
-	initParam(&(v->oscs[0].vol), &(v->lfos[2].val), gParams+4);
+gUnit *addGlobalOsc(int type) {
+	gUnit *newUnit = addGlobalUnit();
+	float (*func)(float, float, float);
 
-	initOsc(&(v->lfos[0]), &oscTri, gParams+5, gParams+6, gParams+7);
+	newUnit->type = utOSC;
+	newUnit->unit = malloc(sizeof(osc));
+	newUnit->comp = &compOsc;
 
-	initOsc(&(v->lfos[1]), &oscSin, gParams+8, gParams+9, gParams+10);
+	switch(type) {
+		case otSIN: func = &oscSin; break;
+		case otTRI: func = &oscTri; break;
+		case otREC: func = &oscRec; break;
+		default: break;
+	}
 
-	initOsc(&(v->lfos[2]), &oscSin, gParams+11, gParams+12, gParams+13);
+	initOsc(newUnit->unit, func, defParams+0, defParams+1, defParams+2);
 
-	v->output = &(v->oscs[0].val);
+	newUnit->act = gBools+1;
+
+	return newUnit;
+}
+
+gUnit *addGlobalUnit() {
+	gUnitCount++;
+	gUnits = realloc(gUnits, sizeof(gUnit) * gUnitCount);
+	return gUnits + gUnitCount - 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void taddOsc() {
+	gUnit *newUnit;
+
+	gUnitCount++;
+	gUnits = realloc(gUnits, sizeof(gUnit) * gUnitCount);
+
+	newUnit = gUnits + gUnitCount - 1;
+	
+	newUnit->unit = malloc(sizeof(osc));
+	newUnit->comp = &compOsc;
+	initOsc(newUnit->unit, &oscSin, defParams+0, defParams+1, defParams+2);
+	newUnit->act = gBools+1;
+}
+
+void taddLOsc() {
+	int i;
+	lUnit *newUnit;
+
+	lUnitCount++;
+	lUnits = realloc(lUnits, sizeof(lUnit) * lUnitCount);
+
+	newUnit = lUnits + lUnitCount - 1;
+
+	newUnit->units = malloc(sizeof(void*) * voiceCount);
+	newUnit->act = malloc(sizeof(char*) * voiceCount);
+	newUnit->comp = &compOsc;
+
+	for (i = 0; i < voiceCount; i++) {
+		newUnit->units[i] = malloc(sizeof(osc));
+		initOsc(newUnit->units[i], &oscSin, &(voices[i].freq), defParams+1, defParams+2);
+
+		newUnit->act[i] = &(voices[i].act);
+
+		voices[i].output = &(((osc*)(newUnit->units[i]))->val);
+	}
 }

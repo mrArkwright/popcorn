@@ -23,7 +23,7 @@ void compMixer(mixer *m) {
 	m->val = 0;
 
 	for (i = 0; i < m->busCount; i++) {
-		if (m->busses[i].act == 1) {
+		if (*(m->busses[i].act) == 1) {
 			m->val += *(m->busses[i].input) * compParam(&(m->busses[i].vol));
 		}
 	}

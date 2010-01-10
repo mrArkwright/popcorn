@@ -1,17 +1,16 @@
 #ifndef ROUTING_H
 #define ROUTING_H
 
+#include "../processing/misc.h"
+#include "../processing/oscillators.h"
 #include "../processing/compute.h"
 
-#define globParamCount 32
+float *routeMasterOutput(gUnit *); 
 
-void route();
-void initGlobalParams();
-void routeVoices();
-void routeVoice(voice *);
-void routeMaster();
+gUnit *addGlobalOsc(int);
+gUnit *addGlobalUnit();
 
-float gParams[globParamCount];
-float *masterOutput;
+void taddOsc();
+void taddLOsc();
 
 #endif

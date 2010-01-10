@@ -12,34 +12,18 @@ typedef struct voice {
 	struct voice *preVoice, *postVoice;
 	float freq;
 	int velocity;
-	osc *oscs;
-	osc *lfos;
 	float* output;
 } voice;
-
-typedef struct {
-	int oscCount;
-	int lfoCount;
-} voiceSettings;
 
 extern voice voices[voiceCount];
 extern voice *firstVoice, *lastVoice;
 extern float actVoices;
 
-extern float voicesOutput;
-
-voiceSettings globalVoiceSettings;
 
 /* --- Initialization --- */
 
 void initVoices();
 void initVoice(voice*);
-
-
-/* --- Computing --- */
-
-void compVoices();
-void compVoice(voice*);
 
 
 /* Control */

@@ -8,7 +8,7 @@ void mixAudio(void *unused, Uint8 *stream, int len) {
 
 	for (i=0;i<len;i++) {
 
-		compVoices();
+		compute();
 
 		outputValue = *masterOutput * range;
 

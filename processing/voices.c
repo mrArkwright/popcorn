@@ -4,8 +4,6 @@ voice voices[voiceCount];
 voice *firstVoice, *lastVoice;
 float actVoices;
 
-float voicesOutput;
-
 
 /* --- Initialization --- */
 
@@ -20,54 +18,9 @@ void initVoices() {
 }
 
 void initVoice(voice* v) {
-	int i;
-
 	v->act = 0;
 	v->preVoice = NULL;
 	v->postVoice = NULL;
-
-	v->oscs = (osc *) malloc(sizeof(osc) * globalVoiceSettings.oscCount);
-	v->lfos = (osc *) malloc(sizeof(osc) * globalVoiceSettings.lfoCount);
-
-	for (i = 0; i < globalVoiceSettings.oscCount; i++) {
-		v->oscs[i].init = 0;
-	}
-
-	for (i = 0; i < globalVoiceSettings.lfoCount; i++) {
-		v->lfos[i].init = 0;
-	}
-}
-
-
-/* --- Computing --- */
-
-void compVoices() {
-	int i;
-
-	voicesOutput = 0;
-
-	for (i = 0; i < voiceCount; i++) {
-		if (voices[i].act == 1) { /* voice auch berechnen wenn voice aus (wegen nachhall etc)??? */
-			compVoice(&(voices[i]));
-			voicesOutput += *(voices[i].output);
-		}
-	}
-}
-
-void compVoice(voice* v) {
-	int i;
-
-	for (i = 0; i < globalVoiceSettings.oscCount; i++) {
-		if (v->oscs[i].act == 1) {
-			compOsc(&(v->oscs[i]));
-		}
-	}
-
-	for (i = 0; i < globalVoiceSettings.lfoCount; i++) {
-		if (v->lfos[i].act == 1) {
-			compOsc(&(v->lfos[i]));
-		}
-	}
 }
 
 
@@ -101,18 +54,10 @@ void playSound(int note, int velocity) {
 	newVoice->freq = getFreq(note);
 	newVoice->velocity = velocity;
 	newVoice->act = 1;
-
-	for (i = 0; i < globalVoiceSettings.oscCount; i++) {
-		startOsc(newVoice->oscs + i);
-	}
-
-	for (i = 0; i < globalVoiceSettings.lfoCount; i++) {
-		startOsc(newVoice->lfos + i);
-	}
 }
 
 void stopSound(int note, int velocity) {
-	int i, j;
+	int i;
 	float freq = getFreq(note);
 
 	for (i = 0; i < voiceCount; i++) {
@@ -130,15 +75,8 @@ void stopSound(int note, int velocity) {
 			}
 
 			voices[i].act = 0;
+			voices[i].velocity = velocity;
 			actVoices--;
-
-			for (j = 0; j < globalVoiceSettings.oscCount; j++) {
-				stopOsc(voices[i].oscs + j);
-			}
-
-			for (j = 0; j < globalVoiceSettings.lfoCount; j++) {
-				stopOsc(voices[i].lfos + j);
-			}
 		}
 	}
 }

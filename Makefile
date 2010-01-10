@@ -9,12 +9,14 @@ SRC+=audioout.c
 SRC+=mixAudio.c
 
 SRC+=configuration/routing.c
+SRC+=configuration/example.c
 
 SRC+=processing/misc.c
 SRC+=processing/oscillators.c
 SRC+=processing/tools.c
 SRC+=processing/effects.c
 SRC+=processing/voices.c
+SRC+=processing/compute.c
 
 SRC+=main.c
 

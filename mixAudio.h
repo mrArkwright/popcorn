@@ -3,8 +3,7 @@
 
 #include <SDL.h>
 
-#include "processing/voices.h"
-#include "configuration/routing.h"
+#include "processing/compute.h"
 
 void mixAudio(void *unused, Uint8 *stream, int len);
 

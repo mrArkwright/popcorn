@@ -9,11 +9,9 @@
 #include <stdio.h>
 #include <SDL.h>
 
-/*#include "oscillators.h"*/
+#include "configuration/example.h"
 #include "mixAudio.h"
 #include "audioout.h"
-
-#include "configuration/routing.h"
 
 unsigned int sampleRate;
 
@@ -27,8 +25,8 @@ int main(int argc, char *argv[]) {
 	SDL_WM_SetCaption("Audio Example",0);
 	/* UI Foo End */
 
-	/* setting up voices */
-	route();
+	/* route */
+	routeExample();
 
 	/* passing callback to sdlInit() */
 	sdlinit(&mixAudio, &aInfo);
