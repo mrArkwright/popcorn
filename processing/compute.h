@@ -20,10 +20,10 @@ typedef struct {
 	void (*comp)(void*);
 } lUnit;
 
-extern gUnit *gUnits;
+extern gUnit **gUnits;
 extern int gUnitCount;
 
-extern lUnit *lUnits;
+extern lUnit **lUnits;
 extern int lUnitCount;
 
 extern float voicesOutput;

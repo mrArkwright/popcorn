@@ -54,14 +54,16 @@ void routeGlobalParam(gUnit *u, int type, int option, gUnit *src) {
 
 gUnit *addGlobalUnit() {
 	gUnitCount++;
-	gUnits = realloc(gUnits, sizeof(gUnit) * gUnitCount);
-	return gUnits + gUnitCount - 1;
+	gUnits = realloc(gUnits, sizeof(gUnit *) * gUnitCount);
+	gUnits[gUnitCount - 1] = malloc(sizeof(gUnit));
+	return gUnits[gUnitCount - 1];
 }
 
 float *addGlobalParam() {
 	gParamCount++;
-	gParams = realloc(gParams, sizeof(float) * gParamCount);
-	return gParams + gParamCount - 1;
+	gParams = realloc(gParams, sizeof(float *) * gParamCount);
+	gParams[gParamCount - 1] = malloc(sizeof(float));
+	return gParams[gParamCount - 1];
 }
 
 float **getGlobalParamAddress(gUnit *u, int type, int option) {
@@ -72,6 +74,8 @@ float **getGlobalParamAddress(gUnit *u, int type, int option) {
 		case utOSC:
 			switch (type) {
 				case ptFREQ: p = &(((osc*)(u->unit))->freq); break;
+				case ptVOL: p = &(((osc*)(u->unit))->vol); break;
+				case ptPARAM1: p = &(((osc*)(u->unit))->param1); break;
 				default: return NULL;
 			}
 			break;

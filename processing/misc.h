@@ -7,11 +7,11 @@
 #define defParamCount 3
 
 enum unitType {utOSC = 1};
-enum paramType {ptFREQ = 1};
+enum paramType {ptFREQ = 1, ptVOL, ptPARAM1};
 enum paramOption {poVAL = 1, poMOD, poRANGE};
 enum oscType {otSIN = 1, otTRI, otREC};
 
-extern float *gParams;
+extern float **gParams;
 extern int gParamCount;
 extern char gBools[];
 extern float defParams[];

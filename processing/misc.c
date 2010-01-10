@@ -1,6 +1,6 @@
 #include "misc.h"
 
-float *gParams = NULL;
+float **gParams = NULL;
 int gParamCount = 0;
 char gBools[2] = {0, 1};
 float defParams[defParamCount] = {440, 1, 0};

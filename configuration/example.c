@@ -1,17 +1,26 @@
 #include "example.h"
 
 void routeExample() {
+	int i;
+	/* adding and setting up units */
+	addGlobalOsc(otREC);
+	setGlobalParam(gUnits[0], ptFREQ, poVAL, 440); /* später voices freq */
+	setGlobalParam(gUnits[0], ptPARAM1, poRANGE, 0.9);
+	setGlobalParam(gUnits[0], ptVOL, poRANGE, 0.9);
+
 	addGlobalOsc(otSIN);
-
-	setGlobalParam(gUnits+0, ptFREQ, poVAL, 440);
-	setGlobalParam(gUnits+0, ptFREQ, poRANGE, 100);
+	setGlobalParam(gUnits[1], ptFREQ, poVAL, 0.4);
 
 	addGlobalOsc(otSIN);
-	setGlobalParam(gUnits+1, ptFREQ, poVAL, 1.6);
+	setGlobalParam(gUnits[2], ptFREQ, poVAL, 10);
+	setGlobalParam(gUnits[2], ptVOL, poVAL, 0.4);
+	setGlobalParam(gUnits[2], ptPARAM1, poVAL, -0.7);
 
-	routeGlobalParam(gUnits+0, ptFREQ, poMOD, gUnits+1);
+	/* routing units */
+	routeGlobalParam(gUnits[0], ptPARAM1, poMOD, gUnits[1]);
+	routeGlobalParam(gUnits[0], ptVOL, poMOD, gUnits[2]);
 
-	routeMasterOutput(gUnits+0);
+	routeMasterOutput(gUnits[0]);
 }
 
 /*
@@ -32,11 +41,11 @@ void routeExample() {
 
 void routeVoice(voice* v) {
 	initOsc(&(v->oscs[0]), &oscRec, &(v->freq), gParams, gParams+1);
-	initParam(&(v->oscs[0].freq), &(v->lfos[0].val), gParams+2);
+	//initParam(&(v->oscs[0].freq), &(v->lfos[0].val), gParams+2);
 	initParam(&(v->oscs[0].param1), &(v->lfos[1].val), gParams+3);
 	initParam(&(v->oscs[0].vol), &(v->lfos[2].val), gParams+4);
 
-	initOsc(&(v->lfos[0]), &oscTri, gParams+5, gParams+6, gParams+7);
+	//initOsc(&(v->lfos[0]), &oscTri, gParams+5, gParams+6, gParams+7);
 
 	initOsc(&(v->lfos[1]), &oscSin, gParams+8, gParams+9, gParams+10);
 
