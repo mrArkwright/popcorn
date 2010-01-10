@@ -7,12 +7,6 @@ int gUnitCount = 0;
 lUnit *lUnits = NULL;
 int lUnitCount = 0;
 
-/* --- Params --- */
-float *gParams = NULL;
-int gParamCount = 0;
-char gBools[2] = {0, 1};
-float defParams[3] = {440, 1, 0};
-
 float voicesOutput;
 float *masterOutput = NULL;
 

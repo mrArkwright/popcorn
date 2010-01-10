@@ -26,11 +26,6 @@ extern int gUnitCount;
 extern lUnit *lUnits;
 extern int lUnitCount;
 
-extern float *gParams;
-extern int gParamCount;
-extern char gBools[];
-extern float defParams[];
-
 extern float voicesOutput;
 extern float *masterOutput;
 

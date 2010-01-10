@@ -2,7 +2,15 @@
 
 void routeExample() {
 	addGlobalOsc(otSIN);
+
+	setGlobalParam(gUnits+0, ptFREQ, poVAL, 440);
+	setGlobalParam(gUnits+0, ptFREQ, poRANGE, 100);
+
 	addGlobalOsc(otSIN);
+	setGlobalParam(gUnits+1, ptFREQ, poVAL, 1.6);
+
+	routeGlobalParam(gUnits+0, ptFREQ, poMOD, gUnits+1);
+
 	routeMasterOutput(gUnits+0);
 }
 

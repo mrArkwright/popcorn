@@ -11,9 +11,9 @@ typedef struct {
 } osc;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initOsc(osc*, float(*)(float, float, float), float*, float*, float*);
+void setupOsc(osc *o, float(*)(float, float, float));
 
 
 /* --- Computing --- */

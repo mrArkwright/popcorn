@@ -1,27 +1,11 @@
 #include "routing.h"
 
+
+/* --- API ---*/
+
 float *routeMasterOutput(gUnit *u) {
-	switch(u->type) {
-		case utOSC:
-			masterOutput = &(((osc*)(u->unit))->val);
-			break;
-		default: 
-			masterOutput = NULL;
-			break;
-	}
-
+	masterOutput = getGlobalValAddress(u);
 	return masterOutput;
-}
-
-void setGlobalStaticParam(gUnit *u, int param, float val) {
-	switch(u->type) {
-		
-	}
-}
-
-
-void routeParam(gUnit *u, int param, gUnit *in) {
-	
 }
 
 gUnit *addGlobalOsc(int type) {
@@ -32,19 +16,41 @@ gUnit *addGlobalOsc(int type) {
 	newUnit->unit = malloc(sizeof(osc));
 	newUnit->comp = &compOsc;
 
-	switch(type) {
+	/* Oscillator-Types */
+	switch (type) {
 		case otSIN: func = &oscSin; break;
 		case otTRI: func = &oscTri; break;
 		case otREC: func = &oscRec; break;
 		default: break;
 	}
 
-	initOsc(newUnit->unit, func, defParams+0, defParams+1, defParams+2);
+	setupOsc(newUnit->unit, func);
 
 	newUnit->act = gBools+1;
 
 	return newUnit;
 }
+
+void setGlobalParam(gUnit *u, int type, int option, float val) {
+	float **p = getGlobalParamAddress(u, type, option);
+
+	if (isParamDefault(p) || *p == NULL) {
+		*p = addGlobalParam();
+	}
+
+	**p = val;
+}
+
+void routeGlobalParam(gUnit *u, int type, int option, gUnit *src) {
+	float **p = getGlobalParamAddress(u, type, option);
+	float *v = getGlobalValAddress(src);
+
+	/* wenn gParam -> löschen*/
+	*p = v;
+}
+
+
+/* ---Helper ---*/
 
 gUnit *addGlobalUnit() {
 	gUnitCount++;
@@ -52,52 +58,49 @@ gUnit *addGlobalUnit() {
 	return gUnits + gUnitCount - 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-void taddOsc() {
-	gUnit *newUnit;
-
-	gUnitCount++;
-	gUnits = realloc(gUnits, sizeof(gUnit) * gUnitCount);
-
-	newUnit = gUnits + gUnitCount - 1;
-	
-	newUnit->unit = malloc(sizeof(osc));
-	newUnit->comp = &compOsc;
-	initOsc(newUnit->unit, &oscSin, defParams+0, defParams+1, defParams+2);
-	newUnit->act = gBools+1;
+float *addGlobalParam() {
+	gParamCount++;
+	gParams = realloc(gParams, sizeof(float) * gParamCount);
+	return gParams + gParamCount - 1;
 }
 
-void taddLOsc() {
-	int i;
-	lUnit *newUnit;
-
-	lUnitCount++;
-	lUnits = realloc(lUnits, sizeof(lUnit) * lUnitCount);
-
-	newUnit = lUnits + lUnitCount - 1;
-
-	newUnit->units = malloc(sizeof(void*) * voiceCount);
-	newUnit->act = malloc(sizeof(char*) * voiceCount);
-	newUnit->comp = &compOsc;
-
-	for (i = 0; i < voiceCount; i++) {
-		newUnit->units[i] = malloc(sizeof(osc));
-		initOsc(newUnit->units[i], &oscSin, &(voices[i].freq), defParams+1, defParams+2);
-
-		newUnit->act[i] = &(voices[i].act);
-
-		voices[i].output = &(((osc*)(newUnit->units[i]))->val);
+float **getGlobalParamAddress(gUnit *u, int type, int option) {
+	param *p;
+	
+	/* Unit-Types */
+	switch (u->type) {
+		case utOSC:
+			switch (type) {
+				case ptFREQ: p = &(((osc*)(u->unit))->freq); break;
+				default: return NULL;
+			}
+			break;
+		default: return NULL;
 	}
+
+	switch (option) {
+		case poVAL: return &(p->val);
+		case poMOD: return &(p->mod);
+		case poRANGE: return &(p->range);
+		default: return NULL;
+	}
+}
+
+float *getGlobalValAddress(gUnit *u) {
+
+	/* Unit-Types */
+	switch (u->type) {
+		case utOSC: return &(((osc*)(u->unit))->val);
+		default: return NULL;
+	}
+}
+
+char isParamDefault(float **p) {
+	int i;
+
+	for (i = 0; i < defParamCount; i++) {
+		if ((defParams + i) == *p) return 1;
+	}
+
+	return 0;
 }

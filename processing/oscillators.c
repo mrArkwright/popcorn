@@ -1,20 +1,20 @@
 #include "oscillators.h"
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initOsc(osc *o, float (*func)(float, float, float), float *freq, float *vol, float *param1) {
+void setupOsc(osc *o, float (*func)(float, float, float)) {
 	o->phase = 0;
 	o->func = func;
 
-	o->freq.val = freq;
-	initParam(&(o->freq), NULL, NULL);
+	o->freq.val = defParams + 0;
+	setupParam(&(o->freq));
 
-	o->vol.val = vol;
-	initParam(&(o->vol), NULL, NULL);
+	o->vol.val = defParams + 1;
+	setupParam(&(o->vol));
 
-	o->param1.val = param1;
-	initParam(&(o->param1), NULL, NULL);
+	o->param1.val = defParams + 2;
+	setupParam(&(o->param1));
 }
 
 

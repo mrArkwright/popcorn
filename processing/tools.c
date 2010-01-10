@@ -10,7 +10,7 @@ void initMixer(mixer *m) {
 
 	for (i = 0; i < m->busCount; i++) {
 		m->busses[i].act = 0;
-		initParam(&(m->busses[i].vol), NULL, NULL);
+		setupParam(&(m->busses[i].vol));
 	}
 }
 

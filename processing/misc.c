@@ -1,13 +1,18 @@
 #include "misc.h"
 
+float *gParams = NULL;
+int gParamCount = 0;
+char gBools[2] = {0, 1};
+float defParams[defParamCount] = {440, 1, 0};
+
 float m2pi = 2 * M_PI;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initParam(param *p, float *mod, float *range) {
-	p->mod = mod;
-	p->range = range;
+void setupParam(param *p) {
+	p->mod = NULL;
+	p->range = defParams + 1;
 }
 
 

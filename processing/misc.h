@@ -4,8 +4,17 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define defParamCount 3
+
 enum unitType {utOSC = 1};
+enum paramType {ptFREQ = 1};
+enum paramOption {poVAL = 1, poMOD, poRANGE};
 enum oscType {otSIN = 1, otTRI, otREC};
+
+extern float *gParams;
+extern int gParamCount;
+extern char gBools[];
+extern float defParams[];
 
 extern unsigned int sampleRate;
 extern float m2pi;
@@ -17,9 +26,9 @@ typedef struct {
 } param;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initParam(param*, float*, float*);
+void setupParam(param *);
 
 
 /* --- Computing --- */

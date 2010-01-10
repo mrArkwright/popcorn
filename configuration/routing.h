@@ -8,9 +8,13 @@
 float *routeMasterOutput(gUnit *); 
 
 gUnit *addGlobalOsc(int);
-gUnit *addGlobalUnit();
+void setGlobalParam(gUnit *, int, int, float);
+void routeGlobalParam(gUnit *, int, int, gUnit *);
 
-void taddOsc();
-void taddLOsc();
+gUnit *addGlobalUnit();
+float *addGlobalParam();
+float **getGlobalParamAddress(gUnit *, int, int);
+float *getGlobalValAddress(gUnit *);
+char isParamDefault(float **);
 
 #endif
