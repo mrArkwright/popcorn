@@ -1,25 +1,17 @@
-der synthi - popcorn!
-
-done (?)
-=====
-- multiple oscilators / lfos (not dynamic thou)
-- mixing multiple sounds
-
-libs
-===========
-- audio output (using libao)
-- midi input (using ??)
-- gui (dunno. gtk?)
+Dokumentation moved to Wiki
 
 todo
 =========
-- arbeitsplan bis naechsten montag!!
-- input from midi source (find a usabel software keyboard along the way ^^)
-- audio output using cross-platform lib
-- using gui to arrange setup / make arrangement dynamic
-- effects (future?)
+- Doku (wiki) until monday!!
+- effect routing
+- midi input (jack)
+- audio output using jack as well
+- load/save arrangements from file (JSON or YAML)
+
+
 
 future
 =========
 - setting up real midi hardware through gui (learn key etc)
-- load/save arrangements from file
+- using gui to arrange setup / make arrangement dynamic
+
