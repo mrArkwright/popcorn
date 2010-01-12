@@ -1,13 +1,21 @@
-Dokumentation moved to Wiki
+features
+=========
+1 MIDI Eingabe
+2 Audio Ausgabe
+3 Routing und Konfiguration via JSON
+4 Polyphoner Synthesizer
+5 Modulare Struktur (Units)
+6 Module beliebig verknüpfbar (Routing)
+7 Parameter Konstant oder Moduliert 
+8 Oszilatoren als Units
+9 Filter als Units
+0 Master Unit section
+
 
 todo
 =========
-- Doku (wiki) until monday!!
-- effect routing
-- midi input (jack)
-- audio output using jack as well
-- load/save arrangements from file (JSON or YAML)
-
+- routing api
+- load/save arrangements from file (JSON or YAML or WHATEVER)
 
 
 future
