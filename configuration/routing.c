@@ -120,6 +120,14 @@ unit *addOsc(int scope) {
 	return newUnit;
 }
 
+void setOscType(unit *u, int type) {
+	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
+
+	for (i = 0; i < iMax; i++) {
+		((osc *)(u->units[i]))->func = getOscFunc(type);
+	}
+}
+
 
 
 /* ---Helper ---*/
