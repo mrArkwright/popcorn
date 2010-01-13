@@ -5,8 +5,6 @@ int gParamCount = 0;
 char gBools[2] = {0, 1};
 float defParams[defParamCount] = {440, 1, 0};
 
-float m2pi = 2 * M_PI;
-
 
 /* --- Setup --- */
 

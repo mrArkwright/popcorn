@@ -41,10 +41,10 @@ float oscSin(float phase, float spp, float param1) {
 	param1 = param1 / 2 + 0.5;
 
 	if (phase < spp * param1) {
-		out = sin(phase * m2pi / spp / (2 * param1));
+		out = sin(phase * 2*M_PI / spp / (2 * param1));
 	} else {
 		phase += spp * (1 - 2 * param1);
-		out = sin(phase * m2pi / spp / (2 - 2 * param1));
+		out = sin(phase * 2*M_PI / spp / (2 - 2 * param1));
 	}
 
 	return out;

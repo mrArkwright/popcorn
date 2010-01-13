@@ -19,7 +19,6 @@ extern char gBools[];
 extern float defParams[];
 
 extern unsigned int sampleRate;
-extern float m2pi;
 
 typedef struct {
 	float *val;
