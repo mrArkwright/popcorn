@@ -7,7 +7,7 @@
 
 int jackProcess(jack_nframes_t nframes, void *arg) {
 	extern jack_port_t *output_port, *input_port;
-	int i;
+	unsigned int i;
 	/* buffers */
 	void* midiBuf;
 	jack_default_audio_sample_t *outBuf;
@@ -58,7 +58,7 @@ int jackSRateChanged(jack_nframes_t nframes, void *arg) {
 	unsigned int new = 0;
 
 	/* reset global sample rate */
-	if((new = (jack_default_audio_sample_t) nframes) != 0);
+	if((new = (jack_default_audio_sample_t) nframes) != 0)
 		sampleRate = new;
 
 	fprintf(stderr, "the sample rate is now %" PRIu32 "/sec\n", nframes);

@@ -23,6 +23,7 @@ void routeBool(unit *, int, unit *);
 
 /* - Oscillators */
 unit *addOsc(int);
+void setOscType(unit *u, int type);
 
 
 
