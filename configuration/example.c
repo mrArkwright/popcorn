@@ -1,24 +1,30 @@
 #include "example.h"
 
 void routeExample() {
-	int i;
+	/*initVoices();*/
+
 	/* adding and setting up units */
-	addGlobalOsc(otREC);
-	setGlobalParam(gUnits[0], ptFREQ, poVAL, 440); /* später voices freq */
-	setGlobalParam(gUnits[0], ptPARAM1, poRANGE, 0.9);
-	setGlobalParam(gUnits[0], ptVOL, poRANGE, 0.9);
+	addOsc(usGLOBAL);
+	setOscType(gUnits[0], otREC);
+	setParam(gUnits[0], ptFREQ, poVAL, 440);
+	setBool(gUnits[0], btACT, 1);
+	setParam(gUnits[0], ptPARAM1, poRANGE, 0.9);
+	setParam(gUnits[0], ptVOL, poRANGE, 0.9);
 
-	addGlobalOsc(otSIN);
-	setGlobalParam(gUnits[1], ptFREQ, poVAL, 0.4);
+	addOsc(usGLOBAL);
+	setParam(gUnits[1], ptFREQ, poVAL, 0.4);
 
-	addGlobalOsc(otSIN);
-	setGlobalParam(gUnits[2], ptFREQ, poVAL, 10);
-	setGlobalParam(gUnits[2], ptVOL, poVAL, 0.4);
-	setGlobalParam(gUnits[2], ptPARAM1, poVAL, -0.7);
+	addOsc(usGLOBAL);
+	setParam(gUnits[2], ptFREQ, poVAL, 10);
+	setParam(gUnits[2], ptVOL, poVAL, 0.4);
+	setParam(gUnits[2], ptPARAM1, poVAL, -0.7);
 
-	/* routing units */
-	routeGlobalParam(gUnits[0], ptPARAM1, poMOD, gUnits[1]);
-	routeGlobalParam(gUnits[0], ptVOL, poMOD, gUnits[2]);
+	routeParam(gUnits[0], ptPARAM1, poMOD, gUnits[1]);
+	routeParam(gUnits[0], ptVOL, poMOD, gUnits[2]);
+
+	addOsc(usLOCAL);
+
+	routeVoicesOutput(lUnits[0]);
 
 	routeMasterOutput(gUnits[0]);
 }

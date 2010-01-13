@@ -48,7 +48,7 @@ int jackProcess(jack_nframes_t nframes, void *arg) {
 
 		}
 		compute();
-		outBuf[i] =  *masterOutput * 128;
+		outBuf[i] =  *masterOutput;
 	}
 	return 0;
 }

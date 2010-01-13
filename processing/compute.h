@@ -7,23 +7,17 @@
 #include "voices.h"
 
 typedef struct {
+	char scope;
 	char type;
-	char *act;
-	void *unit;
-	void (*comp)(void*);
-} gUnit;
-
-typedef struct {
-	char type;
-	char **act;
+	char **acts;
 	void **units;
-	void (*comp)(void*);
-} lUnit;
+	void (*comp)(void *);
+} unit;
 
-extern gUnit **gUnits;
+extern unit **gUnits;
 extern int gUnitCount;
 
-extern lUnit **lUnits;
+extern unit **lUnits;
 extern int lUnitCount;
 
 extern float voicesOutput;

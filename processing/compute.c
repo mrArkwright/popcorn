@@ -1,10 +1,10 @@
 #include "compute.h"
 
 /* --- Units --- */
-gUnit **gUnits = NULL;
+unit **gUnits = NULL;
 int gUnitCount = 0;
 
-lUnit **lUnits = NULL;
+unit **lUnits = NULL;
 int lUnitCount = 0;
 
 float voicesOutput;
@@ -14,14 +14,14 @@ void compute() {
 	int i, j;
 
 	for (i = 0; i < gUnitCount; i++) {
-		if (*(gUnits[i]->act) == 1) {
-			gUnits[i]->comp(gUnits[i]->unit);
+		if (*(gUnits[i]->acts[0]) == 1) {
+			gUnits[i]->comp(gUnits[i]->units[0]);
 		}
 	}
 
 	for (i = 0; i < lUnitCount; i++) {
 		for (j = 0; j < voiceCount; j++) {
-			if (*(lUnits[i]->act[j]) == 1) {
+			if (*(lUnits[i]->acts[j]) == 1) {
 				lUnits[i]->comp(lUnits[i]->units[j]);
 			}
 		}
@@ -29,6 +29,6 @@ void compute() {
 
 	voicesOutput = 0;
 	for (i = 0; i < voiceCount; i++) {
-		/*voicesOutput += *(voices[i].output);*/
+		voicesOutput += *(voices[i].output);
 	}
 }
