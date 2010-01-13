@@ -68,7 +68,7 @@ void routeParam(unit *u, int type, int option, unit *src) {
 /* - Bools */
 void setBool(unit *u, int type, char val) {
 	char **b, *bSrc;
-	int i;
+	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
 
 	if (val == 0) {
 		bSrc = gBools + 0;
@@ -76,14 +76,9 @@ void setBool(unit *u, int type, char val) {
 		bSrc = gBools + 1;
 	}
 
-	b = getBoolParamAddress(u, type, 0);
-	*b = bSrc;
-
-	if (u->scope == usLOCAL) {
-		for (i = 1; i < voiceCount; i++) {
-			b = getBoolParamAddress(u, type, i);
-			*b = bSrc;
-		}
+	for (i = 1; i < iMax; i++) {
+		b = getBoolParamAddress(u, type, i);
+		*b = bSrc;
 	}
 }
 
@@ -112,34 +107,18 @@ void routeBool(unit *u, int type, unit *src) {
 /* - Oscillators */
 unit *addOsc(int scope) {
 	unit *newUnit = addUnit(scope);
+	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utOSC;
 	newUnit->comp = (void (*)(void *))&compOsc;
 
-	setupOsc(newUnit->units[0]);
-
-	return newUnit;
-}
-
-/*unit *addLocalOsc(int type) {
-	int i;
-
-	lUnit *newUnit = addLocalUnit();
-
-	newUnit->type = utOSC;
-	newUnit->units = malloc(sizeof(osc *) * voiceCount);
-	newUnit->acts = malloc(sizeof(char *) * voiceCount);
-	newUnit->comp = (void (*)(void *))&compOsc;
-
-	for (i = 0; i < voiceCount; i++) {
+	for (i = 0; i < iMax; i++) {
 		newUnit->units[i] = malloc(sizeof(osc));
-		setupOsc(newUnit->units[i], getOscFunc(type));
-
-		newUnit->acts[i] = gBools + 1;
+		setupOsc(newUnit->units[i]);
 	}
 
 	return newUnit;
-}*/
+}
 
 
 
