@@ -13,7 +13,7 @@ typedef struct {
 
 /* --- Setup --- */
 
-void setupOsc(osc *o, float(*)(float, float, float));
+void setupOsc(osc *o);
 
 
 /* --- Computing --- */

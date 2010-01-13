@@ -1,10 +1,10 @@
 #include "example.h"
 
 void routeExample() {
-	int i;
 	/* adding and setting up units */
-	addGlobalOsc(otREC);
-	setGlobalParam(gUnits[0], ptFREQ, poVAL, 440); /* später voices freq */
+	/*addGlobalOsc(otREC);*/
+	/*setGlobalParam(gUnits[0], ptFREQ, poVAL, 440);
+	setGlobalBool(gUnits[0], btACT, 1);
 	setGlobalParam(gUnits[0], ptPARAM1, poRANGE, 0.9);
 	setGlobalParam(gUnits[0], ptVOL, poRANGE, 0.9);
 
@@ -16,11 +16,14 @@ void routeExample() {
 	setGlobalParam(gUnits[2], ptVOL, poVAL, 0.4);
 	setGlobalParam(gUnits[2], ptPARAM1, poVAL, -0.7);
 
-	/* routing units */
 	routeGlobalParam(gUnits[0], ptPARAM1, poMOD, gUnits[1]);
-	routeGlobalParam(gUnits[0], ptVOL, poMOD, gUnits[2]);
+	routeGlobalParam(gUnits[0], ptVOL, poMOD, gUnits[2]);*/
 
-	routeMasterOutput(gUnits[0]);
+	/*addLocalOsc(otTRI);*/
+
+	/*routeVoicesOutput(lUnits[0]);*/
+
+	/*routeMasterOutput(gUnits[0]);*/
 }
 
 /*

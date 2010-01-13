@@ -5,16 +5,21 @@
 #include "../processing/oscillators.h"
 #include "../processing/compute.h"
 
-float *routeMasterOutput(gUnit *); 
+/* --- API --- */
 
-gUnit *addGlobalOsc(int);
-void setGlobalParam(gUnit *, int, int, float);
-void routeGlobalParam(gUnit *, int, int, gUnit *);
+void routeMasterOutput(unit *);
+void routeVoicesOutput(unit *);
 
-gUnit *addGlobalUnit();
+void setParam(unit *, int, int, float);
+void routeParam(unit *, int, int, unit *);
+
+
+/* ---Helper ---*/
+
 float *addGlobalParam();
-float **getGlobalParamAddress(gUnit *, int, int);
-float *getGlobalValAddress(gUnit *);
-char isParamDefault(float **);
+float **getParamAddress(unit *, int, int, int);
+char **getBoolAddress(unit *, int, int);
+char isGlobalParam(float **);
+float *getValAddress(unit *, int);
 
 #endif

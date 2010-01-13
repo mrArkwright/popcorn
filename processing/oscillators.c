@@ -3,9 +3,9 @@
 
 /* --- Setup --- */
 
-void setupOsc(osc *o, float (*func)(float, float, float)) {
+void setupOsc(osc *o) {
 	o->phase = 0;
-	o->func = func;
+	o->func = &oscSin;
 
 	o->freq.val = defParams + 0;
 	setupParam(&(o->freq));

@@ -1,63 +1,152 @@
 #include "routing.h"
 
 
-/* --- API ---*/
+/* --- Configuration API --- */
 
-float *routeMasterOutput(gUnit *u) {
-	masterOutput = getGlobalValAddress(u);
-	return masterOutput;
+void routeMasterOutput(unit *u) {
+	if (u->scope == usGLOBAL) {
+		masterOutput = getValAddress(u, 0);
+	}
 }
 
-gUnit *addGlobalOsc(int type) {
-	gUnit *newUnit = addGlobalUnit();
-	float (*func)(float, float, float);
+void routeVoicesOutput(unit *u) {
+	int i;
+	
+	if (u->scope == usLOCAL) {
+		for (i = 0; i < voiceCount; i++) {
+			voices[i].output = getValAddress(u, i);
+		}
+	}
+}
 
-	newUnit->type = utOSC;
-	newUnit->unit = malloc(sizeof(osc));
-	newUnit->comp = &compOsc;
+void setParam(unit *u, int type, int option, float val) {
+	float **p, **pLoc;
+	int i;
 
-	/* Oscillator-Types */
-	switch (type) {
-		case otSIN: func = &oscSin; break;
-		case otTRI: func = &oscTri; break;
-		case otREC: func = &oscRec; break;
-		default: break;
+	p = getParamAddress(u, type, option, 0);
+
+	if (!isGlobalParam(p)) {
+		*p = addGlobalParam();
 	}
 
-	setupOsc(newUnit->unit, func);
-
-	newUnit->act = gBools+1;
-
-	return newUnit;
-}
-
-void setGlobalParam(gUnit *u, int type, int option, float val) {
-	float **p = getGlobalParamAddress(u, type, option);
-
-	if (isParamDefault(p) || *p == NULL) {
-		*p = addGlobalParam();
+	if (u->scope == usLOCAL) {
+		for (i = 1; i < voiceCount; i++) {
+			pLoc = getParamAddress(u, type, option, i);
+			*pLoc = *p;
+		}
 	}
 
 	**p = val;
 }
 
-void routeGlobalParam(gUnit *u, int type, int option, gUnit *src) {
-	float **p = getGlobalParamAddress(u, type, option);
-	float *v = getGlobalValAddress(src);
+void routeParam(unit *u, int type, int option, unit *src) {
+	float **p;
+	float *v;
+	int i;
 
 	/* wenn gParam -> löschen*/
-	*p = v;
+
+	if (u->scope == usGLOBAL) {
+		if (src->scope == usGLOBAL) {
+			p = getParamAddress(u, type, option, 0);
+			v = getValAddress(src, 0);
+
+			*p = v;
+		} /* else fehler */
+	} else {
+		for (i = 0; i < voiceCount; i++) {
+			p = getParamAddress(u, type, option, i);
+			v = getValAddress(src, ((src->scope == usGLOBAL) ? 0 : i));
+
+			*p = v;
+		}
+	}
 }
+
+void setBool(unit *u, int type, char val) {
+	char **b, *bSrc;
+	int i;
+
+	if (val == 0) {
+		bSrc = gBools + 0;
+	} else {
+		bSrc = gBools + 1;
+	}
+
+	b = getBoolAddress(u, type, 0);
+	*b = bSrc;
+
+	if (u->scope == usLOCAL) {
+		for (i = 1; i < voiceCount; i++) {
+			b = getBoolAddress(u, type, i);
+			*b = bSrc;
+		}
+	}
+}
+
+/*void routeGlobalBool(unit *u, int type, unit *src) {
+	char *p = (char *) getGlobalValAddress(src);
+
+	switch (type) {
+		case btACT: u->act = p;
+		default: break;
+	}
+}*/
+
+
+/* - Oscillators */
+
+/*unit *addGlobalOsc(int type) {
+	gUnit *newUnit = addGlobalUnit();
+
+	newUnit->type = utOSC;
+	newUnit->unit = malloc(sizeof(osc));
+	newUnit->comp = (void (*)(void *))&compOsc;
+
+	setupOsc(newUnit->unit, getOscFunc(type));
+
+	newUnit->act = gBools + 1;
+
+	return newUnit;
+}
+
+unit *addLocalOsc(int type) {
+	int i;
+
+	lUnit *newUnit = addLocalUnit();
+
+	newUnit->type = utOSC;
+	newUnit->units = malloc(sizeof(osc *) * voiceCount);
+	newUnit->acts = malloc(sizeof(char *) * voiceCount);
+	newUnit->comp = (void (*)(void *))&compOsc;
+
+	for (i = 0; i < voiceCount; i++) {
+		newUnit->units[i] = malloc(sizeof(osc));
+		setupOsc(newUnit->units[i], getOscFunc(type));
+
+		newUnit->acts[i] = gBools + 1;
+	}
+
+	return newUnit;
+}
+
+float (*getOscFunc(int type))(float, float, float) {*/
+	/* Oscillator Types */
+	/*switch (type) {
+		case otSIN: return &oscSin;
+		case otTRI: return &oscTri;
+		case otREC: return &oscRec;
+		default: return NULL;
+	}
+}*/
+
+
+
+
+
 
 
 /* ---Helper ---*/
-
-gUnit *addGlobalUnit() {
-	gUnitCount++;
-	gUnits = realloc(gUnits, sizeof(gUnit *) * gUnitCount);
-	gUnits[gUnitCount - 1] = malloc(sizeof(gUnit));
-	return gUnits[gUnitCount - 1];
-}
 
 float *addGlobalParam() {
 	gParamCount++;
@@ -66,16 +155,16 @@ float *addGlobalParam() {
 	return gParams[gParamCount - 1];
 }
 
-float **getGlobalParamAddress(gUnit *u, int type, int option) {
+float **getParamAddress(unit *u, int type, int option, int i) {
 	param *p;
 	
-	/* Unit-Types */
+	/* Unit-Type-Params */
 	switch (u->type) {
 		case utOSC:
 			switch (type) {
-				case ptFREQ: p = &(((osc*)(u->unit))->freq); break;
-				case ptVOL: p = &(((osc*)(u->unit))->vol); break;
-				case ptPARAM1: p = &(((osc*)(u->unit))->param1); break;
+				case ptFREQ: p = &(((osc*)(u->units[i]))->freq); break;
+				case ptVOL: p = &(((osc*)(u->units[i]))->vol); break;
+				case ptPARAM1: p = &(((osc*)(u->units[i]))->param1); break;
 				default: return NULL;
 			}
 			break;
@@ -90,21 +179,56 @@ float **getGlobalParamAddress(gUnit *u, int type, int option) {
 	}
 }
 
-float *getGlobalValAddress(gUnit *u) {
-
-	/* Unit-Types */
-	switch (u->type) {
-		case utOSC: return &(((osc*)(u->unit))->val);
-		default: return NULL;
+char **getBoolAddress(unit *u, int type, int i) {
+	switch (type) {
+		case btACT: return &(u->acts[i]);
+		default: break;
 	}
+
+	/* Unit-Type-Bools */
+
+	return NULL;
 }
 
-char isParamDefault(float **p) {
+char isGlobalParam(float **p) {
 	int i;
 
-	for (i = 0; i < defParamCount; i++) {
-		if ((defParams + i) == *p) return 1;
+	for (i = 0; i < gParamCount; i++) {
+		if (gParams[i] == *p) return 1;
 	}
 
 	return 0;
 }
+
+float *getValAddress(unit *u, int i) {
+
+	/* Unit-Type-Vals */
+	switch (u->type) {
+		case utOSC: return &(((osc*)(u->units[i]))->val);
+		default: return NULL;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+/*unit *addGlobalUnit() {
+	gUnitCount++;
+	gUnits = realloc(gUnits, sizeof(gUnit *) * gUnitCount);
+	gUnits[gUnitCount - 1] = malloc(sizeof(gUnit));
+	return gUnits[gUnitCount - 1];
+}*/
+
+
+/*unit *addLocalUnit() {
+	lUnitCount++;
+	lUnits = realloc(lUnits, sizeof(unit *) * lUnitCount);
+	lUnits[lUnitCount - 1] = malloc(sizeof(lUnit));
+	return lUnits[lUnitCount - 1];
+}*/
