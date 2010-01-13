@@ -1,13 +1,12 @@
 #CC=clang
-
 CFLAGS=-Wall -Wextra -pedantic -std=c89
 CFLAGS+=-ggdb3
+
 #JackOSX
-CFLAGS+=-I/usr/local/include
-LIBS+=-framework CoreAudio -framework CoreServices -framework AudioUnit -L/usr/local/lib -ljack
-#*nix
-#CFLAGS+=$(pkg-config --cflags jack)
-#LIBS+=$(pkg-config --libs jack)
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+CFLAGS+=`pkg-config --cflags jack`
+LIBS+=`pkg-config --libs jack` -lm
 
 
 SRC+=configuration/routing.c
