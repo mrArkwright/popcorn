@@ -6,7 +6,7 @@
 
 #define defParamCount 3
 
-enum unitType {utOSC = 1};
+enum unitType {utVOICE = 1, utOSC};
 enum unitScope {usLOCAL = 1, usGLOBAL};
 enum paramType {ptFREQ = 1, ptVOL, ptPARAM1};
 enum paramOption {poVAL = 1, poMOD, poRANGE};

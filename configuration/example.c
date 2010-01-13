@@ -1,6 +1,7 @@
 #include "example.h"
 
 void routeExample() {
+	initVoices();
 	/* adding and setting up units */
 	/*addGlobalOsc(otREC);*/
 	/*setGlobalParam(gUnits[0], ptFREQ, poVAL, 440);
