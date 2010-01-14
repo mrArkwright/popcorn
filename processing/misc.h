@@ -10,12 +10,12 @@
 
 #define defParamCount 3
 
-enum unitType {utVOICE = 1, utOSC};
-enum unitScope {usLOCAL = 1, usGLOBAL};
-enum paramType {ptFREQ = 1, ptVOL, ptPARAM1};
-enum paramOption {poVAL = 1, poMOD, poRANGE};
-enum boolType {btACT = 1};
-enum oscType {otSIN = 1, otTRI, otREC};
+typedef enum {utVOICE = 1, utOSC} unitType;
+typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
+typedef enum {ptFREQ = 1, ptVOL, ptPARAM1} paramType;
+typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
+typedef enum {btACT = 1} boolType;
+typedef enum {otSIN = 1, otTRI, otREC} oscType;
 
 extern float **gParams;
 extern int gParamCount;

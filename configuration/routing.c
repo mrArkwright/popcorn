@@ -5,24 +5,24 @@
 /* --- Configuration API --- */
 
 /* - common */
-void routeMasterOutput(unit *u) {
-	if (u->scope == usGLOBAL) {
-		masterOutput = getValAddress(u, 0);
+void routeMasterOutput(unit *src) {
+	if (src->scope == usGLOBAL) {
+		masterOutput = getValAddress(src, 0);
 	}
 }
 
-void routeVoicesOutput(unit *u) {
+void routeVoicesOutput(unit *src) {
 	int i;
 	
-	if (u->scope == usLOCAL) {
+	if (src->scope == usLOCAL) {
 		for (i = 0; i < voiceCount; i++) {
-			voices[i].output = getValAddress(u, i);
+			voices[i].output = getValAddress(src, i);
 		}
 	}
 }
 
 /* - Params */
-void setParam(unit *u, int type, int option, float val) {
+void setParam(unit *u, paramType type, paramOption option, float val) {
 	float **p, **pLoc;
 	int i;
 
@@ -42,7 +42,7 @@ void setParam(unit *u, int type, int option, float val) {
 	**p = val;
 }
 
-void routeParam(unit *u, int type, int option, unit *src) {
+void routeParam(unit *u, paramType type, paramOption option, unit *src) {
 	float **p, *pSrc;
 	int i;
 
@@ -66,7 +66,7 @@ void routeParam(unit *u, int type, int option, unit *src) {
 }
 
 /* - Bools */
-void setBool(unit *u, int type, char val) {
+void setBool(unit *u, boolType type, char val) {
 	char **b, *bSrc;
 	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
 
@@ -82,7 +82,7 @@ void setBool(unit *u, int type, char val) {
 	}
 }
 
-void routeBool(unit *u, int type, unit *src) {
+void routeBool(unit *u, boolType type, unit *src) {
 	char **b, *bSrc;
 	int i;
 
@@ -105,7 +105,7 @@ void routeBool(unit *u, int type, unit *src) {
 
 
 /* - Oscillators */
-unit *addOsc(int scope) {
+unit *addOsc(unitScope scope) {
 	unit *newUnit = addUnit(scope);
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
@@ -120,7 +120,7 @@ unit *addOsc(int scope) {
 	return newUnit;
 }
 
-void setOscType(unit *u, int type) {
+void setOscType(unit *u, oscType type) {
 	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
 
 	for (i = 0; i < iMax; i++) {
@@ -133,7 +133,7 @@ void setOscType(unit *u, int type) {
 /* ---Helper ---*/
 
 /* - common */
-unit *addUnit(int scope) {
+unit *addUnit(unitScope scope) {
 	unit *newUnit;
 	int i;
 
@@ -170,7 +170,7 @@ float *addGlobalParam() {
 	return gParams[gParamCount - 1];
 }
 
-float **getParamAddress(unit *u, int type, int option, int i) {
+float **getParamAddress(unit *u, paramType type, paramOption option, int i) {
 	param *p;
 	
 	/* Unit-Type-Params */
@@ -214,7 +214,7 @@ float *getValAddress(unit *u, int i) {
 }
 
 /* - Bools */
-char **getBoolParamAddress(unit *u, int type, int i) {
+char **getBoolParamAddress(unit *u, boolType type, int i) {
 	switch (type) {
 		case btACT: return &(u->acts[i]);
 		default: break;
@@ -235,7 +235,7 @@ char *getBoolValAddress(unit *u, int i) {
 }
 
 /* - Oscillators */
-float (*getOscFunc(int type))(float, float, float) {
+float (*getOscFunc(oscType type))(float, float, float) {
 
 	/* Oscillator Types */
 	switch (type) {
