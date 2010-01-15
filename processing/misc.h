@@ -10,13 +10,6 @@
 
 #define defParamCount 3
 
-typedef enum {utVOICE = 1, utOSC} unitType;
-typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
-typedef enum {ptFREQ = 1, ptVOL, ptPARAM1} paramType;
-typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
-typedef enum {btACT = 1} boolType;
-typedef enum {otSIN = 1, otTRI, otREC} oscType;
-
 extern float **gParams;
 extern int gParamCount;
 extern char gBools[];

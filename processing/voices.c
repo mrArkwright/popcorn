@@ -26,7 +26,7 @@ void initVoice(voice* v) {
 
 /* Control */
 
-void playSound(int note, int velocity) {
+void startVoice(int note, int velocity) {
 	int i;
 	voice* newVoice;
 
@@ -52,11 +52,11 @@ void playSound(int note, int velocity) {
 	lastVoice = newVoice;
 
 	newVoice->freq = getFreq(note);
-	newVoice->velocity = velocity;
+	newVoice->velocity = velocity / 128.0;
 	newVoice->act = 1;
 }
 
-void stopSound(int note, int velocity) {
+void stopVoice(int note, int velocity) {
 	int i;
 	float freq = getFreq(note);
 
@@ -75,7 +75,7 @@ void stopSound(int note, int velocity) {
 			}
 
 			voices[i].act = 0;
-			voices[i].velocity = velocity;
+			voices[i].velocity = velocity / 128.0;
 			actVoices--;
 		}
 	}

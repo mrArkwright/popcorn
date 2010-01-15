@@ -1,10 +1,23 @@
 #include "routing.h"
 
-
+unit voiceActive, voiceFreq, voiceVelocity;
 
 /* --- Configuration API --- */
 
 /* - common */
+void initRouting() {
+	initVoices();
+
+	voiceActive.scope = usLOCAL;
+	voiceActive.type = utVOICE_ACT;
+
+	voiceFreq.scope = usLOCAL;
+	voiceFreq.type = utVOICE_FREQ;
+
+	voiceVelocity.scope = usLOCAL;
+	voiceVelocity.type = utVOICE_VEL;
+}
+
 void routeMasterOutput(unit *src) {
 	if (src->scope == usGLOBAL) {
 		masterOutput = getValAddress(src, 0);
@@ -130,7 +143,7 @@ void setOscType(unit *u, oscType type) {
 
 
 
-/* ---Helper ---*/
+/* ---Helpers ---*/
 
 /* - common */
 unit *addUnit(unitScope scope) {
@@ -208,6 +221,8 @@ float *getValAddress(unit *u, int i) {
 
 	/* Unit-Type-Vals */
 	switch (u->type) {
+		case utVOICE_FREQ: return &(voices[i].freq);
+		case utVOICE_VEL: return &(voices[i].velocity);
 		case utOSC: return &(((osc*)(u->units[i]))->val);
 		default: return NULL;
 	}
@@ -229,7 +244,7 @@ char *getBoolValAddress(unit *u, int i) {
 	
 	/* Unit-Type-Bool-Vals*/
 	switch (u->type) {
-		case utVOICE: return NULL; /* <- !!!!!!!!!!!!!!!!!!! */
+		case utVOICE_ACT: return &(voices[i].act);
 		default: return NULL;
 	}
 }

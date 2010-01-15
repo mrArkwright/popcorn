@@ -1,32 +1,34 @@
 #include "example.h"
 
 void routeExample() {
-	/*initVoices();*/
+	initRouting();
 
 	/* adding and setting up units */
-	addOsc(usGLOBAL);
-	setOscType(gUnits[0], otREC);
-	setParam(gUnits[0], ptFREQ, poVAL, 440);
-	setBool(gUnits[0], btACT, 1);
-	setParam(gUnits[0], ptPARAM1, poRANGE, 0.9);
-	setParam(gUnits[0], ptVOL, poRANGE, 0.9);
-
-	addOsc(usGLOBAL);
-	setParam(gUnits[1], ptFREQ, poVAL, 0.4);
-
-	addOsc(usGLOBAL);
-	setParam(gUnits[2], ptFREQ, poVAL, 10);
-	setParam(gUnits[2], ptVOL, poVAL, 0.4);
-	setParam(gUnits[2], ptPARAM1, poVAL, -0.7);
-
-	routeParam(gUnits[0], ptPARAM1, poMOD, gUnits[1]);
-	routeParam(gUnits[0], ptVOL, poMOD, gUnits[2]);
+	addOsc(usLOCAL);
+	setOscType(lUnits[0], otREC);
+	setParam(lUnits[0], ptPARAM1, poRANGE, 0.9);
+	setParam(lUnits[0], ptVOL, poRANGE, 0.9);
 
 	addOsc(usLOCAL);
+	setParam(lUnits[1], ptFREQ, poVAL, 0.4);
 
+	addOsc(usLOCAL);
+	setParam(lUnits[2], ptFREQ, poVAL, 10);
+	setParam(lUnits[2], ptVOL, poVAL, 0.4);
+	setParam(lUnits[2], ptPARAM1, poVAL, -0.7);
+
+	/* route params */
+	routeParam(lUnits[0], ptPARAM1, poMOD, lUnits[1]);
+	routeParam(lUnits[0], ptVOL, poMOD, lUnits[2]);
+
+	/* route params to voices */
+	routeParam(lUnits[0], ptFREQ, poVAL, &voiceFreq);
+	routeBool(lUnits[0], btACT, &voiceActive);
+
+	/* route output */
 	routeVoicesOutput(lUnits[0]);
-
-	routeMasterOutput(gUnits[0]);
+	masterOutput = &voicesOutput;
+	/*routeMasterOutput(gUnits[0]);*/
 }
 
 /*

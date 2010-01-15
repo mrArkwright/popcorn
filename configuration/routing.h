@@ -6,10 +6,23 @@
 #include "../processing/compute.h"
 
 
+typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utOSC} unitType;
+typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
+
+typedef enum {ptFREQ = 1, ptVOL, ptPARAM1} paramType;
+typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
+typedef enum {btACT = 1} boolType;
+
+typedef enum {otSIN = 1, otTRI, otREC} oscType;
+
+extern unit voiceActive, voiceFreq, voiceVelocity;
+
+
 
 /* --- Configuration API --- */
 
 /* - common */
+void initRouting();
 void routeMasterOutput(unit *src); /* routes masterOutput to output of src (src->scope must be usGLOBAL) */
 void routeVoicesOutput(unit *src); /* routes voicesOutput to output of src (src->scope must be usLOCAL) */
 
@@ -27,7 +40,7 @@ void setOscType(unit *u, oscType type); /* sets oscType of unit u to type (u->ty
 
 
 
-/* --- Helper --- */
+/* --- Helpers --- */
 
 /* - common */
 unit *addUnit(unitScope);
@@ -43,6 +56,6 @@ char **getBoolParamAddress(unit *, boolType, int);
 char *getBoolValAddress(unit *, int);
 
 /* - Oscillators */
-float (*getOscFunc(oscType type))(float, float, float);
+float (*getOscFunc(oscType))(float, float, float);
 
 #endif

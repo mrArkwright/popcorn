@@ -11,7 +11,7 @@ typedef struct voice {
 	char act;
 	struct voice *preVoice, *postVoice;
 	float freq;
-	int velocity;
+	float velocity;
 	float* output;
 } voice;
 
@@ -28,7 +28,7 @@ void initVoice(voice*);
 
 /* Control */
 
-void playSound(int note, int velocity);
-void stopSound(int note, int velocity);
+void startVoice(int note, int velocity);
+void stopVoice(int note, int velocity);
 
 #endif

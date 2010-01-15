@@ -36,10 +36,10 @@ int jackProcess(jack_nframes_t nframes, void *arg) {
 			
 			/* play / stop note */
 			if( (*(midiEvent.buffer) & 0xf0) == 0x90) {
-				playSound( *(midiEvent.buffer + 1), 128);
+				startVoice( *(midiEvent.buffer + 1), 128);
 			}
 			else if( (*(midiEvent.buffer) & 0xf0) == 0x80) {
-				stopSound( *(midiEvent.buffer + 1), 128);
+				stopVoice( *(midiEvent.buffer + 1), 128);
 			}
 
 			midiEventIndex++;
