@@ -3,26 +3,22 @@
 
 #include "misc.h"
 
-typedef struct {
-	char *act;
-	float *input;
-	param vol;
-} bus;
 
 typedef struct {
 	float val;
-	int busCount;
-	bus *busses;
-} mixer;
+	char *act1, *act2;
+	param vol1, vol2;
+	param input1, input2;
+} mixer2ch;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initMixer(mixer*);
+void setupMixer2ch(mixer2ch *);
 
 
 /* --- Computing --- */
 
-void compMixer(mixer*);
+void compMixer2ch(mixer2ch *);
 
 #endif

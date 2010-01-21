@@ -1,30 +1,36 @@
 #include "tools.h"
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initMixer(mixer *m) {
-	int i;
+void setupMixer2ch(mixer2ch *m) {
+	m->act1 = gBools + 0;
+	m->act2 = gBools + 0;
 
-	m->busses = (bus *) malloc(sizeof(bus) * m->busCount);
+	m->vol1.val = defParams + 1;
+	setupParam(&(m->vol1));
 
-	for (i = 0; i < m->busCount; i++) {
-		m->busses[i].act = 0;
-		setupParam(&(m->busses[i].vol));
-	}
+	m->vol2.val = defParams + 1;
+	setupParam(&(m->vol2));
+
+	m->input1.val = defParams + 0;
+	setupParam(&(m->input1));
+
+	m->input2.val = defParams + 0;
+	setupParam(&(m->input2));
 }
 
 
 /* --- Computing --- */
 
-void compMixer(mixer *m) {
-	int i;
-
+void compMixer2ch(mixer2ch *m) {
 	m->val = 0;
 
-	for (i = 0; i < m->busCount; i++) {
-		if (*(m->busses[i].act) == 1) {
-			m->val += *(m->busses[i].input) * compParam(&(m->busses[i].vol));
-		}
-	}
+	/*if (*(m->act1) == 1) m->val += compParam(&(m->input1)); * compParam(&(m->vol1));*/
+	/*if (*(m->act2) == 1) m->val += compParam(&(m->input2)); * compParam(&(m->vol2));*/
+
+	/*m->val += *(m->input1.val) + *(m->input2.val);*/
+
+	m->val += compParam(&(m->input1));
+	m->val += compParam(&(m->input2));
 }

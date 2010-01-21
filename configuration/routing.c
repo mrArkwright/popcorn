@@ -1,21 +1,32 @@
 #include "routing.h"
 
-unit voiceActive, voiceFreq, voiceVelocity;
+unit voiceDummies[4];
+unit *voiceActive = voiceDummies, *voiceFreq = voiceDummies + 1, *voiceVelocity = voiceDummies + 2, *voicesOut = voiceDummies + 3;
+
 
 /* --- Configuration API --- */
 
 /* - common */
-void initRouting() {
-	initVoices();
+void setVoiceCount(int count) {
+	voiceCount = count;
 
-	voiceActive.scope = usLOCAL;
-	voiceActive.type = utVOICE_ACT;
+	setupVoices();
+}
 
-	voiceFreq.scope = usLOCAL;
-	voiceFreq.type = utVOICE_FREQ;
+void setupRouting() {
+	masterOutput = defParams + 0;
 
-	voiceVelocity.scope = usLOCAL;
-	voiceVelocity.type = utVOICE_VEL;
+	voiceActive->scope = usLOCAL;
+	voiceActive->type = utVOICE_ACT;
+
+	voiceFreq->scope = usLOCAL;
+	voiceFreq->type = utVOICE_FREQ;
+
+	voiceVelocity->scope = usLOCAL;
+	voiceVelocity->type = utVOICE_VEL;
+
+	voicesOut->scope = usGLOBAL;
+	voicesOut->type = utVOICE_OUTPUT;
 }
 
 void routeMasterOutput(unit *src) {
@@ -142,6 +153,23 @@ void setOscType(unit *u, oscType type) {
 }
 
 
+/* - Mixers*/
+unit *addMixer2ch(unitScope scope) {
+	unit *newUnit = addUnit(scope);
+	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
+
+	newUnit->type = utMIXER2CH;
+	newUnit->comp = (void (*)(void *))&compMixer2ch;
+
+	for (i = 0; i < iMax; i++) {
+		newUnit->units[i] = malloc(sizeof(mixer2ch));
+		setupMixer2ch(newUnit->units[i]);
+	}
+
+	return newUnit;
+}
+
+
 
 /* ---Helpers ---*/
 
@@ -190,9 +218,18 @@ float **getParamAddress(unit *u, paramType type, paramOption option, int i) {
 	switch (u->type) {
 		case utOSC:
 			switch (type) {
-				case ptFREQ: p = &(((osc*)(u->units[i]))->freq); break;
-				case ptVOL: p = &(((osc*)(u->units[i]))->vol); break;
-				case ptPARAM1: p = &(((osc*)(u->units[i]))->param1); break;
+				case ptFREQ: p = &(((osc *)(u->units[i]))->freq); break;
+				case ptVOL: p = &(((osc *)(u->units[i]))->vol); break;
+				case ptPARAM1: p = &(((osc *)(u->units[i]))->param1); break;
+				default: return NULL;
+			}
+			break;
+		case utMIXER2CH:
+			switch (type) {
+				case ptINPUT1: p = &(((mixer2ch *)(u->units[i]))->input1); break;
+				case ptINPUT2: p = &(((mixer2ch *)(u->units[i]))->input2); break;
+				case ptVOL1: p = &(((mixer2ch *)(u->units[i]))->vol1); break;
+				case ptVOL2: p = &(((mixer2ch *)(u->units[i]))->vol2); break;
 				default: return NULL;
 			}
 			break;
@@ -223,7 +260,9 @@ float *getValAddress(unit *u, int i) {
 	switch (u->type) {
 		case utVOICE_FREQ: return &(voices[i].freq);
 		case utVOICE_VEL: return &(voices[i].velocity);
-		case utOSC: return &(((osc*)(u->units[i]))->val);
+		case utVOICE_OUTPUT: return &voicesOutput;
+		case utOSC: return &(((osc *)(u->units[i]))->val);
+		case utMIXER2CH: return &(((mixer2ch *)(u->units[i]))->val);
 		default: return NULL;
 	}
 }
@@ -236,8 +275,16 @@ char **getBoolParamAddress(unit *u, boolType type, int i) {
 	}
 
 	/* Unit-Type-Bool-Params */
-
-	return NULL;
+	switch (u->type) {
+		case utMIXER2CH:
+			switch (type) {
+				case btACT1: return &(((mixer2ch *)(u->units[i]))->act1);
+				case btACT2: return &(((mixer2ch *)(u->units[i]))->act2);
+				default: return NULL;
+			}
+			break;
+		default: return NULL;
+	}
 }
 
 char *getBoolValAddress(unit *u, int i) {

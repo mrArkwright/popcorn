@@ -13,12 +13,12 @@ typedef struct {
 
 /* --- Setup --- */
 
-void setupOsc(osc *o);
+void setupOsc(osc *);
 
 
 /* --- Computing --- */
 
-void compOsc(osc*);
+void compOsc(osc *);
 
 float oscSin(float, float, float);
 float oscTri(float, float, float);

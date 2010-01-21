@@ -31,7 +31,7 @@ void setupParam(param *);
 
 /* --- Computing --- */
 
-float compParam(param*);
+float compParam(param *);
 
 
 /* Stuff */

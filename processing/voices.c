@@ -1,26 +1,31 @@
 #include "voices.h"
 
-voice voices[voiceCount];
+int voiceCount;
+voice *voices = NULL;
 voice *firstVoice, *lastVoice;
 float actVoices;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initVoices() {
+void setupVoices() {
 	int i;
 
 	actVoices = 0;
 
+	voices = realloc(voices, sizeof(voice) * voiceCount);
+
 	for (i = 0; i < voiceCount; i++) {
-		initVoice(voices + i);
+		setupVoice(voices + i);
 	}
 }
 
-void initVoice(voice* v) {
+void setupVoice(voice* v) {
 	v->act = 0;
 	v->preVoice = NULL;
 	v->postVoice = NULL;
+
+	v->output = defParams + 0;
 }
 
 

@@ -6,23 +6,25 @@
 #include "../processing/compute.h"
 
 
-typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utOSC} unitType;
+typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utVOICE_OUTPUT, utOSC, utMIXER2CH} unitType;
 typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
 
-typedef enum {ptFREQ = 1, ptVOL, ptPARAM1} paramType;
+typedef enum {ptFREQ = 1, ptVOL, ptPARAM1, ptINPUT1, ptINPUT2, ptVOL1, ptVOL2} paramType;
 typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
-typedef enum {btACT = 1} boolType;
+typedef enum {btACT = 1, btACT1, btACT2} boolType;
 
 typedef enum {otSIN = 1, otTRI, otREC} oscType;
 
-extern unit voiceActive, voiceFreq, voiceVelocity;
+extern unit voiceDummies[];
+extern unit *voiceActive, *voiceFreq, *voiceVelocity, *voicesOut;
 
 
 
 /* --- Configuration API --- */
 
 /* - common */
-void initRouting();
+void setVoiceCount(int count);
+void setupRouting();
 void routeMasterOutput(unit *src); /* routes masterOutput to output of src (src->scope must be usGLOBAL) */
 void routeVoicesOutput(unit *src); /* routes voicesOutput to output of src (src->scope must be usLOCAL) */
 
@@ -37,6 +39,9 @@ void routeBool(unit *u, boolType type, unit *src); /* routes value for bool u->t
 /* - Oscillators */
 unit *addOsc(unitScope scope); /* adds local (scope == usLOCAL) or global (scope == usGLOBAL) unit with type utOSC */
 void setOscType(unit *u, oscType type); /* sets oscType of unit u to type (u->type must be utOSC) */
+
+/* - Mixers*/
+unit *addMixer2ch(unitScope scope);
 
 
 

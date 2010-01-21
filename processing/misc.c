@@ -3,13 +3,13 @@
 float **gParams = NULL;
 int gParamCount = 0;
 char gBools[2] = {0, 1};
-float defParams[defParamCount] = {440, 1, 0};
+float defParams[defParamCount] = {0, 1, 440};
 
 
 /* --- Setup --- */
 
 void setupParam(param *p) {
-	p->mod = NULL;
+	p->mod = defParams + 0;
 	p->range = defParams + 1;
 }
 
@@ -18,7 +18,7 @@ void setupParam(param *p) {
 
 float compParam(param *p) {
 	/* this is where the routing magic happens */
-	return *(p->val) + ((p->mod != NULL) ? *(p->range) * (*(p->mod)) : 0);
+	return *(p->val) + *(p->range) * *(p->mod);
 }
 
 

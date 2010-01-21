@@ -7,13 +7,13 @@ void setupOsc(osc *o) {
 	o->phase = 0;
 	o->func = &oscSin;
 
-	o->freq.val = defParams + 0;
+	o->freq.val = defParams + 2;
 	setupParam(&(o->freq));
 
 	o->vol.val = defParams + 1;
 	setupParam(&(o->vol));
 
-	o->param1.val = defParams + 2;
+	o->param1.val = defParams + 0;
 	setupParam(&(o->param1));
 }
 

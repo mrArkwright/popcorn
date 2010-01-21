@@ -5,25 +5,25 @@
 #include "tools.h"
 #include "effects.h"
 
-#define voiceCount 32
+extern int voiceCount;
 
 typedef struct voice {
 	char act;
 	struct voice *preVoice, *postVoice;
 	float freq;
 	float velocity;
-	float* output;
+	float *output;
 } voice;
 
-extern voice voices[voiceCount];
+extern voice *voices;
 extern voice *firstVoice, *lastVoice;
 extern float actVoices;
 
 
-/* --- Initialization --- */
+/* --- Setup --- */
 
-void initVoices();
-void initVoice(voice*);
+void setupVoices();
+void setupVoice(voice *);
 
 
 /* Control */

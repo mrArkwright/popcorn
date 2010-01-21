@@ -1,15 +1,15 @@
 features
 =========
-1 MIDI Eingabe
-2 Audio Ausgabe
+1 MIDI Eingabe -> done
+2 Audio Ausgabe -> done
 3 Routing und Konfiguration via JSON
-4 Polyphoner Synthesizer
-5 Modulare Struktur (Units)
-6 Module beliebig verknüpfbar (Routing)
-7 Parameter Konstant oder Moduliert 
-8 Oszilatoren als Units
+4 Polyphoner Synthesizer -> done
+5 Modulare Struktur (Units) -> done
+6 Module beliebig verknüpfbar (Routing) -> done
+7 Parameter Konstant oder Moduliert -> done
+8 Oszilatoren als Units -> done
 9 Filter als Units
-0 Master Unit section
+0 Master Unit section -> done
 
 
 todo
