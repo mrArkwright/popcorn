@@ -6,10 +6,10 @@
 #include "../processing/compute.h"
 
 
-typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utVOICE_OUTPUT, utOSC, utMIXER2CH, utFX_LOWPASS, utFX_HIGHPASS} unitType;
+typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utVOICE_OUTPUT, utOSC, utMIXER2CH, utFX_LOWPASS, utFX_HIGHPASS, utFX_BANDPASS} unitType;
 typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
 
-typedef enum {ptFREQ = 1, ptVOL, ptPARAM1, ptINPUT1, ptINPUT2, ptVOL1, ptVOL2, ptCUTOFF} paramType;
+typedef enum {ptFREQ = 1, ptVOL, ptPARAM1, ptINPUT1, ptINPUT2, ptVOL1, ptVOL2, ptCUTOFF, ptBANDWIDTH} paramType;
 typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
 typedef enum {btACT = 1, btACT1, btACT2} boolType;
 
@@ -48,6 +48,9 @@ unit *addFxLowpass(unitScope scope);
 
 /* - Highpass-Filter */
 unit *addFxHighpass(unitScope scope);
+
+/* - Bandpass-Filter */
+unit *addFxBandpass(unitScope scope);
 
 
 

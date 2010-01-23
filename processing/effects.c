@@ -24,6 +24,19 @@ void setupFxHighpass(fxHighpass *fx) {
 	setupParam(&(fx->cutoff));
 }
 
+void setupFxBandpass(fxBandpass *fx) {
+	fx->val = 0;
+
+	fx->input.val = defParams + 0;
+	setupParam(&(fx->input));
+
+	fx->freq.val = defParams + 2;
+	setupParam(&(fx->freq));
+
+	fx->bandwidth.val = defParams + 3;
+	setupParam(&(fx->bandwidth));
+}
+
 
 
 /* --- Computing --- */
@@ -36,14 +49,31 @@ void compFxLowpass(fxLowpass *fx) {
 }
 
 void compFxHighpass(fxHighpass *fx) {
+	float in = compParam(&(fx->input));
 	float coeffOmega = 2.0 * M_PI * compParam(&(fx->cutoff)) / sampleRate;
 	float coeff = (2.0 - cos(coeffOmega)) - sqrt(pow(2.0 - cos(coeffOmega), 2.0) - 1.0);
-	float in = compParam(&(fx->input));
-		
+			
 	fx->tmp = (1 - coeff) * in + coeff * fx->tmp;
 
 	fx->val = in - fx->tmp;
 }
+
+void compFxBandpass(fxBandpass *fx) {
+	float in = compParam(&(fx->input));
+	float freq = compParam(&(fx->freq));
+	float width = compParam(&(fx->bandwidth)) / 2.0;
+
+	float hpCoeffOmega = 2.0 * M_PI * (freq - width) / sampleRate;
+	float hpCoeff = (2.0 - cos(hpCoeffOmega)) - sqrt(pow(2.0 - cos(hpCoeffOmega), 2.0) - 1.0);
+
+	float lpCoeffOmega = 2.0 * M_PI * (freq + width) / sampleRate;
+	float lpCoeff = (2.0 - cos(lpCoeffOmega)) - sqrt(pow(2.0 - cos(lpCoeffOmega), 2.0) - 1.0);
+			
+	fx->tmp = (1 - hpCoeff) * in + hpCoeff * fx->tmp;
+
+	fx->val = (1 - lpCoeff) * (in - fx->tmp) + lpCoeff * fx->val;
+}
+
 
 /*#define echoLen 10000
 #define firLen 27

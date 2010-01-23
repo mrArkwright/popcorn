@@ -14,17 +14,25 @@ typedef struct {
 	param cutoff, input;
 } fxHighpass;
 
+typedef struct {
+	float val;
+	float tmp;
+	param freq, bandwidth, input;
+} fxBandpass;
+
 
 /* --- Setup --- */
 
 void setupFxLowpass(fxLowpass *);
 void setupFxHighpass(fxHighpass *);
+void setupFxBandpass(fxBandpass *);
 
 
 /* --- Computing --- */
 
 void compFxLowpass(fxLowpass *);
 void compFxHighpass(fxHighpass *);
+void compFxBandpass(fxBandpass *);
 
 
 

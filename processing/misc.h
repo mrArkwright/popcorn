@@ -9,7 +9,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define defParamCount 3
+#define defParamCount 4
 
 extern float **gParams;
 extern int gParamCount;
