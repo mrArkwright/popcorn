@@ -170,6 +170,40 @@ unit *addMixer2ch(unitScope scope) {
 }
 
 
+/* - Lowpass-Filter */
+unit *addFxLowpass(unitScope scope) {
+	unit *newUnit = addUnit(scope);
+	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
+
+	newUnit->type = utFX_LOWPASS;
+	newUnit->comp = (void (*)(void *))&compFxLowpass;
+
+	for (i = 0; i < iMax; i++) {
+		newUnit->units[i] = malloc(sizeof(fxLowpass));
+		setupFxLowpass(newUnit->units[i]);
+	}
+
+	return newUnit;
+}
+
+
+/* - Highpass-Filter */
+unit *addFxHighpass(unitScope scope) {
+	unit *newUnit = addUnit(scope);
+	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
+
+	newUnit->type = utFX_HIGHPASS;
+	newUnit->comp = (void (*)(void *))&compFxHighpass;
+
+	for (i = 0; i < iMax; i++) {
+		newUnit->units[i] = malloc(sizeof(fxHighpass));
+		setupFxHighpass(newUnit->units[i]);
+	}
+
+	return newUnit;
+}
+
+
 
 /* ---Helpers ---*/
 
@@ -233,6 +267,20 @@ float **getParamAddress(unit *u, paramType type, paramOption option, int i) {
 				default: return NULL;
 			}
 			break;
+		case utFX_LOWPASS:
+			switch (type) {
+				case ptINPUT1: p = &(((fxLowpass *)(u->units[i]))->input); break;
+				case ptCUTOFF: p = &(((fxLowpass *)(u->units[i]))->cutoff); break;
+				default: return NULL;
+			}
+			break;
+		case utFX_HIGHPASS:
+			switch (type) {
+				case ptINPUT1: p = &(((fxHighpass *)(u->units[i]))->input); break;
+				case ptCUTOFF: p = &(((fxHighpass *)(u->units[i]))->cutoff); break;
+				default: return NULL;
+			}
+			break;
 		default: return NULL;
 	}
 
@@ -263,6 +311,8 @@ float *getValAddress(unit *u, int i) {
 		case utVOICE_OUTPUT: return &voicesOutput;
 		case utOSC: return &(((osc *)(u->units[i]))->val);
 		case utMIXER2CH: return &(((mixer2ch *)(u->units[i]))->val);
+		case utFX_LOWPASS: return &(((fxLowpass *)(u->units[i]))->val);
+		case utFX_HIGHPASS: return &(((fxHighpass *)(u->units[i]))->val);
 		default: return NULL;
 	}
 }

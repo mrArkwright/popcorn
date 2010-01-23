@@ -4,6 +4,7 @@
 /* --- Setup --- */
 
 void setupOsc(osc *o) {
+	o->val = 0;
 	o->phase = 0;
 	o->func = &oscSin;
 

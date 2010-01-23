@@ -6,10 +6,10 @@
 #include "../processing/compute.h"
 
 
-typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utVOICE_OUTPUT, utOSC, utMIXER2CH} unitType;
+typedef enum {utVOICE_ACT = 1, utVOICE_FREQ, utVOICE_VEL, utVOICE_OUTPUT, utOSC, utMIXER2CH, utFX_LOWPASS, utFX_HIGHPASS} unitType;
 typedef enum {usLOCAL = 1, usGLOBAL} unitScope;
 
-typedef enum {ptFREQ = 1, ptVOL, ptPARAM1, ptINPUT1, ptINPUT2, ptVOL1, ptVOL2} paramType;
+typedef enum {ptFREQ = 1, ptVOL, ptPARAM1, ptINPUT1, ptINPUT2, ptVOL1, ptVOL2, ptCUTOFF} paramType;
 typedef enum {poVAL = 1, poMOD, poRANGE} paramOption;
 typedef enum {btACT = 1, btACT1, btACT2} boolType;
 
@@ -42,6 +42,12 @@ void setOscType(unit *u, oscType type); /* sets oscType of unit u to type (u->ty
 
 /* - Mixers*/
 unit *addMixer2ch(unitScope scope);
+
+/* - Lowpass-Filter */
+unit *addFxLowpass(unitScope scope);
+
+/* - Highpass-Filter */
+unit *addFxHighpass(unitScope scope);
 
 
 

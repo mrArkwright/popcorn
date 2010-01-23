@@ -4,6 +4,8 @@
 /* --- Setup --- */
 
 void setupMixer2ch(mixer2ch *m) {
+	m->val = 0;
+
 	m->act1 = gBools + 0;
 	m->act2 = gBools + 0;
 

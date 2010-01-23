@@ -116,11 +116,49 @@ void rExample4() {
 	routeMasterOutput(voicesOut);
 }
 
+void rExample5() {
+	/* adding and setting up units */
+	addOsc(usLOCAL);
+	setOscType(lUnits[0], otREC);
+	setParam(lUnits[0], ptPARAM1, poRANGE, 0.9);
+	setParam(lUnits[0], ptVOL, poRANGE, 0.9);
+
+	addOsc(usLOCAL);
+	setParam(lUnits[1], ptFREQ, poVAL, 0.4);
+
+	addOsc(usLOCAL);
+	setParam(lUnits[2], ptFREQ, poVAL, 10);
+	setParam(lUnits[2], ptVOL, poVAL, 0.4);
+	setParam(lUnits[2], ptPARAM1, poVAL, -0.7);
+
+	addFxHighpass(usGLOBAL);
+	setParam(gUnits[0], ptCUTOFF, poRANGE, 300);
+	setParam(gUnits[0], ptCUTOFF, poVAL, 4000);
+
+	addOsc(usGLOBAL);
+	setParam(gUnits[1], ptFREQ, poVAL, 1);
+
+	/* route params to voices */
+	routeParam(lUnits[0], ptFREQ, poVAL, voiceFreq);
+	routeParam(lUnits[0], ptVOL, poVAL, voiceVelocity);
+	routeBool(lUnits[0], btACT, voiceActive);
+
+	/* route params */
+	routeParam(lUnits[0], ptPARAM1, poMOD, lUnits[1]);
+	routeParam(lUnits[0], ptVOL, poMOD, lUnits[2]);
+
+	routeVoicesOutput(lUnits[0]);
+
+	routeParam(gUnits[0], ptINPUT1, poVAL, voicesOut);
+	routeParam(gUnits[0], ptCUTOFF, poMOD, gUnits[1]);
+
+	routeMasterOutput(gUnits[0]);
+}
 
 void routeExample() {
 	setupRouting();
 
 	setVoiceCount(4);
 
-	rExample4();
+	rExample5();
 }
