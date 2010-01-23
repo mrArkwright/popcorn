@@ -85,11 +85,42 @@ void rExample3() {
 	routeMasterOutput(voicesOut);
 }
 
+void rExample4() {
+	addOsc(usLOCAL);
+
+	addOsc(usLOCAL);
+	setOscType(lUnits[1], otTRI);
+	setParam(lUnits[1], ptFREQ, poMOD, 3);
+
+	addMixer2ch(usLOCAL);
+	setBool(lUnits[2], btACT1, 1);
+	setBool(lUnits[2], btACT2, 1);
+	routeParam(lUnits[2], ptINPUT1, poVAL, lUnits[0]);
+	routeParam(lUnits[2], ptINPUT2, poVAL, lUnits[1]);
+	setParam(lUnits[2], ptVOL1, poVAL, 0.5);
+	setParam(lUnits[2], ptVOL1, poRANGE, 0.4);
+
+	addOsc(usGLOBAL);
+	setParam(gUnits[0], ptFREQ, poVAL, 1);
+
+	routeParam(lUnits[2], ptVOL1, poMOD, gUnits[0]);
+
+	routeParam(lUnits[0], ptFREQ, poVAL, voiceFreq);
+	routeBool(lUnits[0], btACT, voiceActive);
+	routeParam(lUnits[1], ptFREQ, poVAL, voiceFreq);
+	routeBool(lUnits[1], btACT, voiceActive);
+
+
+
+	routeVoicesOutput(lUnits[2]);
+	routeMasterOutput(voicesOut);
+}
+
 
 void routeExample() {
 	setupRouting();
 
 	setVoiceCount(4);
 
-	rExample1();
+	rExample4();
 }

@@ -100,7 +100,7 @@ void setBool(unit *u, boolType type, char val) {
 		bSrc = gBools + 1;
 	}
 
-	for (i = 1; i < iMax; i++) {
+	for (i = 0; i < iMax; i++) {
 		b = getBoolParamAddress(u, type, i);
 		*b = bSrc;
 	}

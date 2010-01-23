@@ -26,11 +26,9 @@ void setupMixer2ch(mixer2ch *m) {
 void compMixer2ch(mixer2ch *m) {
 	m->val = 0;
 
-	/*if (*(m->act1) == 1) m->val += compParam(&(m->input1)); * compParam(&(m->vol1));*/
-	/*if (*(m->act2) == 1) m->val += compParam(&(m->input2)); * compParam(&(m->vol2));*/
+	if (*(m->act1) == 1) m->val += compParam(&(m->input1)) * compParam(&(m->vol1));
+	if (*(m->act2) == 1) m->val += compParam(&(m->input2)) * compParam(&(m->vol2));
 
-	/*m->val += *(m->input1.val) + *(m->input2.val);*/
-
-	m->val += compParam(&(m->input1));
-	m->val += compParam(&(m->input2));
+	/*m->val += compParam(&(m->input1));*/
+	/*m->val += compParam(&(m->input2));*/
 }
