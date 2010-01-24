@@ -8,14 +8,13 @@ features
 6 Module beliebig verknüpfbar (Routing) -> done
 7 Parameter Konstant oder Moduliert -> done
 8 Oszilatoren als Units -> done
-9 Filter als Units
+9 Filter als Units -> done
 0 Master Unit section -> done
 
 
 todo
 =========
-- routing api
-- load/save arrangements from file (JSON or YAML or WHATEVER)
+- load/save arrangements from file (JSON)
 
 
 future
