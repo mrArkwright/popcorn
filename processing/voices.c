@@ -63,6 +63,10 @@ void startVoice(int note, int velocity) { /* start playing a voice */
 	newVoice->freq = getFreq(note);
 	newVoice->velocity = velocity / 128.0;
 	newVoice->act = 1;
+
+#ifdef DEBUG_VOICES
+	debugVoices();
+#endif
 }
 
 void stopVoice(int note, int velocity) { /* stop all voices with specific note */
@@ -90,4 +94,31 @@ void stopVoice(int note, int velocity) { /* stop all voices with specific note *
 			actVoices--;
 		}
 	}
+
+#ifdef DEBUG_VOICES
+	debugVoices();
+#endif
 }
+
+#ifdef DEBUG_VOICES
+void debugVoices() {
+	int i, pre, post;
+
+	for (i = 0; i < voiceCount; i++) {
+		printf("voice%2d: ", i);
+		printf("act: %d   ", voices[i].act);
+
+		pre = (voices[i].preVoice == NULL) ? -1 : (voices[i].preVoice - voices);
+		printf("pre: voice%2d   ", pre);
+
+		post = (voices[i].postVoice == NULL) ? -1 : (voices[i].postVoice - voices);
+		printf("post: voice%2d   ", post);
+
+		printf("freq: %5f   ", voices[i].freq);
+		printf("vel: %f   ", voices[i].velocity);
+		printf("\n");
+	}
+
+	printf("\n");
+}
+#endif

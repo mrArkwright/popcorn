@@ -5,6 +5,8 @@
 #include "tools.h"
 #include "effects.h"
 
+#define DEBUG_VOICES
+
 extern int voiceCount;
 
 typedef struct voice {
@@ -30,5 +32,12 @@ void setupVoice(voice *);
 
 void startVoice(int note, int velocity);
 void stopVoice(int note, int velocity);
+
+
+/* Debug */
+
+#ifdef DEBUG_VOICES
+void debugVoices();
+#endif
 
 #endif
