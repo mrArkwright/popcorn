@@ -3,7 +3,7 @@
 
 /* --- Setup --- */
 
-void setupMixer2ch(mixer2ch *m) {
+void setupMixer2ch(mixer2ch *m) { /* set default static values for new 2 channel mixer */
 	m->val = 0;
 
 	m->act1 = gBools + 0;
@@ -25,12 +25,9 @@ void setupMixer2ch(mixer2ch *m) {
 
 /* --- Computing --- */
 
-void compMixer2ch(mixer2ch *m) {
+void compMixer2ch(mixer2ch *m) { /* compute current value of a 2 channel mixer */
 	m->val = 0;
 
 	if (*(m->act1) == 1) m->val += compParam(&(m->input1)) * compParam(&(m->vol1));
 	if (*(m->act2) == 1) m->val += compParam(&(m->input2)) * compParam(&(m->vol2));
-
-	/*m->val += compParam(&(m->input1));*/
-	/*m->val += compParam(&(m->input2));*/
 }
