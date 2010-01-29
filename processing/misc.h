@@ -1,23 +1,18 @@
-#ifndef MISC_H
-#define MISC_H
+#ifndef PROCESSING_MISC_H
+#define PROCESSING_MISC_H
 
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#define twoPi (2.0 * 3.14159265358979323846)
 
-/* TODO: use this pi */
-#define twoPi (2 * 3.14159265358979323846)
+#define defValueCount 4
 
-#define defParamCount 4
-
-extern float **gParams;
-extern int gParamCount;
+extern float **gValues;
+extern int gValueCount;
 extern char gBools[];
-extern float defParams[];
+extern float defValues[];
 
 extern unsigned int sampleRate;
 

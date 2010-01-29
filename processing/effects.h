@@ -1,5 +1,5 @@
-#ifndef EFFECTS_H
-#define EFFECTS_H
+#ifndef PROCESSING_EFFECTS_H
+#define PROCESSING_EFFECTS_H
 
 #include "misc.h"
 

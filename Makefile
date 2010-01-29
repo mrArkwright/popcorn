@@ -19,6 +19,7 @@ SRC+=processing/effects.c
 SRC+=processing/voices.c
 SRC+=processing/compute.c
 
+SRC+=misc.c
 SRC+=jack.c
 SRC+=main.c
 

@@ -9,16 +9,16 @@ void setupMixer2ch(mixer2ch *m) { /* set default static values for new 2 channel
 	m->act1 = gBools + 0;
 	m->act2 = gBools + 0;
 
-	m->vol1.val = defParams + 1;
+	m->vol1.val = defValues + 1;
 	setupParam(&(m->vol1));
 
-	m->vol2.val = defParams + 1;
+	m->vol2.val = defValues + 1;
 	setupParam(&(m->vol2));
 
-	m->input1.val = defParams + 0;
+	m->input1.val = defValues + 0;
 	setupParam(&(m->input1));
 
-	m->input2.val = defParams + 0;
+	m->input2.val = defValues + 0;
 	setupParam(&(m->input2));
 }
 

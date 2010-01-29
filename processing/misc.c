@@ -1,22 +1,22 @@
 #include "misc.h"
 
-float **gParams = NULL; /* all static values are saved in this array TODO: double pointer not needed!, rename to gValues! */
-int gParamCount = 0;
+float **gValues = NULL; /* array which holds all static values. pointers in array -> locations don't change*/
+int gValueCount = 0;
 char gBools[2] = {0, 1}; /* only 2 static bool values are needed */
-float defParams[defParamCount] = {0, 1, 440, 25}; /* some default static values for unit setup */
+float defValues[defValueCount] = {0, 1, 440, 25}; /* some default static values for unit setup*/
 
 
 /* --- Setup --- */
 
 void setupParam(param *p) { /* set default static values for new param */
-	p->mod = defParams + 0;
-	p->range = defParams + 1;
+	p->mod = defValues + 0;
+	p->range = defValues + 1;
 }
 
 
 /* --- Computing --- */
 
-float compParam(param *p) { /* compute current value of param with its 3 values TODO: inline ore some kind of speedup*/
+float compParam(param *p) { /* compute current value of param with its 3 values TODO: inline or some kind of speedup */
 	return *(p->val) + *(p->range) * *(p->mod);
 }
 
