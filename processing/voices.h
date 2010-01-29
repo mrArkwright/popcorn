@@ -19,7 +19,7 @@ typedef struct voice {
 
 extern voice *voices;
 extern voice *firstVoice, *lastVoice;
-extern float actVoices;
+extern int actVoices;
 
 
 /* --- Setup --- */

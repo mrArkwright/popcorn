@@ -3,7 +3,7 @@
 int voiceCount; /* number of voices to setup and compute */
 voice *voices = NULL; /* array which holds all voices */
 voice *firstVoice, *lastVoice; /* pointers to the first and last voice that is playing */
-float actVoices; /* number of currently playing voices */
+int actVoices; /* number of currently playing voices */
 
 
 /* --- Setup --- */
@@ -102,7 +102,15 @@ void stopVoice(int note, int velocity) { /* stop all voices with specific note *
 
 #ifdef DEBUG_VOICES
 void debugVoices() {
-	int i, pre, post;
+	int i, pre, post, first, last;
+
+	printf("active voices: %d\n", actVoices);
+
+	first = firstVoice - voices;
+	printf("first voice: %d\n", first);
+
+	last = lastVoice - voices;
+	printf("last voice: %d\n", last);
 
 	for (i = 0; i < voiceCount; i++) {
 		printf("voice%2d: ", i);
