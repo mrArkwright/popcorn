@@ -8,13 +8,13 @@ void setupOsc(osc *o) { /* set default static vaules for new osc */
 	o->phase = 0;
 	o->func = &oscSin;
 
-	o->freq.val = defParams + 2;
+	o->freq.val = defValues + 2;
 	setupParam(&(o->freq));
 
-	o->vol.val = defParams + 1;
+	o->vol.val = defValues + 1;
 	setupParam(&(o->vol));
 
-	o->param1.val = defParams + 0;
+	o->param1.val = defValues + 0;
 	setupParam(&(o->param1));
 }
 
@@ -43,16 +43,16 @@ float oscSin(float phase, float spp, float param1) { /* compute sine-osc value T
 	param1 = param1 / 2 + 0.5;
 
 	if (phase < spp * param1) { /* split sine-wave at a point, specified by param1 */
-		out = sin(phase * 2*M_PI / spp / (2 * param1)); /* readjust freq for first and second part of sine-wave */
+		out = sin(phase * twoPi / spp / (2 * param1)); /* readjust freq for first and second part of sine-wave */
 	} else {
 		phase += spp * (1 - 2 * param1);
-		out = sin(phase * 2*M_PI / spp / (2 - 2 * param1));
+		out = sin(phase * twoPi / spp / (2 - 2 * param1));
 	}
 
 	return out;
 }
 
-float oscTri(float phase, float spp, float param1) { /* compute triangle-osc value TODO: is this working proper?? */
+float oscTri(float phase, float spp, float param1) { /* compute triangle-osc value  */
 	float out;
 
 	param1 = param1 / 2 + 0.5;

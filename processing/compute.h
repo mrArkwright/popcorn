@@ -1,5 +1,5 @@
-#ifndef COMPUTE_H
-#define COMPUTE_H
+#ifndef PROCESSING_COMPUTE_H
+#define PROCESSING_COMPUTE_H
 
 #include "oscillators.h"
 #include "tools.h"
