@@ -3,21 +3,21 @@
 
 #include "misc.h"
 
-typedef struct {
-	float val;
-	param cutoff, input;
+typedef struct { /* type for lowpass-filter units */
+	float val; /* current value of the filter */
+	param cutoff, input; /* input and cutoff-freq of the filter TODO: input is no param */
 } fxLowpass;
 
-typedef struct {
-	float val;
-	float tmp;
-	param cutoff, input;
+typedef struct { /* type for highpass-filter units */
+	float val; /* current value of the filter */
+	float tmp; /* last value for internal computing */
+	param cutoff, input; /* input and cutoff-freq of the filter TODO: input is no param */
 } fxHighpass;
 
-typedef struct {
-	float val;
-	float tmp;
-	param freq, bandwidth, input;
+typedef struct { /* type for bandpass-filter units */
+	float val; /* current value of the fiter */
+	float tmp; /* last value for internal computing */
+	param freq, bandwidth, input; /* input, center-freq and bandwidth of the filter TODO: input is no param */
 } fxBandpass;
 
 
@@ -33,24 +33,5 @@ void setupFxBandpass(fxBandpass *);
 void compFxLowpass(fxLowpass *);
 void compFxHighpass(fxHighpass *);
 void compFxBandpass(fxBandpass *);
-
-
-
-
-
-
-/*typedef struct {
-	char init;
-	char act;
-	float val;
-	
-} fxBandpass;
-
-float iirCutoff;
-
-float fxEcho(float);
-float fxFIR(float);
-float fxIIR(float);
-float fxIIRTest(float, float);*/
 
 #endif

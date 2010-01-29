@@ -9,6 +9,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+/* TODO: use this pi */
+#define twoPi (2 * 3.14159265358979323846)
+
 #define defParamCount 4
 
 extern float **gParams;
@@ -18,10 +21,10 @@ extern float defParams[];
 
 extern unsigned int sampleRate;
 
-typedef struct {
-	float *val;
-	float *mod;
-	float *range;
+typedef struct { /* type used for all routable params. therefore values of params are always pointers */
+	float *val; /* center-value for param */
+	float *mod; /* "val" can be modulated by this value */
+	float *range; /* the range by which "mod" modulates "val" */
 } param;
 
 

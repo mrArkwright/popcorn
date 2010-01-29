@@ -3,11 +3,11 @@
 
 #include "misc.h"
 
-typedef struct {
-	float val;
+typedef struct { /* type for oscillator units TODO: phase shifting, reinit by restart */
+	float val; /* the current value of a the osc */
 	float phase;
-	float (*func)(float, float, float);
-	param freq, vol, param1;
+	float (*func)(float, float, float); /* specific compute function (oscSin etc) */
+	param freq, vol, param1; /* the freq, volume and pulse modulation (or s.th. similar) */
 } osc;
 
 

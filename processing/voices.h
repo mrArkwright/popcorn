@@ -5,19 +5,21 @@
 #include "tools.h"
 #include "effects.h"
 
+#define DEBUG_VOICES
+
 extern int voiceCount;
 
 typedef struct voice {
-	char act;
-	struct voice *preVoice, *postVoice;
+	char act; /* voice is playing */
+	struct voice *preVoice, *postVoice; /* poiners to preceding and succeding voice for voice-steeling-algorithm */
 	float freq;
 	float velocity;
-	float *output;
+	float *output; /* pointer to an output value of a local unit for the voices-summing */
 } voice;
 
 extern voice *voices;
 extern voice *firstVoice, *lastVoice;
-extern float actVoices;
+extern int actVoices;
 
 
 /* --- Setup --- */
@@ -30,5 +32,12 @@ void setupVoice(voice *);
 
 void startVoice(int note, int velocity);
 void stopVoice(int note, int velocity);
+
+
+/* Debug */
+
+#ifdef DEBUG_VOICES
+void debugVoices();
+#endif
 
 #endif

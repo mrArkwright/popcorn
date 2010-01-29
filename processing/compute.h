@@ -6,12 +6,12 @@
 #include "effects.h"
 #include "voices.h"
 
-typedef struct {
-	char scope;
-	char type;
-	char **acts;
-	void **units;
-	void (*comp)(void *);
+typedef struct { /* type for all local and global units */
+	char scope; /* is unit local (usLOCAL) or global (usGLOBAL), specified with enum unitScope */
+	char type; /* type of the unit is one of enum unitType (e.g. utOSC) */
+	char **acts; /* inner unit will only be computed, if this points to a value unequal 0 */
+	void **units; /* inner units. global units have exactly one, local units have an inner unit for every voice */
+	void (*comp)(void *); /* pointer to computing function of the unit type */
 } unit;
 
 extern unit **gUnits;

@@ -184,6 +184,24 @@ void rExample6() {
 	routeMasterOutput(gUnits[0]);
 }
 
+void rExample7() {
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+	addOsc(usLOCAL);
+
+	routeParam(lUnits[0], ptFREQ, poVAL, voiceFreq);
+	routeBool(lUnits[0], btACT, voiceActive);
+
+	routeVoicesOutput(lUnits[0]);
+
+	routeMasterOutput(voicesOut);
+}
+
 
 void routeExample() {
 	setupRouting();

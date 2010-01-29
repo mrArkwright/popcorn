@@ -1,19 +1,19 @@
 #include "routing.h"
 
-unit voiceDummies[4];
+unit voiceDummies[4]; /* dummy units for voice routing. they have no real function and no params. you can only route the output to other units */
 unit *voiceActive = voiceDummies, *voiceFreq = voiceDummies + 1, *voiceVelocity = voiceDummies + 2, *voicesOut = voiceDummies + 3;
 
 
 /* --- Configuration API --- */
 
 /* - common */
-void setVoiceCount(int count) {
+void setVoiceCount(int count) { /* set up specified number of voices. always call this before routing! */
 	voiceCount = count;
 
-	setupVoices();
+	setupVoices(); /* TODO: cleanup existing voices */
 }
 
-void setupRouting() {
+void setupRouting() { /* set up some important variables. always call this before routing! */
 	masterOutput = defParams + 0;
 
 	voiceActive->scope = usLOCAL;
@@ -29,60 +29,60 @@ void setupRouting() {
 	voicesOut->type = utVOICE_OUTPUT;
 }
 
-void routeMasterOutput(unit *src) {
-	if (src->scope == usGLOBAL) {
+void routeMasterOutput(unit *src) { /* routes maste output to output of a unit */
+	if (src->scope == usGLOBAL) { /* master output can't be routed to a local unit */
 		masterOutput = getValAddress(src, 0);
-	}
+	} /* TODO: error return? */
 }
 
-void routeVoicesOutput(unit *src) {
+void routeVoicesOutput(unit *src) { /* routes voicesOutput to output of a unit */
 	int i;
 	
-	if (src->scope == usLOCAL) {
+	if (src->scope == usLOCAL) { /* voices output can't be routed to a global unit */
 		for (i = 0; i < voiceCount; i++) {
 			voices[i].output = getValAddress(src, i);
 		}
-	}
+	} /* TODO: error return? */
 }
 
 /* - Params */
-void setParam(unit *u, paramType type, paramOption option, float val) {
+void setParam(unit *u, paramType type, paramOption option, float val) { /* sets value of a param to static value */
 	float **p, **pLoc;
 	int i;
 
-	p = getParamAddress(u, type, option, 0);
+	p = getParamAddress(u, type, option, 0); /* get pointer to the value. if unit is global there is only one, if local we only need the first one here */
 
-	if (!isGlobalParam(p)) {
+	if (!isGlobalParam(p)) { /* create a new static value, if value is no */
 		*p = addGlobalParam();
 	}
 
-	if (u->scope == usLOCAL) {
+	if (u->scope == usLOCAL) { /* if unit is local, set all values of inner units to the same value */
 		for (i = 1; i < voiceCount; i++) {
-			pLoc = getParamAddress(u, type, option, i);
+			pLoc = getParamAddress(u, type, option, i); /* get pointer to the value to set */
 			*pLoc = *p;
 		}
 	}
 
-	**p = val;
+	**p = val; /* cahnge content of the value to specified value */
 }
 
-void routeParam(unit *u, paramType type, paramOption option, unit *src) {
+void routeParam(unit *u, paramType type, paramOption option, unit *src) { /* routes value of a param to another unit */
 	float **p, *pSrc;
 	int i;
 
-	/* wenn gParam -> löschen*/
+	/* TODO: delete gParam if it was one before */
 
-	if (u->scope == usGLOBAL) {
+	if (u->scope == usGLOBAL) { /* unit to route is global -> src-unit has to be global too */
 		if (src->scope == usGLOBAL) {
-			p = getParamAddress(u, type, option, 0); /* unit gibt zB bool zurück wenn ergebniss == NULL -> fehler */
-			pSrc = getValAddress(src, 0);
+			p = getParamAddress(u, type, option, 0); /* get pointer to the value to route TODO: error if value doesn't exist */
+			pSrc = getValAddress(src, 0); /* get output of src-unit */
 
-			*p = pSrc;
-		} /* else fehler */
+			*p = pSrc; /* route! */
+		} /* error if src-unit is local */
 	} else {
-		for (i = 0; i < voiceCount; i++) {
+		for (i = 0; i < voiceCount; i++) { /* route value for every inner unit of local unit */
 			p = getParamAddress(u, type, option, i);
-			pSrc = getValAddress(src, ((src->scope == usGLOBAL) ? 0 : i));
+			pSrc = getValAddress(src, ((src->scope == usGLOBAL) ? 0 : i)); /* if src is global, all values are routed to the same value */
 
 			*p = pSrc;
 		}
@@ -90,35 +90,35 @@ void routeParam(unit *u, paramType type, paramOption option, unit *src) {
 }
 
 /* - Bools */
-void setBool(unit *u, boolType type, char val) {
+void setBool(unit *u, boolType type, char val) { /* sets bool value to static value */
 	char **b, *bSrc;
 	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
 
-	if (val == 0) {
+	if (val == 0) { /* bools can only have two specific values */
 		bSrc = gBools + 0;
 	} else {
 		bSrc = gBools + 1;
 	}
 
 	for (i = 0; i < iMax; i++) {
-		b = getBoolParamAddress(u, type, i);
+		b = getBoolParamAddress(u, type, i); /* get pointer to the value to set */
 		*b = bSrc;
 	}
 }
 
-void routeBool(unit *u, boolType type, unit *src) {
+void routeBool(unit *u, boolType type, unit *src) { /* routes bool value to another unit */
 	char **b, *bSrc;
 	int i;
 
-	if (u->scope == usGLOBAL) {
+	if (u->scope == usGLOBAL) { /* unit to route is global -> src->unit has to be global too */
 		if (src->scope == usGLOBAL) {
-			b = getBoolParamAddress(u, type, 0);
+			b = getBoolParamAddress(u, type, 0); /* get pointer to the value to route TODO: errorhandling */
 			bSrc = getBoolValAddress(src, 0);
 
 			*b = bSrc;
-		} /* else fehler */
+		} /* TODO: errorhandling */
 	} else {
-		for (i = 0; i < voiceCount; i++) {
+		for (i = 0; i < voiceCount; i++) { /* route value for every inner unit of local unit */
 			b = getBoolParamAddress(u, type, i);
 			bSrc = getBoolValAddress(src, ((src->scope == usGLOBAL) ? 0 : i));
 
@@ -129,41 +129,41 @@ void routeBool(unit *u, boolType type, unit *src) {
 
 
 /* - Oscillators */
-unit *addOsc(unitScope scope) {
-	unit *newUnit = addUnit(scope);
+unit *addOsc(unitScope scope) { /* add oscillator unit */
+	unit *newUnit = addUnit(scope); /* adding and setting up basics for new unit*/
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utOSC;
-	newUnit->comp = (void (*)(void *))&compOsc;
+	newUnit->comp = (void (*)(void *))&compOsc; /* setup computing function for unit */
 
-	for (i = 0; i < iMax; i++) {
-		newUnit->units[i] = malloc(sizeof(osc));
-		setupOsc(newUnit->units[i]);
+	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
+		newUnit->units[i] = malloc(sizeof(osc)); /* allocate memory for every inner unit */
+		setupOsc(newUnit->units[i]); /* specific setup for oscillator */
 	}
 
 	return newUnit;
 }
 
-void setOscType(unit *u, oscType type) {
+void setOscType(unit *u, oscType type) { /* set the type of an oscillator (sine, rectangle etc) */
 	int i, iMax = ((u->scope == usGLOBAL) ? 1 : voiceCount);
 
-	for (i = 0; i < iMax; i++) {
+	for (i = 0; i < iMax; i++) { /* for every inner unit */
 		((osc *)(u->units[i]))->func = getOscFunc(type);
 	}
 }
 
 
 /* - Mixers*/
-unit *addMixer2ch(unitScope scope) {
-	unit *newUnit = addUnit(scope);
+unit *addMixer2ch(unitScope scope) { /* add 2 channel mixer unit */
+	unit *newUnit = addUnit(scope); /* adding and setting up basics for new unit*/
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utMIXER2CH;
-	newUnit->comp = (void (*)(void *))&compMixer2ch;
+	newUnit->comp = (void (*)(void *))&compMixer2ch; /* setup computing function for unit */
 
-	for (i = 0; i < iMax; i++) {
-		newUnit->units[i] = malloc(sizeof(mixer2ch));
-		setupMixer2ch(newUnit->units[i]);
+	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
+		newUnit->units[i] = malloc(sizeof(mixer2ch)); /* allocate memory for every inner unit */
+		setupMixer2ch(newUnit->units[i]); /* specific setup for 2 channel mixer */
 	}
 
 	return newUnit;
@@ -172,15 +172,15 @@ unit *addMixer2ch(unitScope scope) {
 
 /* - Lowpass-Filter */
 unit *addFxLowpass(unitScope scope) {
-	unit *newUnit = addUnit(scope);
+	unit *newUnit = addUnit(scope); /* adding and setting up basics for new unit*/
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utFX_LOWPASS;
-	newUnit->comp = (void (*)(void *))&compFxLowpass;
+	newUnit->comp = (void (*)(void *))&compFxLowpass; /* setup computing function for unit */
 
-	for (i = 0; i < iMax; i++) {
-		newUnit->units[i] = malloc(sizeof(fxLowpass));
-		setupFxLowpass(newUnit->units[i]);
+	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
+		newUnit->units[i] = malloc(sizeof(fxLowpass)); /* allocate memory for every inner unit */
+		setupFxLowpass(newUnit->units[i]); /* specific setup for lowpass filter */
 	}
 
 	return newUnit;
@@ -189,15 +189,15 @@ unit *addFxLowpass(unitScope scope) {
 
 /* - Highpass-Filter */
 unit *addFxHighpass(unitScope scope) {
-	unit *newUnit = addUnit(scope);
+	unit *newUnit = addUnit(scope); /* adding and setting up basics for new unit*/
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utFX_HIGHPASS;
-	newUnit->comp = (void (*)(void *))&compFxHighpass;
+	newUnit->comp = (void (*)(void *))&compFxHighpass; /* setup computing function for unit */
 
-	for (i = 0; i < iMax; i++) {
-		newUnit->units[i] = malloc(sizeof(fxHighpass));
-		setupFxHighpass(newUnit->units[i]);
+	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
+		newUnit->units[i] = malloc(sizeof(fxHighpass)); /* allocate memory for every inner unit */
+		setupFxHighpass(newUnit->units[i]); /* specific setup for highpass filter */
 	}
 
 	return newUnit;
@@ -205,15 +205,15 @@ unit *addFxHighpass(unitScope scope) {
 
 /* - Bandpass-Filter */
 unit *addFxBandpass(unitScope scope) {
-	unit *newUnit = addUnit(scope);
+	unit *newUnit = addUnit(scope); /* adding and setting up basics for new unit*/
 	int i, iMax = ((scope == usGLOBAL) ? 1 : voiceCount);
 
 	newUnit->type = utFX_BANDPASS;
-	newUnit->comp = (void (*)(void *))&compFxBandpass;
+	newUnit->comp = (void (*)(void *))&compFxBandpass; /* setup computing function for unit */
 
-	for (i = 0; i < iMax; i++) {
-		newUnit->units[i] = malloc(sizeof(fxBandpass));
-		setupFxBandpass(newUnit->units[i]);
+	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
+		newUnit->units[i] = malloc(sizeof(fxBandpass)); /* allocate memory for every inner unit */
+		setupFxBandpass(newUnit->units[i]); /* specific setup for bandpass filter */
 	}
 
 	return newUnit;
@@ -224,27 +224,27 @@ unit *addFxBandpass(unitScope scope) {
 /* ---Helpers ---*/
 
 /* - common */
-unit *addUnit(unitScope scope) {
+unit *addUnit(unitScope scope) { /* adds a new unit and allocates memory */
 	unit *newUnit;
 	int i;
 
 	if (scope == usGLOBAL) {
 		gUnitCount++;
-		gUnits = realloc(gUnits, sizeof(unit *) * gUnitCount);
+		gUnits = realloc(gUnits, sizeof(unit *) * gUnitCount); /* gUnit array grows */
 		newUnit = gUnits[gUnitCount - 1] = malloc(sizeof(unit));
 
-		newUnit->units = malloc(sizeof(void *));
+		newUnit->units = malloc(sizeof(void *)); /* allocate memory for single inner unit */
 		newUnit->acts = malloc(sizeof(char *));
-		newUnit->acts[0] = gBools + 1;
+		newUnit->acts[0] = gBools + 1; /* sets inner unit to active */
 	} else {
 		lUnitCount++;
-		lUnits = realloc(lUnits, sizeof(unit *) * lUnitCount);
+		lUnits = realloc(lUnits, sizeof(unit *) * lUnitCount); /* lUnit array grows */
 		newUnit = lUnits[lUnitCount - 1] = malloc(sizeof(unit));
 
-		newUnit->units = malloc(sizeof(void *) * voiceCount);
+		newUnit->units = malloc(sizeof(void *) * voiceCount); /* allocate memory for every inner unit */
 		newUnit->acts = malloc(sizeof(char *) * voiceCount);
 		for (i = 0; i < voiceCount; i++) {
-			newUnit->acts[i] = gBools + 1;
+			newUnit->acts[i] = gBools + 1; /* set all inner units to active */
 		}
 	}
 
@@ -254,14 +254,14 @@ unit *addUnit(unitScope scope) {
 }
 
 /* - Params */
-float *addGlobalParam() {
+float *addGlobalParam() { /* add an allocate new static value */
 	gParamCount++;
-	gParams = realloc(gParams, sizeof(float *) * gParamCount);
+	gParams = realloc(gParams, sizeof(float *) * gParamCount); /* array grows */
 	gParams[gParamCount - 1] = malloc(sizeof(float));
 	return gParams[gParamCount - 1];
 }
 
-float **getParamAddress(unit *u, paramType type, paramOption option, int i) {
+float **getParamAddress(unit *u, paramType type, paramOption option, int i) { /* get address of a value for changing it */
 	param *p;
 	
 	/* Unit-Type-Params */
@@ -316,7 +316,7 @@ float **getParamAddress(unit *u, paramType type, paramOption option, int i) {
 	}
 }
 
-char isGlobalParam(float **p) {
+char isGlobalParam(float **p) { /* checks if value is global static value */
 	int i;
 
 	for (i = 0; i < gParamCount; i++) {
@@ -326,7 +326,7 @@ char isGlobalParam(float **p) {
 	return 0;
 }
 
-float *getValAddress(unit *u, int i) {
+float *getValAddress(unit *u, int i) { /* get address of unit output for routing it */
 
 	/* Unit-Type-Vals */
 	switch (u->type) {
@@ -343,7 +343,7 @@ float *getValAddress(unit *u, int i) {
 }
 
 /* - Bools */
-char **getBoolParamAddress(unit *u, boolType type, int i) {
+char **getBoolParamAddress(unit *u, boolType type, int i) { /* get address of bool value for cahnging it */
 	switch (type) {
 		case btACT: return &(u->acts[i]);
 		default: break;
@@ -362,7 +362,7 @@ char **getBoolParamAddress(unit *u, boolType type, int i) {
 	}
 }
 
-char *getBoolValAddress(unit *u, int i) {
+char *getBoolValAddress(unit *u, int i) { /* get address of unit bool output for routing it */
 	
 	/* Unit-Type-Bool-Vals*/
 	switch (u->type) {
@@ -372,7 +372,7 @@ char *getBoolValAddress(unit *u, int i) {
 }
 
 /* - Oscillators */
-float (*getOscFunc(oscType type))(float, float, float) {
+float (*getOscFunc(oscType type))(float, float, float) { /* returns pointer to oscillators inner computing function of specified type */
 
 	/* Oscillator Types */
 	switch (type) {
