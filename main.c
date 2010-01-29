@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	jack_client_t *client;
 
 	/* route */
-	routeExample();
+	routing();
 
 	/* jack */
 	client = jack_client_new("popcorn");
