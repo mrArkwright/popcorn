@@ -100,6 +100,14 @@ void stopVoice(int note, int velocity) { /* stop all voices with specific note *
 #endif
 }
 
+void killVoices(void) {
+	int i;
+
+	for (i=0; i< voiceCount; i++) {
+		voices[i].act = 0;
+	}
+}
+
 #ifdef DEBUG_VOICES
 void debugVoices() {
 	int i, pre, post, first, last;
