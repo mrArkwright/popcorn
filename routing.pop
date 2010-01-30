@@ -1,0 +1,23 @@
+{
+	"config":	{
+		"voices":	4 
+	},
+	"config":{
+		"voices" : 8
+	},
+	"locals":	[
+		{
+			"name":	"start", 
+			"type":	[ "osc", "rect" ],
+			"parameters":	{
+				"freq_value":	"voiceFreq",
+				"activity" : "voiceActive"
+			} 
+		}
+		], 
+	"globals":	[	],
+	"outputs" :{
+		"local" : "start",
+		"global" : "voicesOut"
+	}
+}
