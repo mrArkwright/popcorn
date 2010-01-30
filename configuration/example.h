@@ -1,5 +1,5 @@
-#ifndef EXMAPLE_H
-#define EXMAPLE_H
+#ifndef CONFIGURATION_EXMAPLE_H
+#define CONFIGURATION_EXMAPLE_H
 
 #include "routing.h"
 

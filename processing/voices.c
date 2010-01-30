@@ -25,7 +25,7 @@ void setupVoice(voice* v) { /* setup single voice */
 	v->preVoice = NULL;
 	v->postVoice = NULL;
 
-	v->output = defParams + 0;
+	v->output = defValues + 0;
 }
 
 
