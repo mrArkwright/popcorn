@@ -1,4 +1,4 @@
-#CC=clang
+CC=clang
 CFLAGS=-Wall -Wextra -pedantic -std=c89
 CFLAGS+=-ggdb3
 
