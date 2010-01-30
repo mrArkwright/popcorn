@@ -76,11 +76,7 @@ unit *initUnit( cJSON* type, unitScope scope ){
 int routing(){
 	cJSON *root, *config, *locals,*globals,*outputs, *tmp,*scndTmp;
 
-	cJSON *type, *name, *parameters, 
-		*vol_range, *vol_val, *vol_mod,
-		*param1_range, *param1_val, *param1_mod,
-		*freq_range, *freq_val, *freq_mod,
-		*activity;
+	cJSON *type, *name, *parameters;
 	int i, voices_count;
 	
 	ListElement *hashList[256];
