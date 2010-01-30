@@ -43,7 +43,6 @@ ListElement *getFromHashlist( char* name,ListElement** hashList){
 			return tmp;
 		else
 			tmp = tmp->next;
-	return NULL;
 	}
 	return tmp;
 }

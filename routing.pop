@@ -1,20 +1,38 @@
 {
-	"config":{
-		"voices" : 8
+	"config":	{
+		"voices":	4 
 	},
 	"locals":	[
 		{
 			"name":	"start", 
-			"type":	[ "osc", "rect" ],
+			"type":	[ "osc", "tri" ],
 			"parameters":	{
 				"freq_value":	"voiceFreq",
 				"activity" : "voiceActive"
 			} 
+		},
+		{
+			"name" : "tri",
+			"type": [ "osc", "tri" ],
+			"parameters" : {
+				"freq_value" : 2,
+				"param1_value" : 0.3
+			}
+		},
+		{
+			"name" : "bandpass",
+			"type": [ "bandpass" ],
+			"parameters" : {
+				"freq_value" : 1500,
+				"freq_range" : 1490,
+				"freq_mod" : "tri",
+				"input1_value" : "start"
+			}
 		}
 		], 
 	"globals":	[	],
 	"outputs" :{
-		"local" : "start",
+		"local" : "bandpass",
 		"global" : "voicesOut"
 	}
 }
