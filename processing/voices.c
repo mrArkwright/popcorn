@@ -13,7 +13,7 @@ void setupVoices() { /* setup specified number of voices */
 
 	actVoices = 0; /* no voices are playing */
 
-	voices = realloc(voices, sizeof(voice) * voiceCount); /* allocate memory for voices TODO: write allocate wrappers (new global misc file!!) */
+	voices = realloc(voices, sizeof(voice) * voiceCount); /* allocate memory for voices */
 
 	for (i = 0; i < voiceCount; i++) {
 		setupVoice(voices + i);

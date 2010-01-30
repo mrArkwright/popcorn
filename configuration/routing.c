@@ -29,7 +29,7 @@ void setupRouting() { /* set up some important variables. always call this befor
 	voicesOut->type = utVOICE_OUTPUT;
 }
 
-void routeMasterOutput(unit *src) { /* routes maste output to output of a unit */
+void routeMasterOutput(unit *src) { /* routes master output to output of a unit */
 	if (src->scope == usGLOBAL) { /* master output can't be routed to a local unit */
 		masterOutput = getValAddress(src, 0);
 	} /* TODO: error return? */
