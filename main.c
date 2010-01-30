@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <jack/jack.h>
 
-#include "configuration/example.h"
+#include "configuration/json.h"
 #include "jack.h"
 
 jack_port_t *output_port;

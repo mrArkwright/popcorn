@@ -173,8 +173,14 @@ int routing(){
 		if(freq_mod !=NULL && freq_mod->type ==cJSON_Number) 
 			setParam(current, ptFREQ, poMOD, freq_mod->valuedouble);
 
-		if(activity !=NULL && ( activity->type ==cJSON_Boolean || activity->type == cJSON_Number) ) 
-			setBool(current, btACT, freq_mod->valueint);
+		if(activity !=NULL && ( activity->type ==cJSON_True ||activity->type ==cJSON_False  || activity->type == cJSON_Number) ) 
+			if(activity->type == cJSON_Number)
+				setBool(current, btACT, freq_mod->valueint);
+			else if (activity->type == cJSON_True)
+				setBool(current, btACT, 1);
+			else if (activity->type == cJSON_False)
+				setBool(current, btACT, 0);
+
 		tmp=tmp->next;
 	}
 
