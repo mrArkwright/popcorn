@@ -1,5 +1,15 @@
 #include "example.h"
 
+void rExampleSin() {
+	addOsc(usLOCAL);
+
+	routeParam(lUnits[0], ptFREQ, poVAL, voiceFreq);
+	routeBool(lUnits[0], btACT, voiceActive);
+
+	routeVoicesOutput(lUnits[0]);
+	routeMasterOutput(voicesOut);
+}
+
 void rExample1() {
 	/* adding and setting up units */
 	addOsc(usLOCAL);
@@ -202,11 +212,10 @@ void rExample7() {
 	routeMasterOutput(voicesOut);
 }
 
-
 void routeExample() {
 	setupRouting();
 
 	setVoiceCount(4);
 
-	rExample6();
+	rExampleSin();
 }

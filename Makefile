@@ -1,16 +1,18 @@
-#CC=clang
+CC=clang
 CFLAGS=-Wall -Wextra -pedantic -std=c89
 CFLAGS+=-ggdb3
 
 #JackOSX
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+#export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-CFLAGS+=`pkg-config --cflags jack`
+CFLAGS+=`pkg-config --cflags jack` -I. -Iconfiguration
 LIBS+=`pkg-config --libs jack` -lm
 
 
 SRC+=configuration/routing.c
-SRC+=configuration/example.c
+SRC+=configuration/json.c
+SRC+=configuration/hash.c
+SRC+=configuration/cJSON.c
 
 SRC+=processing/misc.c
 SRC+=processing/oscillators.c
@@ -20,6 +22,7 @@ SRC+=processing/voices.c
 SRC+=processing/compute.c
 
 SRC+=misc.c
+SRC+=getopt.c
 SRC+=jack.c
 SRC+=main.c
 
