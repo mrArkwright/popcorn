@@ -1,11 +1,11 @@
-#ifndef VOICES_H
-#define VOICES_H
+#ifndef PROCESSING_VOICES_H
+#define PROCESSING_VOICES_H
 
 #include "oscillators.h"
 #include "tools.h"
 #include "effects.h"
 
-#define DEBUG_VOICES
+/*#define DEBUG_VOICES*/
 
 extern int voiceCount;
 

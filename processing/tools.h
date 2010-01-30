@@ -1,5 +1,5 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef PROCESSING_TOOLS_H
+#define PROCESSING_TOOLS_H
 
 #include "misc.h"
 

@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <jack/jack.h>
 
-#include "configuration/example.h"
+#include "configuration/json.h"
 #include "jack.h"
 
 jack_port_t *output_port;
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	jack_client_t *client;
 
 	/* route */
-	routeExample();
+	routing();
 
 	/* jack */
 	client = jack_client_new("popcorn");

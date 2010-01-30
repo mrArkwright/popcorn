@@ -1,6 +1,7 @@
-#ifndef ROUTING_H
-#define ROUTING_H
+#ifndef CONFIGURATION_ROUTING_H
+#define CONFIGURATION_ROUTING_H
 
+#include "../misc.h"
 #include "../processing/misc.h"
 #include "../processing/oscillators.h"
 #include "../processing/compute.h"

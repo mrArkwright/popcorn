@@ -1,5 +1,5 @@
-#ifndef OSCILLATORS_H
-#define OSCILLATORS_H
+#ifndef PROCESSING_OSCILLATORS_H
+#define PROCESSING_OSCILLATORS_H
 
 #include "misc.h"
 

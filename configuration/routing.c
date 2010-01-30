@@ -14,7 +14,7 @@ void setVoiceCount(int count) { /* set up specified number of voices. always cal
 }
 
 void setupRouting() { /* set up some important variables. always call this before routing! */
-	masterOutput = defParams + 0;
+	masterOutput = defValues + 0;
 
 	voiceActive->scope = usLOCAL;
 	voiceActive->type = utVOICE_ACT;
@@ -137,7 +137,7 @@ unit *addOsc(unitScope scope) { /* add oscillator unit */
 	newUnit->comp = (void (*)(void *))&compOsc; /* setup computing function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
-		newUnit->units[i] = malloc(sizeof(osc)); /* allocate memory for every inner unit */
+		newUnit->units[i] = ecMalloc(sizeof(osc)); /* allocate memory for every inner unit */
 		setupOsc(newUnit->units[i]); /* specific setup for oscillator */
 	}
 
@@ -162,7 +162,7 @@ unit *addMixer2ch(unitScope scope) { /* add 2 channel mixer unit */
 	newUnit->comp = (void (*)(void *))&compMixer2ch; /* setup computing function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
-		newUnit->units[i] = malloc(sizeof(mixer2ch)); /* allocate memory for every inner unit */
+		newUnit->units[i] = ecMalloc(sizeof(mixer2ch)); /* allocate memory for every inner unit */
 		setupMixer2ch(newUnit->units[i]); /* specific setup for 2 channel mixer */
 	}
 
@@ -179,7 +179,7 @@ unit *addFxLowpass(unitScope scope) {
 	newUnit->comp = (void (*)(void *))&compFxLowpass; /* setup computing function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
-		newUnit->units[i] = malloc(sizeof(fxLowpass)); /* allocate memory for every inner unit */
+		newUnit->units[i] = ecMalloc(sizeof(fxLowpass)); /* allocate memory for every inner unit */
 		setupFxLowpass(newUnit->units[i]); /* specific setup for lowpass filter */
 	}
 
@@ -196,7 +196,7 @@ unit *addFxHighpass(unitScope scope) {
 	newUnit->comp = (void (*)(void *))&compFxHighpass; /* setup computing function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
-		newUnit->units[i] = malloc(sizeof(fxHighpass)); /* allocate memory for every inner unit */
+		newUnit->units[i] = ecMalloc(sizeof(fxHighpass)); /* allocate memory for every inner unit */
 		setupFxHighpass(newUnit->units[i]); /* specific setup for highpass filter */
 	}
 
@@ -212,7 +212,7 @@ unit *addFxBandpass(unitScope scope) {
 	newUnit->comp = (void (*)(void *))&compFxBandpass; /* setup computing function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
-		newUnit->units[i] = malloc(sizeof(fxBandpass)); /* allocate memory for every inner unit */
+		newUnit->units[i] = ecMalloc(sizeof(fxBandpass)); /* allocate memory for every inner unit */
 		setupFxBandpass(newUnit->units[i]); /* specific setup for bandpass filter */
 	}
 
@@ -230,19 +230,19 @@ unit *addUnit(unitScope scope) { /* adds a new unit and allocates memory */
 
 	if (scope == usGLOBAL) {
 		gUnitCount++;
-		gUnits = realloc(gUnits, sizeof(unit *) * gUnitCount); /* gUnit array grows */
-		newUnit = gUnits[gUnitCount - 1] = malloc(sizeof(unit));
+		gUnits = ecRealloc(gUnits, sizeof(unit *) * gUnitCount); /* gUnit array grows */
+		newUnit = gUnits[gUnitCount - 1] = ecMalloc(sizeof(unit));
 
-		newUnit->units = malloc(sizeof(void *)); /* allocate memory for single inner unit */
-		newUnit->acts = malloc(sizeof(char *));
+		newUnit->units = ecMalloc(sizeof(void *)); /* allocate memory for single inner unit */
+		newUnit->acts = ecMalloc(sizeof(char *));
 		newUnit->acts[0] = gBools + 1; /* sets inner unit to active */
 	} else {
 		lUnitCount++;
-		lUnits = realloc(lUnits, sizeof(unit *) * lUnitCount); /* lUnit array grows */
-		newUnit = lUnits[lUnitCount - 1] = malloc(sizeof(unit));
+		lUnits = ecRealloc(lUnits, sizeof(unit *) * lUnitCount); /* lUnit array grows */
+		newUnit = lUnits[lUnitCount - 1] = ecMalloc(sizeof(unit));
 
-		newUnit->units = malloc(sizeof(void *) * voiceCount); /* allocate memory for every inner unit */
-		newUnit->acts = malloc(sizeof(char *) * voiceCount);
+		newUnit->units = ecMalloc(sizeof(void *) * voiceCount); /* allocate memory for every inner unit */
+		newUnit->acts = ecMalloc(sizeof(char *) * voiceCount);
 		for (i = 0; i < voiceCount; i++) {
 			newUnit->acts[i] = gBools + 1; /* set all inner units to active */
 		}
@@ -255,10 +255,10 @@ unit *addUnit(unitScope scope) { /* adds a new unit and allocates memory */
 
 /* - Params */
 float *addGlobalParam() { /* add an allocate new static value */
-	gParamCount++;
-	gParams = realloc(gParams, sizeof(float *) * gParamCount); /* array grows */
-	gParams[gParamCount - 1] = malloc(sizeof(float));
-	return gParams[gParamCount - 1];
+	gValueCount++;
+	gValues = ecRealloc(gValues, sizeof(float *) * gValueCount); /* array grows */
+	gValues[gValueCount - 1] = ecMalloc(sizeof(float));
+	return gValues[gValueCount - 1];
 }
 
 float **getParamAddress(unit *u, paramType type, paramOption option, int i) { /* get address of a value for changing it */
@@ -319,8 +319,9 @@ float **getParamAddress(unit *u, paramType type, paramOption option, int i) { /*
 char isGlobalParam(float **p) { /* checks if value is global static value */
 	int i;
 
-	for (i = 0; i < gParamCount; i++) {
-		if (gParams[i] == *p) return 1;
+	for (i = 0; i < gValueCount; i++) {
+
+		if (gValues[i] == *p) return 1;
 	}
 
 	return 0;
