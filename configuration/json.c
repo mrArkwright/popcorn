@@ -1,22 +1,40 @@
 #include "json.h"
 
-cJSON* dofile(char *filename)
-{
-	FILE *f;
+cJSON* parseJSON(char *filename) {
+	FILE *fp;
+	long int fsize;
+	char *fbuf;
 	cJSON* json;
-	char *data;
-	long int len;
+
 	
-	f=fopen(filename,"rb");
-	fseek(f,0,SEEK_END); 
-	len=ftell(f);
-	fseek(f,0,SEEK_SET);
-	
-	data=malloc(len+1);
-	fread(data,1,len,f);
-	fclose(f);
-	json=cJSON_Parse(data);
+	if( (fp=fopen(filename, "rb")) == NULL ) {
+		fprintf(stderr, "Error0: Couldn't open '%s' for reading\n", filename);
+		return NULL;
+	}
+	if( fseek(fp,0,SEEK_END) == -1) {
+		fprintf(stderr, "Error1: Couldn't determain filesize of '%s'\n", filename);
+		return NULL;
+	} else {
+		/* Allocate memory for file */
+		if( (fsize=ftell(fp)) != -1 )
+			if( (buf = malloc(sizeof(char)*fsize)) == NULL ) {
+				fprintf(stderr, "Error2: Couldn't allocate memory for '%s'\n", filename);
+				return NULL;
+			}
+
+		rewind(fp);
+	}
+	if( fread(fbuf, sizeof(char), fsize, fp) != fsize ) {
+		fprintf(stderr, "Error3: Couldn't copy '%s' to buffer\n", filename);
+		return NULL;
+	}
+
+	fclose(fp);
+
+	json=cJSON_Parse(buf);
+
 	free(data);
+
 	return json;
 }
 
@@ -74,7 +92,8 @@ int routing(){
 	
 	root=config=locals=globals=NULL;
 
-	root=dofile("routing.pop");
+	root=parseJSON("routing.pop");
+	if(root == NULL) exit(-1);
 	
 	addToHashlist("voiceFreq", voiceFreq, hashList);
 	addToHashlist("voiceVelocity", voiceVelocity, hashList);
