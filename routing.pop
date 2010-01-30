@@ -1,7 +1,4 @@
 {
-	"config":	{
-		"voices":	4 
-	},
 	"config":{
 		"voices" : 8
 	},

@@ -74,7 +74,7 @@ int routing(){
 	
 	root=config=locals=globals=NULL;
 
-	root=dofile("/home/keks/popcorn/privat/routing.pop");
+	root=dofile("routing.pop");
 	
 	addToHashlist("voiceFreq", voiceFreq, hashList);
 	addToHashlist("voiceVelocity", voiceVelocity, hashList);

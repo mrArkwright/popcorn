@@ -3,10 +3,10 @@ CFLAGS=-Wall -Wextra -pedantic -std=c89
 CFLAGS+=-ggdb3
 
 #JackOSX
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+#export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
-CFLAGS+=`pkg-config --cflags json jack` -I. -Iconfiguration
-LIBS+=`pkg-config --libs json jack` -lm
+CFLAGS+=`pkg-config --cflags jack` -I. -Iconfiguration
+LIBS+=`pkg-config --libs jack` -lm
 
 
 SRC+=configuration/routing.c
