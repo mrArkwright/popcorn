@@ -2,7 +2,7 @@
 
 cJSON* parseJSON(char *filename) {
 	FILE *fp;
-	long int fsize;
+	size_t fsize;
 	char *fbuf;
 	cJSON* json;
 
@@ -17,7 +17,7 @@ cJSON* parseJSON(char *filename) {
 	} else {
 		/* Allocate memory for file */
 		if( (fsize=ftell(fp)) != -1 )
-			if( (buf = malloc(sizeof(char)*fsize)) == NULL ) {
+			if( (fbuf = malloc(sizeof(char)*fsize)) == NULL ) {
 				fprintf(stderr, "Error2: Couldn't allocate memory for '%s'\n", filename);
 				return NULL;
 			}
@@ -31,9 +31,9 @@ cJSON* parseJSON(char *filename) {
 
 	fclose(fp);
 
-	json=cJSON_Parse(buf);
+	json=cJSON_Parse(fbuf);
 
-	free(data);
+	free(fbuf);
 
 	return json;
 }
