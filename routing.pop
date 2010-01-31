@@ -7,32 +7,35 @@
 			"name":	"start", 
 			"type":	[ "osc", "tri" ],
 			"parameters":	{
-				"freq_value":	"voiceFreq",
+				"param1_value" : 1,
+				"freq_value" : "voiceFreq",
+				"vol_value" : "voiceVelocity",
 				"activity" : "voiceActive"
 			} 
-		},
-		{
-			"name" : "tri",
-			"type": [ "osc", "tri" ],
-			"parameters" : {
-				"freq_value" : 2,
-				"param1_value" : 0.3
-			}
-		},
+		}
+	], 
+	"globals":	[	
 		{
 			"name" : "bandpass",
-			"type": [ "bandpass" ],
-			"parameters" : {
+			"type" : [ "bandpass" ],
+			"parameters":	{
+				"freq_range" : 1450,
 				"freq_value" : 1500,
-				"freq_range" : 1490,
-				"freq_mod" : "tri",
-				"input1_value" : "start"
+				"input1_value" : "voicesOut",
+				"freq_mod" : "oszi"
+			}
+		},
+		{
+			"name" : "oszi",
+			"type" : [ "osc", "tri" ],
+			"parameters":	{
+				"param1_value" : 0.3,
+				"freq_value" : 2
 			}
 		}
-		], 
-	"globals":	[	],
+	],
 	"outputs" :{
-		"local" : "bandpass",
-		"global" : "voicesOut"
+		"local" : "start",
+		"global" : "bandpass"
 	}
 }
