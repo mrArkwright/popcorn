@@ -8,7 +8,7 @@ static void ungetch(int);
 
 typedef enum {KALL=1, HELP, QUIT, UNKWN} MOptions;
 
-MOptions getopt(void) {
+MOptions getmopt(void) {
 	int c, opt;
 	
 	while((c = getch()) == ' ' || c == '\t'); /* skip whitespaces */
