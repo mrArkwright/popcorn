@@ -1,5 +1,24 @@
 #include "json.h"
 
+void flushAttrList(ListElement** attrList){
+	int i;
+	ListElement *current;
+	for(i=0; i<256; i++){
+		current =  attrList[i];
+		while( current !=NULL){
+			((OptionSet * )current->dataPtr)->name = NULL;
+			free( ((OptionSet * )current->dataPtr)->name );
+			if(current->next == NULL) {
+				free(current);
+				break;
+			}
+			current = current->next;
+			current->prev=NULL;
+			free(current->prev);
+		}
+	}
+	free(attrList);
+}
 cJSON* parseJSON(char *filename) {
 	FILE *fp;
 	size_t fsize;
@@ -455,6 +474,8 @@ int routing(char *conffile){
 		}
 		tmp = tmp->next;
 	}
+	flushAttrList(attrList);
+
 	cJSON_Delete(root);
 	return 0;
 }
