@@ -11,6 +11,8 @@
 #include "processing/voices.h"
 #include "jack.h"
 
+#define PROGNAME "popcorn(0.0)"
+
 jack_port_t *output_port;
 jack_port_t *input_port;
 
@@ -29,13 +31,17 @@ int main(int argc, char *argv[]) {
 	MOptions mopt;
 	jack_client_t *client;
 
+	if(argc < 2) {
+		fprintf(stderr, "Usage: %s <conf.pop> (<client-name>)\n", argv[0]);
+		exit(-1);
+	}
 	/* route */
-	routing();
+	routing(argv[1]);
 
 	/* jack */
-	client = jack_client_new("popcorn");
+	client = jack_client_new( (argc == 3) ? argv[2] : PROGNAME);
 	if(client == NULL) {
-		fprintf(stderr, "jack server not running?\n");
+		fprintf(stderr, "jack server not running or name taken?\n");
 		return -1;
 	}
 

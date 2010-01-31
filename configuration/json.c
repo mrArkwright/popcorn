@@ -53,7 +53,7 @@ unit *initUnit( cJSON* type, unitScope scope ){
 		if(strcmp(tmp->valuestring, "tri") ==0 )
 			setOscType(current, otTRI);
 	}
-	else if(strcmp(tmp->valuestring, "mixer")){
+	else if(strcmp(tmp->valuestring, "mixer") == 0){
 		current = addMixer2ch(scope);
 		if((tmp = tmp->next) !=NULL) 
 			if(tmp->type == cJSON_Number)
@@ -73,27 +73,69 @@ unit *initUnit( cJSON* type, unitScope scope ){
 	return current;
 }
 
-int routing(){
+int routing(char *conffile){
 	cJSON *root, *config, *locals,*globals,*outputs, *tmp,*scndTmp;
 
-	cJSON *type, *name, *parameters, 
-		*vol_range, *vol_val, *vol_mod,
-		*param1_range, *param1_val, *param1_mod,
-		*freq_range, *freq_val, *freq_mod,
-		*activity;
+	cJSON *type, *name, *parameters;
 	int i, voices_count;
 	
 	ListElement *hashList[256];
+	ListElement *attrList[256];
 	ListElement *currentLE;
 
+	optionSet* os[30];
 	unit *current;
 	
-	for(i=0; i<256;  hashList[i++] = NULL);
+	optionSet* tmpOS;
+
+	for( i=0 ;i<30; os[i++] = malloc(sizeof(optionSet)));
+	os[i =  0]->name="param1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poMOD; 
+	os[i =  1]->name="param1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poVAL; 
+	os[i =  2]->name="param1_range";	os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poRANGE; 
+
+	os[i =  3]->name="freq_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poMOD; 
+	os[i =  4]->name="freq_value"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poVAL; 
+	os[i =  5]->name="freq_range"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poRANGE; 
+
+	os[i =  6]->name="vol_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poMOD; 
+	os[i =  7]->name="vol_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poVAL; 
+	os[i =  8]->name="vol_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poRANGE; 
+
+	os[i =  9]->name="input1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poMOD; 
+	os[i = 10]->name="input1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poVAL; 
+	os[i = 11]->name="input1_range"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poRANGE; 
+
+	os[i = 12]->name="input2_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poMOD; 
+	os[i = 13]->name="input2_value"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poVAL; 
+	os[i = 14]->name="input2_range"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poRANGE; 
+
+	os[i = 15]->name="vol1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poMOD; 
+	os[i = 16]->name="vol1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poVAL; 
+	os[i = 17]->name="vol1_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poRANGE; 
+
+	os[i = 18]->name="vol2_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poMOD; 
+	os[i = 19]->name="vol2_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poVAL; 
+	os[i = 20]->name="vol2_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poRANGE; 
+
+	os[i = 21]->name="cutoff_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poMOD; 
+	os[i = 22]->name="cutoff_value"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poVAL; 
+	os[i = 23]->name="cutoff_range"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poRANGE; 
+
+	os[i = 24]->name="bandwidth_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poMOD; 
+	os[i = 25]->name="bandwidth_value"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poVAL; 
+	os[i = 26]->name="bandwidth_range"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poRANGE; 
+
+	os[i = 27]->name="activity"; os[i]->typ=_DIGITAL; os[i]->bt=btACT; 
+	os[i = 28]->name="activity1"; os[i]->typ=_DIGITAL; os[i]->bt=btACT1; 
+	os[i = 29]->name="activity2"; os[i]->typ=_DIGITAL; os[i]->bt=btACT2; 
+	
+	for(i=0; i<256;  attrList[i] = hashList[i++] = NULL);
+	for(i=0; i<30;  addToHashlist(os[i]->name,os[i++],  attrList) );
 	
 	root=config=locals=globals=NULL;
 
-	root=parseJSON("routing.pop");
-	if(root == NULL) exit(-1);
+	root=parseJSON(conffile);
+	if(root == NULL) printf(":(\n"), exit(-1);
 	
 	addToHashlist("voiceFreq", voiceFreq, hashList);
 	addToHashlist("voiceVelocity", voiceVelocity, hashList);
@@ -120,6 +162,7 @@ int routing(){
 		if(strcmp(tmp->string, "voices") ==0) break;
 		tmp=tmp->next;
 	}
+		
 
 	if(tmp==NULL) return -1;
 	
@@ -132,36 +175,16 @@ int routing(){
 	tmp=locals->child;
 	while(  tmp != NULL ){
 		/* ich checke auf ==NULL, also schoen saubermachen */
-		type=name=parameters=
-		vol_range=vol_val=vol_mod=
-		param1_range=param1_val=param1_mod=
-		freq_range=freq_val=freq_mod=
-		activity=NULL;
+		type=name=parameters=NULL;
 
-		/* Variablenbenennen anfang */
-		scndTmp=(tmp == NULL? NULL:tmp->child);
+		scndTmp=tmp->child;
 		while(scndTmp!=NULL){
 			if(	strcmp(scndTmp->string,	"type")					==	0) type 				=	scndTmp;
 			if(	strcmp(scndTmp->string,	"name")					==	0) name 				=	scndTmp;
 			if(	strcmp(scndTmp->string,	"parameters")		==	0) parameters 	=	scndTmp;
 			scndTmp=scndTmp->next;
 		}
-		scndTmp = (parameters == NULL? NULL:parameters->child);
-		while(scndTmp!=NULL){
-			if(	strcmp(scndTmp->string, "param1_mod")		==	0) param1_mod		=	scndTmp;
-			if(	strcmp(scndTmp->string, "param1_value")	==	0) param1_val		=	scndTmp;
-			if(	strcmp(scndTmp->string, "param1_range")	==	0) param1_range	=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_mod")			==	0) freq_mod			=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_value")		==	0) freq_val			=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_range")		==	0) freq_range		=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_mod")			==	0) vol_mod			=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_value")		==	0) vol_val			=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_range")		==	0) vol_range		=	scndTmp;
-			if(	strcmp(scndTmp->string, "activity")			==	0) activity			=	scndTmp;
-			scndTmp=scndTmp->next;
-		}
-		/* Variablenbenennen ende */
-		
+
 		if ((current = initUnit(type, usLOCAL)) == NULL) {
 			printf("Fehler beim initialisieren einer Unit.");
 			exit(-2);
@@ -170,36 +193,41 @@ int routing(){
 			printf("Fehler beim hinzufuegen zur HashList");
 			exit(-2);
 		}
-		
-		if(param1_val !=NULL && param1_val->type ==cJSON_Number) 
-			setParam(current, ptPARAM1, poVAL, param1_val->valuedouble);
-		if(param1_range !=NULL && param1_range->type ==cJSON_Number) 
-			setParam(current, ptPARAM1, poRANGE, param1_range->valuedouble);
-		if(param1_mod !=NULL && param1_mod->type ==cJSON_Number) 
-			setParam(current, ptPARAM1, poMOD, param1_mod->valuedouble);
-		
-		if(vol_val !=NULL && vol_val->type ==cJSON_Number) 
-			setParam(current, ptVOL, poVAL, vol_val->valuedouble);
-		if(vol_range !=NULL && vol_range->type ==cJSON_Number) 
-			setParam(current, ptVOL, poRANGE, vol_range->valuedouble);
-		if(vol_mod !=NULL && vol_mod->type ==cJSON_Number) 
-			setParam(current, ptVOL, poMOD, vol_mod->valuedouble);
 
-		if(freq_val !=NULL && freq_val->type ==cJSON_Number) 
-			setParam(current, ptFREQ, poVAL, freq_val->valuedouble);
-		if(freq_range !=NULL && freq_range->type ==cJSON_Number) 
-			setParam(current, ptFREQ, poRANGE, freq_range->valuedouble);
-		if(freq_mod !=NULL && freq_mod->type ==cJSON_Number) 
-			setParam(current, ptFREQ, poMOD, freq_mod->valuedouble);
+		scndTmp = (parameters == NULL? NULL:parameters->child);
+		while(scndTmp!=NULL){
+			if( scndTmp->type == cJSON_String ) {scndTmp=scndTmp->next;  continue;}
 
-		if(activity !=NULL && ( activity->type ==cJSON_True ||activity->type ==cJSON_False  || activity->type == cJSON_Number) ) 
-			if(activity->type == cJSON_Number)
-				setBool(current, btACT, freq_mod->valueint);
-			else if (activity->type == cJSON_True)
-				setBool(current, btACT, 1);
-			else if (activity->type == cJSON_False)
-				setBool(current, btACT, 0);
-
+			if( (currentLE = getFromHashlist(scndTmp->string, attrList) ) == NULL) {
+				printf("verstehe paramenter nicht: %s\n", scndTmp->string);
+				exit(-2);
+			}
+			if( (tmpOS = (optionSet * )currentLE->dataPtr) == NULL ){
+				printf("DataPtr = NULL :( \n");
+				exit(-2);
+			}
+			if(tmpOS->typ == _ANALOG){
+				if( scndTmp->type != cJSON_Number ){
+					 printf("\"Analoge\" Wert muessen Strings oder Zahlen sein!");
+					 exit(-2);
+				}
+				setParam(current, tmpOS->pt, tmpOS->po, scndTmp->valuedouble);
+			}
+			if(tmpOS->typ == _DIGITAL){
+				if( scndTmp->type == cJSON_True ){
+					setBool(current, tmpOS->bt, 1);
+					scndTmp=scndTmp->next;
+					continue;
+				}
+				if( scndTmp->type == cJSON_False ){
+					setBool(current, tmpOS->bt, 0);
+					scndTmp=scndTmp->next;
+					continue;
+				}
+				setBool(current, tmpOS->bt, scndTmp->valueint);
+			}
+			scndTmp=scndTmp->next;
+		}
 		tmp=tmp->next;
 	}
 
@@ -207,13 +235,8 @@ int routing(){
 	tmp=locals->child;
 	while(tmp!=NULL){
 		/* ich checke auf ==NULL, also schoen saubermachen */
-		type=name=parameters=
-		vol_range=vol_val=vol_mod=
-		param1_range=param1_val=param1_mod=
-		freq_range=freq_val=freq_mod=
-		activity=NULL;
+		type=name=parameters=NULL;
 
-		/* Variablenbenennen anfang */
 		scndTmp=(tmp == NULL? NULL:tmp->child);
 		while(scndTmp!=NULL){
 			if(strcmp(scndTmp->string,"type")==0) type = scndTmp;
@@ -222,21 +245,6 @@ int routing(){
 			scndTmp=scndTmp->next;
 		}
 
-		scndTmp = (parameters == NULL? NULL:parameters->child);
-		while(scndTmp!=NULL){
-			if(	strcmp(scndTmp->string, "param1_mod")		==	0) param1_mod		=	scndTmp;
-			if(	strcmp(scndTmp->string, "param1_value")	==	0) param1_val		=	scndTmp;
-			if(	strcmp(scndTmp->string, "param1_range")	==	0) param1_range	=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_mod")			==	0) freq_mod			=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_value")		==	0) freq_val			=	scndTmp;
-			if(	strcmp(scndTmp->string, "freq_range")		==	0) freq_range		=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_mod")			==	0) vol_mod			=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_value")		==	0) vol_val			=	scndTmp;
-			if(	strcmp(scndTmp->string, "vol_range")		==	0) vol_range		=	scndTmp;
-			if(	strcmp(scndTmp->string, "activity")			==	0) activity			=	scndTmp;
-			scndTmp=scndTmp->next;
-		}
-		/* Variablenbenennen ende */
 		if(name == NULL) printf("ueberall namen angeben\n"), exit(-2);
 		if(name->valuestring == NULL) printf("namen muessen strings sein\n"), exit(-2);
 
@@ -248,30 +256,35 @@ int routing(){
 			printf("Habe in der HT gefunden, aber dataPtr ist NULL. Motherfucka!");
 			exit(-2);
 		}
-		
-		if(param1_val !=NULL && param1_val->type ==cJSON_String)
-			routeParam(current,  ptPARAM1, poVAL, (unit*)(getFromHashlist(param1_val->valuestring, hashList)->dataPtr));
-		if(param1_range !=NULL && param1_range->type ==cJSON_String)
-			routeParam(current, ptPARAM1,poRANGE,(unit*)(getFromHashlist(param1_range->valuestring, hashList)->dataPtr));
-		if(param1_mod !=NULL && param1_mod->type ==cJSON_String)
-			routeParam(current, ptPARAM1,poMOD,(unit*)(getFromHashlist(param1_mod->valuestring, hashList)->dataPtr));
 
-		if(vol_val !=NULL && vol_val->type ==cJSON_String)
-			routeParam(current,  ptVOL, poVAL, (unit*)(getFromHashlist(vol_val->valuestring, hashList)->dataPtr));
-		if(vol_range !=NULL && vol_range->type ==cJSON_String)
-			routeParam(current, ptVOL,poRANGE,(unit*)(getFromHashlist(vol_range->valuestring, hashList)->dataPtr));
-		if(vol_mod !=NULL && vol_mod->type ==cJSON_String)
-			routeParam(current, ptVOL,poMOD,(unit*)(getFromHashlist(vol_mod->valuestring, hashList)->dataPtr));
+		scndTmp = (parameters == NULL? NULL:parameters->child);
+		while(scndTmp!=NULL){
+			if( scndTmp->type != cJSON_String ) {scndTmp=scndTmp->next;  continue;}
 
-		if(freq_val !=NULL && freq_val->type ==cJSON_String)
-			routeParam(current,  ptFREQ, poVAL, (unit*)(getFromHashlist(freq_val->valuestring, hashList)->dataPtr));
-		if(freq_range !=NULL && freq_range->type ==cJSON_String)
-			routeParam(current, ptFREQ,poRANGE,(unit*)(getFromHashlist(freq_range->valuestring, hashList)->dataPtr));
-		if(freq_mod !=NULL && freq_mod->type ==cJSON_String)
-			routeParam(current, ptFREQ,poMOD,(unit*)(getFromHashlist(freq_mod->valuestring, hashList)->dataPtr));
-
-		if(activity != NULL && activity->type == cJSON_String)
-			routeBool(current, btACT,(unit*)(getFromHashlist(activity->valuestring, hashList)->dataPtr));
+			if( (currentLE = getFromHashlist(scndTmp->string, attrList) ) == NULL) {
+				printf("verstehe paramenter im routing nicht: '%s'\n", scndTmp->string);
+				exit(-2);
+			}
+			if( (tmpOS = (optionSet * )currentLE->dataPtr) == NULL ){
+				printf("DataPtr = NULL :( \n");
+				exit(-2);
+			}
+			if( (currentLE = getFromHashlist(scndTmp->valuestring,hashList)) == NULL) {
+				printf("hashtable lookup failure: %s\n", scndTmp->valuestring);
+				exit(-2);
+			}
+			if (currentLE->dataPtr ==NULL) {
+				printf("dataPtr == NULL :( %s\n",scndTmp->valuestring);
+				exit(-2);
+			}
+			if(tmpOS->typ == _ANALOG)
+				routeParam(current, tmpOS->pt, tmpOS->po, (unit *)currentLE->dataPtr );
+			
+			if(tmpOS->typ == _DIGITAL)
+				routeBool(current, tmpOS->bt,  (unit *) currentLE->dataPtr);
+			
+			scndTmp=scndTmp->next;
+		}
 
 		tmp=tmp->next;
 	}

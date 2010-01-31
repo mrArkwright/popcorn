@@ -7,7 +7,18 @@
 
 #ifndef JSON_H
 #define JSON_H
+typedef enum {
+	_ANALOG=1,
+	_DIGITAL
+} typus;
+typedef struct{
+	char* name;
+	typus typ;
+	paramType pt;
+	paramOption po;
+	boolType bt;
+} optionSet;
 
-int routing();
+int routing(char *);
 
 #endif
