@@ -17,7 +17,6 @@ void flushAttrList(ListElement** attrList){
 			free(current->prev);
 		}
 	}
-	free(attrList);
 }
 cJSON* parseJSON(char *filename) {
 	FILE *fp;
