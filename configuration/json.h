@@ -17,7 +17,7 @@ typedef struct{
 	paramType pt;
 	paramOption po;
 	boolType bt;
-} optionSet;
+} OptionSet;
 
 int routing(char *);
 

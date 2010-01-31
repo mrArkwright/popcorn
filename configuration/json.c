@@ -63,32 +63,26 @@ unit *initUnit( cJSON* type, unitScope scope ){
 				}
 					
 	}
-	else if(strcmp(tmp->valuestring, "lowpass")==0)
+	else if(strcmp(tmp->valuestring, "lowpass")==0){
 		current = addFxLowpass(scope);
-	else if(strcmp(tmp->valuestring, "highpass")==0)
+	}
+	else if(strcmp(tmp->valuestring, "highpass")==0){
 		current = addFxHighpass(scope);
-	else if(strcmp(tmp->valuestring, "bandpass") == 0)
+	}
+	else if(strcmp(tmp->valuestring, "bandpass") == 0){
 		current = addFxBandpass(scope);
+	}
 
 	return current;
 }
 
-int routing(char *conffile){
-	cJSON *root, *config, *locals,*globals,*outputs, *tmp,*scndTmp;
-
-	cJSON *type, *name, *parameters;
-	int i, voices_count;
+OptionSet** getAttrArray(){
+	int i;
+	OptionSet** os;
+	if( (os = malloc(30 * sizeof( OptionSet *))) ==NULL ) return NULL;
 	
-	ListElement *hashList[256];
-	ListElement *attrList[256];
-	ListElement *currentLE;
 
-	optionSet* os[30];
-	unit *current;
-	
-	optionSet* tmpOS;
-
-	for( i=0 ;i<30; os[i++] = malloc(sizeof(optionSet)));
+	for( i=0 ;i<30; i++) if ( ( os[i] = malloc(sizeof(OptionSet))  ) ==NULL ) printf("malloc error in getAttrArray\n"), exit(-2) ;
 	os[i =  0]->name="param1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poMOD; 
 	os[i =  1]->name="param1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poVAL; 
 	os[i =  2]->name="param1_range";	os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poRANGE; 
@@ -128,7 +122,26 @@ int routing(char *conffile){
 	os[i = 27]->name="activity"; os[i]->typ=_DIGITAL; os[i]->bt=btACT; 
 	os[i = 28]->name="activity1"; os[i]->typ=_DIGITAL; os[i]->bt=btACT1; 
 	os[i = 29]->name="activity2"; os[i]->typ=_DIGITAL; os[i]->bt=btACT2; 
+
+	return os;
+}
+
+int routing(char *conffile){
+	cJSON *root, *config, *locals,*globals,*outputs, *tmp,*scndTmp;
+
+	cJSON *type, *name, *parameters;
+	int i, voices_count;
 	
+	ListElement *hashList[256];
+	ListElement *attrList[256];
+	ListElement *currentLE;
+
+	unit *current;
+	
+	OptionSet** os;
+	OptionSet* tmpOS;
+	
+	if( (os= getAttrArray()) ==NULL) printf("malloc error in getAttrArray\n"), exit(-2);
 	for(i=0; i<256;  attrList[i] = hashList[i++] = NULL);
 	for(i=0; i<30;  addToHashlist(os[i]->name,os[i++],  attrList) );
 	
@@ -143,7 +156,6 @@ int routing(char *conffile){
 
 	addToHashlist("voicesOut", voicesOut, hashList);
 
-	addToHashlist("voiceActive", voiceActive, hashList);
 	
 	
 
@@ -169,6 +181,7 @@ int routing(char *conffile){
 	/** Anzahl der Voices setzen */
 	voices_count = tmp->valueint;	
 	setVoiceCount(voices_count);
+	printf("Anzahl voices: %d\n", voices_count);
 
 	/* alle lokalen units initialisieren.
 	Ein durchgang dieser schleife entspricht einem Unit.*/
@@ -202,7 +215,68 @@ int routing(char *conffile){
 				printf("verstehe paramenter nicht: %s\n", scndTmp->string);
 				exit(-2);
 			}
-			if( (tmpOS = (optionSet * )currentLE->dataPtr) == NULL ){
+			if( (tmpOS = (OptionSet * )currentLE->dataPtr) == NULL ){
+				printf("DataPtr = NULL :( \n");
+				exit(-2);
+			}
+			if(tmpOS->typ == _ANALOG){
+				if( scndTmp->type != cJSON_Number ){
+					 printf("\"Analoge\" Wert muessen Strings oder Zahlen sein!");
+					 exit(-2);
+				}
+				setParam(current, tmpOS->pt, tmpOS->po, scndTmp->valuedouble);
+			}
+			if(tmpOS->typ == _DIGITAL){
+				if( scndTmp->type == cJSON_True ){
+					setBool(current, tmpOS->bt, 1);
+					scndTmp=scndTmp->next;
+					continue;
+				}
+				if( scndTmp->type == cJSON_False ){
+					setBool(current, tmpOS->bt, 0);
+					scndTmp=scndTmp->next;
+					continue;
+				}
+				setBool(current, tmpOS->bt, scndTmp->valueint);
+			}
+			scndTmp=scndTmp->next;
+		}
+		tmp=tmp->next;
+	}
+
+	/* alle globalen units initialisieren.
+	Ein durchgang dieser schleife entspricht einem Unit.*/
+	tmp=globals->child;
+	while(  tmp != NULL ){
+		/* ich checke auf ==NULL, also schoen saubermachen */
+		type=name=parameters=NULL;
+
+		scndTmp=tmp->child;
+		while(scndTmp!=NULL){
+			if(	strcmp(scndTmp->string,	"type")					==	0) type 				=	scndTmp;
+			if(	strcmp(scndTmp->string,	"name")					==	0) name 				=	scndTmp;
+			if(	strcmp(scndTmp->string,	"parameters")		==	0) parameters 	=	scndTmp;
+			scndTmp=scndTmp->next;
+		}
+
+		if ((current = initUnit(type, usGLOBAL)) == NULL) {
+			printf("Fehler beim initialisieren einer Unit.");
+			exit(-2);
+		}
+		if(addToHashlist(name->valuestring, current, hashList) == NULL ){
+			printf("Fehler beim hinzufuegen zur HashList");
+			exit(-2);
+		}
+
+		scndTmp = (parameters == NULL? NULL:parameters->child);
+		while(scndTmp!=NULL){
+			if( scndTmp->type == cJSON_String ) {scndTmp=scndTmp->next;  continue;}
+
+			if( (currentLE = getFromHashlist(scndTmp->string, attrList) ) == NULL) {
+				printf("verstehe paramenter nicht: %s\n", scndTmp->string);
+				exit(-2);
+			}
+			if( (tmpOS = (OptionSet * )currentLE->dataPtr) == NULL ){
 				printf("DataPtr = NULL :( \n");
 				exit(-2);
 			}
@@ -247,26 +321,29 @@ int routing(char *conffile){
 
 		if(name == NULL) printf("ueberall namen angeben\n"), exit(-2);
 		if(name->valuestring == NULL) printf("namen muessen strings sein\n"), exit(-2);
-
+		/* get "current" from hashlist start*/
 		if( (currentLE = getFromHashlist(name->valuestring,hashList))==NULL){
 			printf("Hab in der Hashtable gesucht aber nichts gefunden :(\n");
 			exit(-2);
 		}
 		if(( current = (unit*) currentLE->dataPtr) == NULL){
-			printf("Habe in der HT gefunden, aber dataPtr ist NULL. Motherfucka!");
+			printf("Habe in der HT gefunden, aber dataPtr ist NULL, Motherfucka!\n");
 			exit(-2);
 		}
+		/* get "current" from hashlist end*/
 
 		scndTmp = (parameters == NULL? NULL:parameters->child);
 		while(scndTmp!=NULL){
-			if( scndTmp->type != cJSON_String ) {scndTmp=scndTmp->next;  continue;}
+			/* if it's a string, it's the routing's job */
+			if( scndTmp->type != cJSON_String ) {scndTmp=scndTmp->next;  continue;} 
 
+			/* set tmp variables start */
 			if( (currentLE = getFromHashlist(scndTmp->string, attrList) ) == NULL) {
 				printf("verstehe paramenter im routing nicht: '%s'\n", scndTmp->string);
 				exit(-2);
 			}
-			if( (tmpOS = (optionSet * )currentLE->dataPtr) == NULL ){
-				printf("DataPtr = NULL :( \n");
+			if( (tmpOS = (OptionSet * )currentLE->dataPtr) == NULL ){
+				printf("DataPtr = NULL :(  '''This shouldn't happen!'''\n");
 				exit(-2);
 			}
 			if( (currentLE = getFromHashlist(scndTmp->valuestring,hashList)) == NULL) {
@@ -277,6 +354,8 @@ int routing(char *conffile){
 				printf("dataPtr == NULL :( %s\n",scndTmp->valuestring);
 				exit(-2);
 			}
+			/* set tmp variables End */
+
 			if(tmpOS->typ == _ANALOG)
 				routeParam(current, tmpOS->pt, tmpOS->po, (unit *)currentLE->dataPtr );
 			
@@ -288,6 +367,71 @@ int routing(char *conffile){
 
 		tmp=tmp->next;
 	}
+
+	/*routing setzen */
+	tmp=globals->child;
+	while(tmp!=NULL){
+		/* ich checke auf ==NULL, also schoen saubermachen */
+		type=name=parameters=NULL;
+
+		scndTmp=(tmp == NULL? NULL:tmp->child);
+		while(scndTmp!=NULL){
+			if(strcmp(scndTmp->string,"type")==0) type = scndTmp;
+			if(strcmp(scndTmp->string,"name")==0) name = scndTmp;
+			if(strcmp(scndTmp->string,"parameters")==0) parameters = scndTmp;
+			scndTmp=scndTmp->next;
+		}
+
+		if(name == NULL) printf("ueberall namen angeben\n"), exit(-2);
+		if(name->valuestring == NULL) printf("namen muessen strings sein\n"), exit(-2);
+		/* get "current" from hashlist start*/
+		if( (currentLE = getFromHashlist(name->valuestring,hashList))==NULL){
+			printf("Hab in der Hashtable gesucht aber nichts gefunden :(\n");
+			exit(-2);
+		}
+		if(( current = (unit*) currentLE->dataPtr) == NULL){
+			printf("Habe in der HT gefunden, aber dataPtr ist NULL, Motherfucka!\n");
+			exit(-2);
+		}
+		/* get "current" from hashlist end*/
+
+		scndTmp = (parameters == NULL? NULL:parameters->child);
+		while(scndTmp!=NULL){
+			/* if it's a string, it's the routing's job */
+			if( scndTmp->type != cJSON_String ) {scndTmp=scndTmp->next;  continue;} 
+
+			/* set tmp variables start */
+			if( (currentLE = getFromHashlist(scndTmp->string, attrList) ) == NULL) {
+				printf("verstehe paramenter im routing nicht: '%s'\n", scndTmp->string);
+				exit(-2);
+			}
+			if( (tmpOS = (OptionSet * )currentLE->dataPtr) == NULL ){
+				printf("DataPtr = NULL :(  '''This shouldn't happen!'''\n");
+				exit(-2);
+			}
+			if( (currentLE = getFromHashlist(scndTmp->valuestring,hashList)) == NULL) {
+				printf("hashtable lookup failure: %s\n", scndTmp->valuestring);
+				exit(-2);
+			}
+			if (currentLE->dataPtr ==NULL) {
+				printf("dataPtr == NULL :( %s\n",scndTmp->valuestring);
+				exit(-2);
+			}
+			/* set tmp variables End */
+
+			if(tmpOS->typ == _ANALOG)
+				routeParam(current, tmpOS->pt, tmpOS->po, (unit *)currentLE->dataPtr );
+			
+			if(tmpOS->typ == _DIGITAL)
+				routeBool(current, tmpOS->bt,  (unit *) currentLE->dataPtr);
+			
+			scndTmp=scndTmp->next;
+		}
+
+		tmp=tmp->next;
+	}
+
+
 	
 	tmp = outputs->child;
 	while(tmp!=NULL){

@@ -19,7 +19,7 @@ jack_port_t *input_port;
 unsigned int sampleRate;
 
 typedef enum {KALL=1, HELP, QUIT, UNKWN} MOptions;
-MOptions getopt(void);
+MOptions getmopt(void);
 
 void usage(void) {
 	printf("(1) Kill all voices\n");
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 	/* END jack */
 
 	usage();
-	while((mopt = getopt()) != EOF) {
+	while((mopt = getmopt()) != EOF) {
 		switch(mopt) {
 			case KALL:
 				killVoices();
