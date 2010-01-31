@@ -64,8 +64,6 @@ void startVoice(int note, int velocity) { /* start playing a voice */
 	newVoice->velocity = velocity / 128.0;
 	newVoice->act = 1;
 
-	actVoices++;
-
 #ifdef DEBUG_VOICES
 	debugVoices();
 #endif
