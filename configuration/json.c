@@ -73,7 +73,7 @@ unit *initUnit( cJSON* type, unitScope scope ){
 	return current;
 }
 
-int routing(){
+int routing(char *conffile){
 	cJSON *root, *config, *locals,*globals,*outputs, *tmp,*scndTmp;
 
 	cJSON *type, *name, *parameters;
@@ -134,7 +134,7 @@ int routing(){
 	
 	root=config=locals=globals=NULL;
 
-	root=parseJSON("routing.pop");
+	root=parseJSON(conffile);
 	if(root == NULL) printf(":(\n"), exit(-1);
 	
 	addToHashlist("voiceFreq", voiceFreq, hashList);

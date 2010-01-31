@@ -19,6 +19,6 @@ typedef struct{
 	boolType bt;
 } optionSet;
 
-int routing();
+int routing(char *);
 
 #endif
