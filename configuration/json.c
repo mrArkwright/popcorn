@@ -16,7 +16,7 @@ cJSON* parseJSON(char *filename) {
 		return NULL;
 	} else {
 		/* Allocate memory for file */
-		if( (fsize=ftell(fp)) != -1 )
+		if( (fsize=ftell(fp)) != 255 )
 			if( (fbuf = malloc(sizeof(char)*fsize)) == NULL ) {
 				fprintf(stderr, "Error2: Couldn't allocate memory for '%s'\n", filename);
 				return NULL;
@@ -83,45 +83,45 @@ OptionSet** getAttrArray(){
 	
 
 	for( i=0 ;i<30; i++) if ( ( os[i] = malloc(sizeof(OptionSet))  ) ==NULL ) printf("malloc error in getAttrArray\n"), exit(-2) ;
-	os[i =  0]->name="param1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poMOD; 
-	os[i =  1]->name="param1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poVAL; 
-	os[i =  2]->name="param1_range";	os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poRANGE; 
+	os[i =  0]->name=strdup("param1_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poMOD; 
+	os[i =  1]->name=strdup("param1_value"); os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poVAL; 
+	os[i =  2]->name=strdup("param1_range");	os[i]->typ=_ANALOG; os[i]->pt=ptPARAM1; os[i]->po=poRANGE; 
 
-	os[i =  3]->name="freq_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poMOD; 
-	os[i =  4]->name="freq_value"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poVAL; 
-	os[i =  5]->name="freq_range"; os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poRANGE; 
+	os[i =  3]->name=strdup("freq_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poMOD; 
+	os[i =  4]->name=strdup("freq_value"); os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poVAL; 
+	os[i =  5]->name=strdup("freq_range"); os[i]->typ=_ANALOG; os[i]->pt=ptFREQ; os[i]->po=poRANGE; 
 
-	os[i =  6]->name="vol_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poMOD; 
-	os[i =  7]->name="vol_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poVAL; 
-	os[i =  8]->name="vol_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poRANGE; 
+	os[i =  6]->name=strdup("vol_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poMOD; 
+	os[i =  7]->name=strdup("vol_value"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poVAL; 
+	os[i =  8]->name=strdup("vol_range"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL; os[i]->po=poRANGE; 
 
-	os[i =  9]->name="input1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poMOD; 
-	os[i = 10]->name="input1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poVAL; 
-	os[i = 11]->name="input1_range"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poRANGE; 
+	os[i =  9]->name=strdup("input1_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poMOD; 
+	os[i = 10]->name=strdup("input1_value"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poVAL; 
+	os[i = 11]->name=strdup("input1_range"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT1; os[i]->po=poRANGE; 
 
-	os[i = 12]->name="input2_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poMOD; 
-	os[i = 13]->name="input2_value"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poVAL; 
-	os[i = 14]->name="input2_range"; os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poRANGE; 
+	os[i = 12]->name=strdup("input2_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poMOD; 
+	os[i = 13]->name=strdup("input2_value"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poVAL; 
+	os[i = 14]->name=strdup("input2_range"); os[i]->typ=_ANALOG; os[i]->pt=ptINPUT2; os[i]->po=poRANGE; 
 
-	os[i = 15]->name="vol1_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poMOD; 
-	os[i = 16]->name="vol1_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poVAL; 
-	os[i = 17]->name="vol1_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poRANGE; 
+	os[i = 15]->name=strdup("vol1_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poMOD; 
+	os[i = 16]->name=strdup("vol1_value"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poVAL; 
+	os[i = 17]->name=strdup("vol1_range"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL1; os[i]->po=poRANGE; 
 
-	os[i = 18]->name="vol2_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poMOD; 
-	os[i = 19]->name="vol2_value"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poVAL; 
-	os[i = 20]->name="vol2_range"; os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poRANGE; 
+	os[i = 18]->name=strdup("vol2_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poMOD; 
+	os[i = 19]->name=strdup("vol2_value"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poVAL; 
+	os[i = 20]->name=strdup("vol2_range"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poRANGE; 
 
-	os[i = 21]->name="cutoff_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poMOD; 
-	os[i = 22]->name="cutoff_value"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poVAL; 
-	os[i = 23]->name="cutoff_range"; os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poRANGE; 
+	os[i = 21]->name=strdup("cutoff_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poMOD; 
+	os[i = 22]->name=strdup("cutoff_value"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poVAL; 
+	os[i = 23]->name=strdup("cutoff_range"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poRANGE; 
 
-	os[i = 24]->name="bandwidth_mod"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poMOD; 
-	os[i = 25]->name="bandwidth_value"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poVAL; 
-	os[i = 26]->name="bandwidth_range"; os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poRANGE; 
+	os[i = 24]->name=strdup("bandwidth_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poMOD; 
+	os[i = 25]->name=strdup("bandwidth_value"); os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poVAL; 
+	os[i = 26]->name=strdup("bandwidth_range"); os[i]->typ=_ANALOG; os[i]->pt=ptBANDWIDTH; os[i]->po=poRANGE; 
 
-	os[i = 27]->name="activity"; os[i]->typ=_DIGITAL; os[i]->bt=btACT; 
-	os[i = 28]->name="activity1"; os[i]->typ=_DIGITAL; os[i]->bt=btACT1; 
-	os[i = 29]->name="activity2"; os[i]->typ=_DIGITAL; os[i]->bt=btACT2; 
+	os[i = 27]->name=strdup("activity"); os[i]->typ=_DIGITAL; os[i]->bt=btACT; 
+	os[i = 28]->name=strdup("activity1"); os[i]->typ=_DIGITAL; os[i]->bt=btACT1; 
+	os[i = 29]->name=strdup("activity2"); os[i]->typ=_DIGITAL; os[i]->bt=btACT2; 
 
 	return os;
 }
@@ -143,7 +143,8 @@ int routing(char *conffile){
 	
 	if( (os= getAttrArray()) ==NULL) printf("malloc error in getAttrArray\n"), exit(-2);
 	for(i=0; i<256;  attrList[i] = hashList[i++] = NULL);
-	for(i=0; i<30;  addToHashlist(os[i]->name,os[i++],  attrList) );
+	for(i=0; i<30; i++) 
+		 addToHashlist(os[i]->name,os[i],  attrList) ;
 	
 	root=config=locals=globals=NULL;
 
