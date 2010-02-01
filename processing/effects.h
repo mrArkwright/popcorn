@@ -1,6 +1,7 @@
 #ifndef PROCESSING_EFFECTS_H
 #define PROCESSING_EFFECTS_H
 
+#include <math.h>
 #include "misc.h"
 
 typedef struct { /* type for lowpass-filter units */

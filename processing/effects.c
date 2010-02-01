@@ -70,6 +70,8 @@ void compFxBandpass(fxBandpass *fx) { /* compute current value of a bandpass-fil
 	float lpCoeff = (2.0 - cos(lpCoeffOmega)) - sqrt(pow(2.0 - cos(lpCoeffOmega), 2.0) - 1.0);
 			
 	fx->tmp = (1 - hpCoeff) * in + hpCoeff * fx->tmp;
+	if (isnan(fx->tmp) || isinf(fx->tmp)) fx->tmp = 0;
 
 	fx->val = (1 - lpCoeff) * (in - fx->tmp) + lpCoeff * fx->val; /* TODO: same as highpass... */
+	if (isnan(fx->val) || isinf(fx->val)) fx->val = 0;
 }

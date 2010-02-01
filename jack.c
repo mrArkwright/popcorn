@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <jack/jack.h>
 #include <jack/midiport.h>
 
@@ -50,7 +51,12 @@ int jackProcess(jack_nframes_t nframes, void *arg) {
 		}
 		
 		compute();
-		outBuf[i] =  *masterOutput;
+
+		if (isnan(*masterOutput) || isinf(*masterOutput)) {
+			outBuf[i] = 0;
+		} else {
+			outBuf[i] =  *masterOutput;
+		}
 	}
 	return 0;
 }
