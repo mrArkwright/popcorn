@@ -1,0 +1,21 @@
+{
+	"config":	{
+		"voices":	4
+	},
+	"locals":	[
+		{
+			"name":	"start", 
+			"type":	[ "osc", "sine" ],
+			"parameters":	{
+				"freq_value": "voiceFreq",
+				"vol_value": "voiceVelocity",
+				"activity" : "voiceActive"
+			} 
+		}
+		], 
+	"globals":	[	],
+	"outputs" :{
+		"local" : "start",
+		"global" : "voicesOut"
+	}
+}

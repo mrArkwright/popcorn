@@ -1,0 +1,50 @@
+{
+	"config":	{
+		"voices":	4 
+	},
+	"locals":	[
+		{
+			"name":	"osc1", 
+			"type":	[ "osc", "sine" ],
+			"parameters":	{
+				"freq_value": "voiceFreq",
+				"activity": "voiceActive"
+			} 
+		},
+		{
+			"name":	"osc2", 
+			"type":	[ "osc", "tri" ],
+			"parameters": {
+				"freq_mod": 3,
+				"freq_value" : "voiceFreq",
+				"activity" : "voiceActive"
+			} 
+		},
+		{
+			"name": "mix1",
+			"type": [ "mixer", 2],
+			"parameters": {
+				"activity1": 1,
+				"activity2": 1,
+				"input1_value": "osc1",
+				"vol1_value": 0.5,
+				"vol1_range": 0.4,
+				"vol1_mod": "gOsc1",
+				"input2_value": "osc2"
+			}
+		}
+	], 
+	"globals":	[
+		{
+			"name": "gOsc1",
+			"type": [ "osc", "sine"],
+			"parameters": {
+				"freq_value": 1
+			}
+		}
+	],
+	"outputs": {
+		"local": "mix1",
+		"global": "voicesOut"
+	}
+}

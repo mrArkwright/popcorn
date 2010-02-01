@@ -1,0 +1,57 @@
+{
+	"config":	{
+		"voices":	4 
+	},
+	"locals":	[
+		{
+			"name":	"osc1", 
+			"type":	[ "osc", "rect" ],
+			"parameters": {
+				"freq_value" : "voiceFreq",
+				"vol_value" : "voiceVelocity",
+				"activity" : "voiceActive",
+				"param1_mod": "osc2",
+				"vol_mod": "osc3"
+			}
+		},
+		{
+			"name": "osc2",
+			"type": [ "osc", "sine" ],
+			"parameters" : {
+				"freq_value" : 0.4
+			}
+		},
+		{
+			"name": "osc3",
+			"type": [ "osc", "sine" ],
+			"parameters": {
+				"freq_value": 10,
+				"vol_value": 0.4,
+				"param1_value": -0.7
+			}
+		}
+	], 
+	"globals":	[
+		{
+			"name" : "bp1",
+			"type" : [ "bandpass" ],
+			"parameters":	{
+				"freq_range" : 300,
+				"freq_value" : 4000,
+				"freq_mod": "g2",
+				"input1_value": "voicesOut"
+			}
+		},
+		{
+			"name" : "g2",
+			"type" : [ "osc", "sine" ],
+			"parameters":	{
+				"freq_value" : 1
+			}
+		}
+	],
+	"outputs" :{
+		"local" : "osc1",
+		"global" : "bp1"
+	}
+}

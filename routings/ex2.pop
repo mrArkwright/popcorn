@@ -1,0 +1,18 @@
+{
+	"config": { "voices": 4},
+	"locals": [
+		{
+			"name": "osc1",
+			"type": [ "osc", "rec" ],
+			"parameters": {
+				"freq_value": "voiceFreq",
+				"activity": "voiceActive"
+			}
+		}
+	],
+	"globals": [],
+	"outputs": {
+		"local": "osc1",
+		"global": "voicesOut"
+	}
+}
