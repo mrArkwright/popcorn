@@ -1,0 +1,42 @@
+{
+	"config":	{
+		"voices":	4 
+	},
+	"locals":	[
+		{
+			"name":	"osc1", 
+			"type":	[ "osc", "sin" ],
+			"parameters": {
+				"freq_value" : "voiceFreq",
+				"freq_range" : 100,
+				"freq_mod" : "osc2",
+				"vol_value" : "voiceVelocity",
+				"activity" : "voiceActive"
+			}
+		},
+		{
+			"name":	"osc2",
+			"type":	[ "osc", "sin" ],
+			"parameters": {
+				"freq_value" : 4500,
+				"freq_range" : 4500,
+				"freq_mod" : "osc3"
+			}
+		},
+		{
+			"name":	"osc3", 
+			"type":	[ "osc", "tri" ],
+			"parameters": {
+				"freq_value" : 0.07
+			}
+		}
+
+	],
+	"globals":	[
+	],
+	"outputs" :{
+		"local" : "osc1",
+		"global" : "voicesOut"
+	}
+}
+
