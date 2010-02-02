@@ -7,13 +7,18 @@ typedef struct { /* type for oscillator units TODO: phase shifting, reinit by re
 	float val; /* the current value of a the osc */
 	float phase;
 	float (*func)(float, float, float); /* specific compute function (oscSin etc) */
-	param freq, vol, param1; /* the freq, volume and pulse modulation (or s.th. similar) */
+	param freq, vol, param1, phaseShift; /* the freq, volume, pulse modulation (or s.th. similar) and phaseShift */
 } osc;
 
 
 /* --- Setup --- */
 
 void setupOsc(osc *);
+
+
+/* --- Reinit --- */
+
+void reinitOsc(osc *);
 
 
 /* --- Computing --- */

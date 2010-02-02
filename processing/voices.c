@@ -59,6 +59,11 @@ void startVoice(int note, int velocity) { /* start playing a voice */
 	lastVoice->postVoice = newVoice;
 	lastVoice = newVoice;
 
+	/* -> reinit units */
+	for (i = 0; i < lUnitCount; i++) {
+		if (lUnits[i]->reinit != NULL) lUnits[i]->reinit(lUnits[i]->units[newVoice - voices]);
+	}
+
 	/* set values for current voice */
 	newVoice->freq = getFreq(note);
 	newVoice->velocity = velocity / 128.0;

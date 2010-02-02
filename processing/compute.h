@@ -12,6 +12,7 @@ typedef struct { /* type for all local and global units */
 	char **acts; /* inner unit will only be computed, if this points to a value unequal 0 */
 	void **units; /* inner units. global units have exactly one, local units have an inner unit for every voice */
 	void (*comp)(void *); /* pointer to computing function of the unit type */
+	void (*reinit)(void *); /* pointer to reinit function of the unit type */
 } unit;
 
 extern unit **gUnits;

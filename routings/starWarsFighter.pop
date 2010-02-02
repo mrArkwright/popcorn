@@ -25,7 +25,7 @@
 		},
 		{
 			"name":	"osc3", 
-			"type":	[ "osc", "tri" ],
+			"type":	[ "osc", "sin" ],
 			"parameters": {
 				"freq_value" : 0.07
 			}

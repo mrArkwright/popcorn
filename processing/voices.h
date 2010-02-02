@@ -1,6 +1,7 @@
 #ifndef PROCESSING_VOICES_H
 #define PROCESSING_VOICES_H
 
+#include "compute.h"
 #include "oscillators.h"
 #include "tools.h"
 #include "effects.h"

@@ -16,6 +16,16 @@ void setupOsc(osc *o) { /* set default static vaules for new osc */
 
 	o->param1.val = defValues + 0;
 	setupParam(&(o->param1));
+
+	o->phaseShift.val = defValues + 0;
+	setupParam(&(o->phaseShift));
+}
+
+
+/* --- Reinit --- */
+
+void reinitOsc(osc *o) {
+	o->phase = (compParam(&(o->phaseShift)) + 2) * sampleRate / compParam(&(o->freq)) / 2;
 }
 
 

@@ -135,6 +135,7 @@ unit *addOsc(unitScope scope) { /* add oscillator unit */
 
 	newUnit->type = utOSC;
 	newUnit->comp = (void (*)(void *))&compOsc; /* setup computing function for unit */
+	newUnit->reinit = (void (*)(void *))&reinitOsc; /* reinit function for unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
 		newUnit->units[i] = ecMalloc(sizeof(osc)); /* allocate memory for every inner unit */
@@ -160,6 +161,7 @@ unit *addMixer2ch(unitScope scope) { /* add 2 channel mixer unit */
 
 	newUnit->type = utMIXER2CH;
 	newUnit->comp = (void (*)(void *))&compMixer2ch; /* setup computing function for unit */
+	newUnit->reinit = NULL; /* no reinit function for this unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
 		newUnit->units[i] = ecMalloc(sizeof(mixer2ch)); /* allocate memory for every inner unit */
@@ -177,6 +179,7 @@ unit *addFxLowpass(unitScope scope) {
 
 	newUnit->type = utFX_LOWPASS;
 	newUnit->comp = (void (*)(void *))&compFxLowpass; /* setup computing function for unit */
+	newUnit->reinit = NULL; /* no reinit function for this unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
 		newUnit->units[i] = ecMalloc(sizeof(fxLowpass)); /* allocate memory for every inner unit */
@@ -194,6 +197,7 @@ unit *addFxHighpass(unitScope scope) {
 
 	newUnit->type = utFX_HIGHPASS;
 	newUnit->comp = (void (*)(void *))&compFxHighpass; /* setup computing function for unit */
+	newUnit->reinit = NULL; /* no reinit function for this unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
 		newUnit->units[i] = ecMalloc(sizeof(fxHighpass)); /* allocate memory for every inner unit */
@@ -210,6 +214,7 @@ unit *addFxBandpass(unitScope scope) {
 
 	newUnit->type = utFX_BANDPASS;
 	newUnit->comp = (void (*)(void *))&compFxBandpass; /* setup computing function for unit */
+	newUnit->reinit = NULL; /* no reinit function for this unit */
 
 	for (i = 0; i < iMax; i++) { /* setup one inner unit for global unit or one for every voice for local unit */
 		newUnit->units[i] = ecMalloc(sizeof(fxBandpass)); /* allocate memory for every inner unit */
@@ -271,6 +276,7 @@ float **getParamAddress(unit *u, paramType type, paramOption option, int i) { /*
 				case ptFREQ: p = &(((osc *)(u->units[i]))->freq); break;
 				case ptVOL: p = &(((osc *)(u->units[i]))->vol); break;
 				case ptPARAM1: p = &(((osc *)(u->units[i]))->param1); break;
+				case ptPHASE_SHIFT: p = &(((osc *)(u->units[i]))->phaseShift); break;
 				default: return NULL;
 			}
 			break;
