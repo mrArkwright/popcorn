@@ -57,17 +57,17 @@ void startVoice(int note, int velocity) { /* start playing a voice */
 	/* add current voice to the end */
 	newVoice->preVoice = lastVoice;
 	lastVoice->postVoice = newVoice;
-	lastVoice = newVoice;
-
-	/* -> reinit units */
-	for (i = 0; i < lUnitCount; i++) {
-		if (lUnits[i]->reinit != NULL) lUnits[i]->reinit(lUnits[i]->units[newVoice - voices]);
-	}
+	lastVoice = newVoice;	
 
 	/* set values for current voice */
 	newVoice->freq = getFreq(note);
 	newVoice->velocity = velocity / 128.0;
 	newVoice->act = 1;
+
+	/* -> reinit units */
+	for (i = 0; i < lUnitCount; i++) {
+		if (lUnits[i]->reinit != NULL) lUnits[i]->reinit(lUnits[i]->units[newVoice - voices]);
+	}
 
 #ifdef DEBUG_VOICES
 	debugVoices();
