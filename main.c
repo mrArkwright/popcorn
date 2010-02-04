@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 	routing(argv[1]);
 
 	/* jack */
-	client = jack_client_new( (argc == 3) ? argv[2] : PROGNAME);
+	client = jack_client_new( (argc > 2) ? argv[2] : PROGNAME);
 	if(client == NULL) {
 		fprintf(stderr, "jack server not running or name taken?\n");
 		return -1;
