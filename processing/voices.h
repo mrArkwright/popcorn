@@ -35,6 +35,8 @@ void startVoice(int note, int velocity);
 void stopVoice(int note, int velocity);
 void killVoices(void);
 
+void reinitLocalUnits(int);
+
 
 /* Debug */
 
