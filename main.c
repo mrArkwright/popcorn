@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	jack_client_t *client;
 
 	if(argc < 2) {
-		fprintf(stderr, "Usage: %s <conf.pop> (<client-name>)\n", argv[0]);
+		fprintf(stderr, "Usage: %s <conf.pop> (<client-name>) (<output-port>)\n", argv[0]);
 		exit(-1);
 	}
 	/* route */
@@ -52,10 +52,25 @@ int main(int argc, char *argv[]) {
 	output_port = jack_port_register(client, "audio_out", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 	input_port = jack_port_register(client, "midi_in", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
 
-
 	if(jack_activate(client)) {
 		fprintf(stderr, "cannot activate client");
 		return 1;
+	}
+
+	if(argc == 4) {
+		if(jack_connect(client, jack_port_name(output_port), argv[3])) {
+			fprintf(stderr, "couldn't connect output ports\n");
+			return 1;
+		}
+	} else {
+		if(jack_connect(client, jack_port_name(output_port), "system:playback_1")) {
+			fprintf(stderr, "couldn't connect output ports\n");
+			return 1;
+		}
+		if(jack_connect(client, jack_port_name(output_port), "system:playback_2")) {
+			fprintf(stderr, "couldn't connect output ports\n");
+			return 1;
+		}
 	}
 	/* END jack */
 
