@@ -129,6 +129,10 @@ OptionSet** getAttrArray(){
 	os[i = 19]->name=strdup("vol2_value"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poVAL; 
 	os[i = 20]->name=strdup("vol2_range"); os[i]->typ=_ANALOG; os[i]->pt=ptVOL2; os[i]->po=poRANGE; 
 
+	os[i = 18]->name=strdup("phaseShift_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptPHASE_SHIFT; os[i]->po=poMOD; 
+	os[i = 19]->name=strdup("phaseShift_value"); os[i]->typ=_ANALOG; os[i]->pt=ptPHASE_SHIFT; os[i]->po=poVAL; 
+	os[i = 20]->name=strdup("phaseShift_range"); os[i]->typ=_ANALOG; os[i]->pt=ptPHASE_SHIFT; os[i]->po=poRANGE; 
+
 	os[i = 21]->name=strdup("cutoff_mod"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poMOD; 
 	os[i = 22]->name=strdup("cutoff_value"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poVAL; 
 	os[i = 23]->name=strdup("cutoff_range"); os[i]->typ=_ANALOG; os[i]->pt=ptCUTOFF; os[i]->po=poRANGE; 
