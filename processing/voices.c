@@ -64,10 +64,7 @@ void startVoice(int note, int velocity) { /* start playing a voice */
 	newVoice->velocity = velocity / 128.0;
 	newVoice->act = 1;
 
-	/* -> reinit units */
-	for (i = 0; i < lUnitCount; i++) {
-		if (lUnits[i]->reinit != NULL) lUnits[i]->reinit(lUnits[i]->units[newVoice - voices]);
-	}
+	reinitLocalUnits(newVoice - voices);
 
 #ifdef DEBUG_VOICES
 	debugVoices();
@@ -97,6 +94,8 @@ void stopVoice(int note, int velocity) { /* stop all voices with specific note *
 			voices[i].act = 0;
 			voices[i].velocity = velocity / 128.0;
 			actVoices--;
+
+			reinitLocalUnits(i);
 		}
 	}
 
@@ -110,6 +109,16 @@ void killVoices(void) {
 
 	for (i=0; i< voiceCount; i++) {
 		voices[i].act = 0;
+
+		reinitLocalUnits(i);
+	}
+}
+
+void reinitLocalUnits(int voiceNumber) {
+	int i;
+
+	for (i = 0; i < lUnitCount; i++) {
+		if (lUnits[i]->reinit != NULL) lUnits[i]->reinit(lUnits[i]->units[voiceNumber]);
 	}
 }
 

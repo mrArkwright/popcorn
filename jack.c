@@ -64,7 +64,7 @@ int jackProcess(jack_nframes_t nframes, void *arg) {
 		if (isnan(*masterOutput) || isinf(*masterOutput)) {
 			outBuf[i] = 0;
 		} else {
-			outBuf[i] =  *masterOutput;
+			outBuf[i] =  *masterOutput * 0.1; /* temporary workaround, master-volume will come */
 		}
 	}
 	return 0;
