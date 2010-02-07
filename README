@@ -2,7 +2,7 @@ features
 =========
 1 MIDI Eingabe -> done
 2 Audio Ausgabe -> done
-3 Routing und Konfiguration via JSON
+3 Routing und Konfiguration via JSON -> done
 4 Polyphoner Synthesizer -> done
 5 Modulare Struktur (Units) -> done
 6 Module beliebig verknüpfbar (Routing) -> done
@@ -14,11 +14,12 @@ features
 
 todo
 =========
-- load/save arrangements from file (JSON)
+- cache midi events before main jackProcess() loop
+- sin() buffering(?)
 
 
 future
 =========
+- c++ port to ease development, api usage, etc
+- using gui to arrange setup / make arrangement dynamic (libcanvas)
 - setting up real midi hardware through gui (learn key etc)
-- using gui to arrange setup / make arrangement dynamic
-
